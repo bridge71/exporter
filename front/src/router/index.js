@@ -1,23 +1,24 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+// src/router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+// 导入views中的页面组件
+import Login from '../views/Login.vue';  // 登录页面
 
+// 创建路由实例
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),  // 使用 HTML5 历史模式
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView,
+      path: '/',  // 根路径，显示 Login 组件
+      name: 'Home',
+      component: Login,  // 默认显示登录页面
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
-    },
-  ],
-})
+      path: '/login',  // 显示登录页面
+      name: 'Login',
+      component: Login,  // 显示登录页面
+    }
+    // 你可以根据需求在这里添加更多的路由
+  ]
+});
 
-export default router
+export default router;
