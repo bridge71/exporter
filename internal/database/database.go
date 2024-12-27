@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"exporter/internal/models"
 	"fmt"
 	"log"
 	"os"
@@ -11,6 +12,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/joho/godotenv/autoload"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // Service represents a service that interacts with a database.
@@ -22,10 +25,13 @@ type Service interface {
 	// Close terminates the database connection.
 	// It returns an error if the connection cannot be closed.
 	Close() error
+	CreateUser(user *models.User) error
+	FindUser(user *models.User, email string)
 }
 
 type service struct {
-	db *sql.DB
+	db     *sql.DB
+	gormDB *gorm.DB
 }
 
 var (
@@ -53,11 +59,24 @@ func New() Service {
 	db.SetConnMaxLifetime(0)
 	db.SetMaxIdleConns(50)
 	db.SetMaxOpenConns(50)
+	gormDB, err := gorm.Open(mysql.New(mysql.Config{
+		Conn: db,
+	}))
+	gormDB.AutoMigrate(&models.User{})
 
 	dbInstance = &service{
-		db: db,
+		db:     db,
+		gormDB: gormDB,
 	}
 	return dbInstance
+}
+
+func (s *service) CreateUser(user *models.User) error {
+	return s.gormDB.Create(user).Error
+}
+
+func (s *service) FindUser(user *models.User, email string) {
+	s.gormDB.First(user, "email = ?", email)
 }
 
 // Health checks the health of the database connection by pinging the database.
