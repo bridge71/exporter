@@ -1,0 +1,18 @@
+/* src/assets/styles/Username.css */
+
+.username-input {
+  margin-bottom: 15px;
+}
+
+.username-input label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.username-input input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
