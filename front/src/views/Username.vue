@@ -7,18 +7,24 @@
 </template>
 
 <script>
+import { ref, watch } from 'vue';
+
 export default {
   name: 'Username',
-  data() {
+  props: {
+    modelValue: String, // 对应 v-model:username
+  },
+  setup(props, { emit }) {
+    const username = ref(props.modelValue);
+
+    watch(username, (newValue) => {
+      emit('update:username', newValue); // 向父组件传递用户名
+    });
+
     return {
-      username: ''
+      username,
     };
   },
-  watch: {
-    username(newValue) {
-      this.$emit('update:username', newValue); // 将用户名传递给父组件
-    }
-  }
 };
 </script>
 
