@@ -7,18 +7,24 @@
 </template>
 
 <script>
+import { ref, watch } from 'vue';
+
 export default {
   name: 'Password',
-  data() {
+  props: {
+    modelValue: String, // 对应 v-model:password
+  },
+  setup(props, { emit }) {
+    const password = ref(props.modelValue);
+
+    watch(password, (newValue) => {
+      emit('update:password', newValue); // 向父组件传递密码
+    });
+
     return {
-      password: ''
+      password,
     };
   },
-  watch: {
-    password(newValue) {
-      this.$emit('update:password', newValue); // 将密码传递给父组件
-    }
-  }
 };
 </script>
 

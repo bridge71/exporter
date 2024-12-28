@@ -1,14 +1,13 @@
 <!-- src/App.vue -->
 <template>
   <div id="app">
-    <Login />
+    <router-view></router-view> 
   </div>
 </template>
 
 <script>
 // 导入 Login 组件
 import Login from './views/Login.vue';
-
 export default {
   name: 'App',
   components: {
