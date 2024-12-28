@@ -96,9 +96,12 @@ func (s *Server) ModifyUserPassHandler(c *gin.Context) {
 }
 
 func (s *Server) LoginHandler(c *gin.Context) {
+	log.Printf("sss\n")
 	user := &models.User{}
 	err := c.ShouldBindJSON(user)
+	log.Printf("%v ss\n", *user)
 	if err != nil {
+		log.Printf("error in bind of user\n")
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "error in bind of user",
 		})

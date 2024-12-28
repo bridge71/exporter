@@ -1,8 +1,8 @@
 package models
 
 type User struct {
-	Email        string `gorm:"column:email;unique;not null" json:"Email" binding:"required"`
-	PasswordHash string `gorm:"column:passwordHash; not null" json:"Password" binding:"required"`
+	Email        string `gorm:"column:email;unique;not null" json:"Email" `
+	PasswordHash string `gorm:"column:passwordHash; not null" json:"Password"`
 	UserName     string `gorm:"column:userName;not null" json:"UserName" `
 	UserId       uint   `gorm:"column:userId;primaryKey" json:"UserId"`
 	Priority     uint   `gorm:"default:1" json:"Priority"`
