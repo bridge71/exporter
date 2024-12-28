@@ -14,6 +14,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // Service represents a service that interacts with a database.
@@ -26,7 +27,12 @@ type Service interface {
 	// It returns an error if the connection cannot be closed.
 	Close() error
 	CreateUser(user *models.User) error
+	CreateAcct(acct *models.Acct) error
+	CreateFile(file *models.File) error
 	FindUser(user *models.User, email string)
+	FindAcct(accts *[]models.Acct)
+	FindAcctBank(acctbanks *[]models.AcctBank)
+	// FindFile(file *models.File, MD5 string)
 }
 
 type service struct {
@@ -59,20 +65,48 @@ func New() Service {
 	db.SetConnMaxLifetime(0)
 	db.SetMaxIdleConns(50)
 	db.SetMaxOpenConns(50)
+
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold: time.Second, // Slow SQL threshold
+			LogLevel:      logger.Info, // Log level
+			Colorful:      true,        // Disable color
+		},
+	)
 	gormDB, err := gorm.Open(mysql.New(mysql.Config{
 		Conn: db,
-	}))
-	gormDB.AutoMigrate(&models.User{})
+	}), &gorm.Config{
+		Logger: newLogger,
+	})
+	gormDB.AutoMigrate(&models.User{}, &models.Acct{}, &models.AcctBank{}, &models.File{})
 
 	dbInstance = &service{
 		db:     db,
 		gormDB: gormDB,
 	}
+
 	return dbInstance
+}
+
+func (s *service) FindAcct(accts *[]models.Acct) {
+	s.gormDB.Find(accts)
+}
+
+func (s *service) FindAcctBank(acctBanks *[]models.AcctBank) {
+	s.gormDB.Find(acctBanks)
 }
 
 func (s *service) CreateUser(user *models.User) error {
 	return s.gormDB.Create(user).Error
+}
+
+func (s *service) CreateAcct(acct *models.Acct) error {
+	return s.gormDB.Create(acct).Error
+}
+
+func (s *service) CreateFile(file *models.File) error {
+	return s.gormDB.Create(file).Error
 }
 
 func (s *service) FindUser(user *models.User, email string) {
