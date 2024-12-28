@@ -27,11 +27,46 @@ type Service interface {
 	// It returns an error if the connection cannot be closed.
 	Close() error
 	CreateUser(user *models.User) error
-	CreateAcct(acct *models.Acct) error
-	CreateFile(file *models.File) error
 	FindUser(user *models.User, email string)
+	ModifyUserPass(user *models.User, passwordHash string)
+	CreateAcct(acct *models.Acct) error
+	CreateAcctBank(acctBank *models.AcctBank) error
+	ModifyAcct(acct *models.Acct) error
+	ModifyAcctBank(acctBank *models.AcctBank) error
 	FindAcct(accts *[]models.Acct)
-	FindAcctBank(acctbanks *[]models.AcctBank)
+	FindAcctBank(acctBanks *[]models.AcctBank)
+	FindAcctBankById(acctBanks *[]models.AcctBank, acctId uint)
+	FindAcctBankByAccName(acctBanks *[]models.AcctBank, accName string)
+	FindAcctBankByAccNum(acctBanks *[]models.AcctBank, accNum string)
+	FindAcctBankByCurrency(acctBanks *[]models.AcctBank, currency string)
+	FindAcctBankByBankName(acctBanks *[]models.AcctBank, bankName string)
+	FzzFindAcctBankByBankName(acctBanks *[]models.AcctBank, bankName string)
+	FindAcctBankBySwiftCode(acctBanks *[]models.AcctBank, swiftCode string)
+	FindAcctBankByBankAddr(acctBanks *[]models.AcctBank, bankAddr string)
+	FzzFindAcctBankByBankAddr(acctBanks *[]models.AcctBank, bankAddr string)
+	FzzFindAcctBankByNotes(acctBanks *[]models.AcctBank, notes string)
+	FindAcctBankByNotes(acctBanks *[]models.AcctBank, notes string)
+	FindAcctByAcctCode(accts *[]models.Acct, acctCode string)
+	FindAcctByAcctAbbr(accts *[]models.Acct, acctAbbr string)
+	FindAcctByEtyAbbr(accts *[]models.Acct, EtyAbbr string)
+	FindAcctByAcctName(accts *[]models.Acct, acctName string)
+	FindAcctByAcctAddr(accts *[]models.Acct, acctAddr string)
+	FzzFindAcctByAcctAddr(accts *[]models.Acct, acctAddr string)
+	FindAcctByNation(accts *[]models.Acct, nation string)
+	FindAcctByTaxType(accts *[]models.Acct, taxType string)
+	FindAcctByTaxCode(accts *[]models.Acct, taxCode string)
+	FindAcctByPhoneNum(accts *[]models.Acct, phoneNum string)
+	FzzFindAcctByPhoneNum(accts *[]models.Acct, phoneNum string)
+	FindAcctByEmail(accts *[]models.Acct, email string)
+	FzzFindAcctByEmail(accts *[]models.Acct, email string)
+	FindAcctByWebsite(accts *[]models.Acct, website string)
+	FzzFindAcctByWebsite(accts *[]models.Acct, website string)
+	FindAcctByRegDate(accts *[]models.Acct, regDate string)
+	FzzFindAcctByRegDate(accts *[]models.Acct, regDate string)
+	FindAcctByNotes(accts *[]models.Acct, notes string)
+	FzzFindAcctByNotes(accts *[]models.Acct, notes string)
+
+	CreateFile(file *models.File) error
 	// FindFile(file *models.File, MD5 string)
 }
 
@@ -89,28 +124,8 @@ func New() Service {
 	return dbInstance
 }
 
-func (s *service) FindAcct(accts *[]models.Acct) {
-	s.gormDB.Find(accts)
-}
-
-func (s *service) FindAcctBank(acctBanks *[]models.AcctBank) {
-	s.gormDB.Find(acctBanks)
-}
-
-func (s *service) CreateUser(user *models.User) error {
-	return s.gormDB.Create(user).Error
-}
-
-func (s *service) CreateAcct(acct *models.Acct) error {
-	return s.gormDB.Create(acct).Error
-}
-
 func (s *service) CreateFile(file *models.File) error {
 	return s.gormDB.Create(file).Error
-}
-
-func (s *service) FindUser(user *models.User, email string) {
-	s.gormDB.First(user, "email = ?", email)
 }
 
 // Health checks the health of the database connection by pinging the database.

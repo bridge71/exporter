@@ -4,7 +4,7 @@ type User struct {
 	Email        string `gorm:"column:email;unique;not null" json:"Email" binding:"required"`
 	PasswordHash string `gorm:"column:passwordHash; not null" json:"Password" binding:"required"`
 	UserName     string `gorm:"column:userName;not null" json:"UserName" `
-	UserId       uint   `gorm:"column:userId;primaryKey" `
+	UserId       uint   `gorm:"column:userId;primaryKey" json:"UserId"`
 	Priority     uint   `gorm:"default:1" json:"Priority"`
 }
 
@@ -24,8 +24,8 @@ type Acct struct { // 会计实体
 	RegDate     string     `gorm:"column:regDate;" form:"RegDate"`
 	Notes       string     `gorm:"column:notes;" form:"Notes"`
 	AcctBanks   []AcctBank `gorm:"foreignKey:AcctId" form:"AcctBanks[]"`
-	FileId      uint       `gorm:"column:fileId"`
-	AcctId      uint       `gorm:"column:acctId;  primaryKey"`
+	FileId      uint       `gorm:"column:fileId" form:"FileId"`
+	AcctId      uint       `gorm:"column:acctId;  primaryKey" form:"AcctId"`
 	IsUpload    bool       `gorm:"column:isUpload; not null" form:"IsUpload" binding:"required"`
 }
 
@@ -38,17 +38,17 @@ type AcctBank struct {
 	SwiftCode  string `gorm:"column:swiftCode" form:"SwiftCode"`
 	BankAddr   string `gorm:"column:bankAddr" form:"BankAddr"`
 	Notes      string `gorm:"column:notes" form:"Notes"`
-	FileId     uint   `gorm:"column:fileId"`
-	AcctId     uint   `gorm:"column:AcctId"`
+	FileId     uint   `gorm:"column:fileId" form:"FileId"`
+	AcctId     uint   `gorm:"column:acctId" form:"AcctId"`
 	AcctBankId uint   `gorm:"column:acctBankId; primaryKey; " form:"AcctBankId"`
 	IsUpload   bool   `gorm:"column:isUpload; not null" form:"IsUpload" binding:"required"`
 }
 
 type File struct {
-	Name   string `gorm:"column:Name; not null" json:"Name"`
+	Name   string `gorm:"column:name; not null" json:"Name"`
 	MD5    string `gorm:"column:MD5;  not null" json:"MD5"`
-	Suffix string `gorm:"column:Suffix; not null" json:"Suffix"`
-	FileId uint   `gorm:"column:FileId; primaryKey"`
+	Suffix string `gorm:"column:suffix; not null" json:"Suffix"`
+	FileId uint   `gorm:"column:fileId; primaryKey"`
 }
 
 type Message struct {
