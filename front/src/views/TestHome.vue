@@ -6,15 +6,15 @@
       style="width: 300px; min-height: 100vh; overflow-y: auto;"
       :router="true"
     >
-      <el-menu-item index="/testHome/CL">
+      <el-menu-item index="/testHome/EN_IN">
         <el-icon><location /></el-icon>
         <span>会计实体信息</span>
       </el-menu-item>
-      <el-menu-item index="/testHome/EN_IN">
+      <el-menu-item index="/testHome/Bank_IN">
         <el-icon><document /></el-icon>
         <span>会计实体信息银行账户信息</span>
       </el-menu-item>
-      <el-menu-item index="/testHome/Bank_IN">
+      <el-menu-item index="/testHome/CL">
         <el-icon><document /></el-icon>
         <span>客商信息</span>
       </el-menu-item>
