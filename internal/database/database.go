@@ -30,7 +30,7 @@ type Service interface {
 	FindUser(user *models.User, email string)
 	ModifyUserPass(user *models.User, passwordHash string)
 	CreateAcct(acct *models.Acct) error
-	CreateAcctBank(acctBank *models.AcctBank) error
+	SaveAcctBank(acctBank *models.AcctBank) error
 	ModifyAcct(acct *models.Acct) error
 	ModifyAcctBank(acctBank *models.AcctBank) error
 	FindAcct(accts *[]models.Acct)
@@ -91,7 +91,7 @@ func New() Service {
 	}
 
 	// Opening a driver typically will not attempt to connect to the database.
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, host, port, dbname))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&loc=Local", username, password, host, port, dbname))
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.

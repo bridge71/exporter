@@ -6,8 +6,8 @@ func (s *service) CreateAcct(acct *models.Acct) error {
 	return s.gormDB.Create(acct).Error
 }
 
-func (s *service) CreateAcctBank(acctBank *models.AcctBank) error {
-	return s.gormDB.Create(acctBank).Error
+func (s *service) SaveAcctBank(acctBank *models.AcctBank) error {
+	return s.gormDB.Save(acctBank).Error
 }
 
 func (s *service) ModifyAcct(acct *models.Acct) error {

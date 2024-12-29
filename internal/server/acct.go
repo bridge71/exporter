@@ -14,10 +14,15 @@ import (
 )
 
 func (s *Server) FindAcctHandler(c *gin.Context) {
-	accts := &[]models.Acct{}
-	s.db.FindAcct(accts)
+	accts := []models.Acct{}
+	s.db.FindAcct(&accts)
+	for i := range accts {
+		acctBank := []models.AcctBank{}
+		s.db.FindAcctBankById(&acctBank, accts[i].AcctId)
+		accts[i].AcctBanks = append(accts[i].AcctBanks, acctBank...)
+	}
 	c.JSON(http.StatusOK, models.Message{
-		Acct: *accts,
+		Acct: accts,
 	})
 }
 
@@ -272,97 +277,102 @@ func (s *Server) FindAcctByAcctAbbrHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
 
-func (s *Server) CreateAcctHandler(c *gin.Context) {
+func (s *Server) SaveAcctBankHandler(c *gin.Context) {
+	acctBank := &models.AcctBank{}
+	err := c.ShouldBind(acctBank)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "error in bind of acctBank",
+		})
+		return
+	}
+	log.Printf("%v\n", acctBank)
+	err = s.db.SaveAcctBank(acctBank)
+
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "failed to save acctBank",
+		})
+	} else {
+		c.JSON(http.StatusOK, models.Message{
+			RetMessage: "saved acctBank successfully",
+		})
+	}
+}
+
+func (s *Server) Str2Uint(str string) uint {
+	// 使用 strconv.ParseUint 将字符串解析为 uint64
+	// 参数 10 表示十进制，参数 0 表示自动推断位数
+	value, err := strconv.ParseUint(str, 10, 0)
+	if err != nil {
+		// 如果解析失败，返回错误
+		return 0
+	}
+	// 将 uint64 转换为 uint 并返回
+	return uint(value)
+}
+
+func (s *Server) SaveAcctHandler(c *gin.Context) {
 	acct := &models.Acct{}
 	err := c.ShouldBind(acct)
+	log.Printf("sss\n")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "error in bind of acct",
 		})
+		log.Printf("SSSSSsss\n")
 		return
 	}
 
 	bankIndex := 0
 	for {
-		accNum := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].AccNum")
-		accName := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].AccName")
-		isUpload := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].IsUpload")
-		currency := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].Currency")
-		bankName := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].BankName")
-		bankNum := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].BankNum")
-		swiftCode := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].SwiftCode")
-		bankAddr := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].BankAddr")
-		notes := c.PostForm("AccBanks[" + strconv.Itoa(bankIndex) + "].Notes")
-
-		flag := false
-		if isUpload == "true" {
-			flag = true
+		acctBankId := c.PostForm("AccBank[" + strconv.Itoa(bankIndex) + "].AcctBankId")
+		if acctBankId == "" {
+			break
 		}
-
-		if accNum == "" || accName == "" || isUpload == "" {
+		id := s.Str2Uint(acctBankId)
+		if id == 0 {
 			break
 		}
 		acct.AcctBanks = append(acct.AcctBanks, models.AcctBank{
-			AccName:   accName,
-			AccNum:    accNum,
-			IsUpload:  flag,
-			Currency:  currency,
-			BankName:  bankName,
-			BankNum:   bankNum,
-			SwiftCode: swiftCode,
-			BankAddr:  bankAddr,
-			Notes:     notes,
+			AcctBankId: id,
 		})
 		bankIndex++
 	}
 
-	now := 0
-	allFiles, err := c.MultipartForm()
-	attaches := allFiles.File["attach[]"]
+	file, err := c.FormFile("file")
 	if err == nil {
-		for index, attach := range attaches {
-			log.Printf("%d index\n", index)
-			src, err := attach.Open()
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, models.Message{
-					RetMessage: "error when opening file",
-				})
-				return
-			}
-			defer src.Close()
-
-			hash := md5.New()
-			if _, err := io.Copy(hash, src); err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{
-					"error":   "文件读取失败",
-					"details": err.Error(),
-				})
-				return
-			}
-			MD5 := hex.EncodeToString(hash.Sum(nil))
-			FileName := attach.Filename
-			Suffix := filepath.Ext(attach.Filename)
-			File := &models.File{
-				Name:   FileName,
-				MD5:    MD5,
-				Suffix: Suffix,
-			}
-			s.db.CreateFile(File)
-			for ; now < bankIndex; now++ {
-				if acct.AcctBanks[now].IsUpload {
-					acct.AcctBanks[now].FileId = File.FileId
-					now++
-					break
-				}
-			}
-			if now >= bankIndex && acct.IsUpload {
-				acct.FileId = File.FileId
-			}
-
-			c.SaveUploadedFile(attach, "../files/"+MD5+Suffix) // 以main程序所在目录为基准
-
-			log.Printf(attach.Filename + "\n")
+		src, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, models.Message{
+				RetMessage: "error when opening file",
+			})
+			return
 		}
+		defer src.Close()
+
+		hash := md5.New()
+		if _, err := io.Copy(hash, src); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   "文件读取失败",
+				"details": err.Error(),
+			})
+			return
+		}
+		MD5 := hex.EncodeToString(hash.Sum(nil))
+		FileName := file.Filename
+		Suffix := filepath.Ext(file.Filename)
+		File := &models.File{
+			Name:   FileName,
+			MD5:    MD5,
+			Suffix: Suffix,
+		}
+		s.db.CreateFile(File)
+
+		c.SaveUploadedFile(file, "../files/"+MD5+Suffix) // 以main程序所在目录为基准
+
+		log.Printf(file.Filename + "\n")
+
 	}
 
 	log.Printf("%v", acct)
