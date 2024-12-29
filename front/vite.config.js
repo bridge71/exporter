@@ -27,6 +27,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false
       },
+
+      '/save': {
+        target: 'http://10.111.3.44:6767',
+        changeOrigin: true,
+        secure: false
+      },
       '/auth': {
         target: 'http://10.111.3.44:6767',
         changeOrigin: true,

@@ -9,7 +9,7 @@ type User struct {
 }
 
 type Acct struct { // 会计实体
-	AcctCode    string     `gorm:"column:acctCode;not null" form:"AcctCode" binding:"required"`
+	AcctCode    string     `gorm:"column:acctCode;not null; unique" form:"AcctCode" binding:"required"`
 	AcctAbbr    string     `gorm:"column:acctAbbr;not null" form:"AcctAbbr" binding:"required"`
 	EtyAbbr     string     `gorm:"column:etyAbbr;not null" form:"EtyAbbr" binding:"required"`
 	AcctName    string     `gorm:"column:acctName;not null" form:"AcctName" binding:"required"`
@@ -31,13 +31,14 @@ type Acct struct { // 会计实体
 
 type AcctBank struct {
 	AccName    string `gorm:"column:accName; not null" form:"AccName" binding:"required"`
-	AccNum     string `gorm:"column:accNum; not null" form:"AccNum" binding:"required"`
+	AccNum     string `gorm:"column:accNum; not null; unique" form:"AccNum" binding:"required"`
 	Currency   string `gorm:"column:currency" form:"Currency"`
 	BankName   string `gorm:"column:bankName" form:"BankName"`
 	BankNum    string `gorm:"column:bankNum" form:"BankNum"`
 	SwiftCode  string `gorm:"column:swiftCode" form:"SwiftCode"`
 	BankAddr   string `gorm:"column:bankAddr" form:"BankAddr"`
 	Notes      string `gorm:"column:notes" form:"Notes"`
+	AcctName   string `gorm:"column:acctName" form:"AcctName"`
 	FileId     uint   `gorm:"column:fileId" form:"FileId"`
 	AcctId     uint   `gorm:"column:acctId" form:"AcctId"`
 	AcctBankId uint   `gorm:"column:acctBankId; primaryKey; " form:"AcctBankId"`

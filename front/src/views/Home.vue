@@ -28,6 +28,17 @@
             <el-table-column prop="AcctAbbr" label="会计实体缩写"></el-table-column>
             <el-table-column prop="EtyAbbr" label="实体简称"></el-table-column>
             <el-table-column prop="AcctName" label="会计实体名称"></el-table-column>
+
+
+            <el-table-column label="绑定的银行账户信息">
+              <template #default="scope">
+                <span v-if="scope.row.AcctBanks && scope.row.AcctBanks.length > 0">
+                  {{ scope.row.AcctBanks.map(bank => bank.AccNum).join(', ') }}
+                </span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+
             <el-table-column prop="AcctEngName" label="会计实体英文名称"></el-table-column>
             <el-table-column prop="AcctAddr" label="会计实体地址"></el-table-column>
             <el-table-column prop="Nation" label="国家"></el-table-column>
@@ -52,6 +63,13 @@
           <el-table :data="paginatedBankData" style="width: 100%" max-height="500" v-if="activeMenu === '1-2'">
             <el-table-column prop="AccName" label="账户名称"></el-table-column>
             <el-table-column prop="AccNum" label="账号"></el-table-column>
+
+            <el-table-column label="对应的会计实体信息">
+              <template #default="scope">
+                <span v-if="scope.row.AcctName">{{ scope.row.AcctName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="Currency" label="币种"></el-table-column>
             <el-table-column prop="BankName" label="开户行名称"></el-table-column>
             <el-table-column prop="BankNum" label="开户行号"></el-table-column>
@@ -97,7 +115,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="会计实体名称" prop="AcctName">
+            <el-form-item label="会计实体名称" prop="AcctName" :required="true">
               <el-input v-model="acctForm.AcctName" placeholder="全称"></el-input>
             </el-form-item>
           </el-col>
@@ -272,10 +290,15 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联会计实体信息">
-              <el-select v-model="bankForm.AcctCode" placeholder="请选择会计实体信息">
+              <el-select v-model="bankForm.AcctId" @change=onAcctChange placeholder="请选择会计实体信息">
                 <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} (${acct.AcctCode})`"
-                  :value="acct.AcctCode"></el-option>
+                  :value="acct.AcctId"></el-option>
               </el-select>
+              <!-- <el-select v-model="selectedAcct" placeholder="请选择会计实体信息"> -->
+              <!--   <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} `" -->
+              <!--     :value="{ AcctId: acct.AcctId, AcctName: acct.AcctName }"></el-option> -->
+              <!-- </el-select> -->
+
             </el-form-item>
           </el-col>
         </el-row>
@@ -294,8 +317,56 @@
 <script setup>
 
 import { ref, onMounted, computed } from 'vue';
-import axios from 'axios'; // 如果使用 axios
 
+import { ElMessage } from 'element-plus'; // 引入 ElMessage
+import axios from 'axios'; // 引入 axios
+// 监听 change 事件并更新 AcctName
+function onAcctChange(value) {
+  const selectedAcct = acctData.value.find(acct => acct.AcctId === value);
+  if (selectedAcct) {
+    bankForm.value.AcctName = selectedAcct.AcctName;
+  }
+}
+const selectedAcctName = computed(() => {
+  const acct = acctData.value.find(acct => acct.AcctId === bankForm.value.AcctId);
+  return acct ? acct.AcctName : '';
+});
+const selectedAcct = ref({ AcctId: '', AcctName: '' }); // 默认值为空对象
+// 会计实体信息表单提交逻辑
+const submitAcctForm = async () => {
+  try {
+    acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
+    const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
+    if (response.status === 200) {
+      ElMessage.success('会计实体信息保存成功');
+      showAcctDialog.value = false; // 关闭对话框
+      fetchAcctData(); // 重新获取会计实体信息数据
+    } else {
+      ElMessage.error(response.data.RetMessage || '保存失败');
+    }
+  } catch (error) {
+    console.error('保存会计实体信息失败:', error);
+    ElMessage.error(response.data.RetMessage);
+  }
+};
+
+// 会计实体银行账户信息表单提交逻辑
+const submitBankForm = async () => {
+  try {
+    // 将选择的会计实体信息赋值给 bankForm
+    const response = await axios.post('/save/acctBank', bankForm.value); // 调用保存会计实体银行账户信息接口
+    if (response.status === 200) {
+      ElMessage.success('会计实体银行账户信息保存成功');
+      showBankDialog.value = false; // 关闭对话框
+      fetchAcctBankData(); // 重新获取会计实体银行账户信息数据
+    } else {
+      ElMessage.error(response.data.RetMessage || '保存失败');
+    }
+  } catch (error) {
+    console.error('保存会计实体银行账户信息失败:', error);
+    ElMessage.error('保存会计实体银行账户信息失败，请稍后重试');
+  }
+};
 const handlePageChange = (page) => {
   currentPage.value = page;
 };
@@ -325,6 +396,7 @@ const fetchAcctData = async () => {
     acctData.value = response.data.Acct; // 假设返回的数据结构中有 Acct 字段
   } catch (error) {
     console.error('获取会计实体信息失败:', error);
+    ElMessage.error('获取会计实体信息失败，请稍后重试');
   }
 };
 
@@ -333,6 +405,7 @@ const fetchAcctBankData = async () => {
     const response = await axios.get('/find/acctBank'); // 调用会计实体银行账户信息接口
     bankData.value = response.data.AcctBank; // 假设返回的数据结构中有 AcctBank 字段
   } catch (error) {
+    ElMessage.error('获取会计实体银行账户信息失败，请稍后重试');
     console.error('获取会计实体银行账户信息失败:', error);
   }
 };
@@ -362,6 +435,7 @@ const acctForm = ref({
   RegDate: '',
   Notes: '',
   License: '',
+  AcctId: '',
   BankAccounts: [] // 关联的银行账户信息
 });
 
@@ -376,7 +450,8 @@ const bankForm = ref({
   BankAddr: '',
   Notes: '',
   File: '',
-  AcctCode: '' // 关联的会计实体信息
+  AcctId: '',
+  AcctName: ''
 });
 
 // 会计实体信息表单验证规则
@@ -392,17 +467,6 @@ const bankRules = {
   AccNum: [{ required: true, message: '请输入账号', trigger: 'blur' }]
 };
 
-// 会计实体信息表单提交逻辑
-const submitAcctForm = () => {
-  console.log('会计实体信息:', acctForm.value);
-  showAcctDialog.value = false;
-};
-
-// 会计实体银行账户信息表单提交逻辑
-const submitBankForm = () => {
-  console.log('会计实体银行账户信息:', bankForm.value);
-  showBankDialog.value = false;
-};
 
 
 // 表格数据（初始值为空数组）
@@ -436,8 +500,18 @@ const handleView = (index, row) => {
   console.log('查看', index, row);
 };
 
+// 编辑按钮逻辑
 const handleEdit = (index, row) => {
-  console.log('编辑', index, row);
+  if (activeMenu.value === '1-1') {
+    // 填充会计实体信息表单
+    acctForm.value = { ...row }; // 将当前行的数据赋值给 acctForm
+    showAcctDialog.value = true; // 打开会计实体信息对话框
+  } else if (activeMenu.value === '1-2') {
+    // 填充会计实体银行账户信息表单
+    bankForm.value = { ...row }; // 将当前行的数据赋值给 bankForm
+    selectedAcct.value = { AcctId: row.AcctId, AcctName: row.AcctName }; // 填充关联的会计实体信息
+    showBankDialog.value = true; // 打开会计实体银行账户信息对话框
+  }
 };
 </script>
 

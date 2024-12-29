@@ -315,10 +315,12 @@ func (s *Server) Str2Uint(str string) uint {
 func (s *Server) SaveAcctHandler(c *gin.Context) {
 	acct := &models.Acct{}
 	err := c.ShouldBind(acct)
+	log.Printf("sss\n")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "error in bind of acct",
 		})
+		log.Printf("SSSSSsss\n")
 		return
 	}
 
