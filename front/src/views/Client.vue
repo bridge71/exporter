@@ -266,7 +266,7 @@ export default {
 }
 
 .el-table {
-  min-width: 1500px; /* 设置表格最小宽度，根据实际列数调整 */
   width: 100%; /* 确保表格宽度占满容器 */
+  min-width: 1000px; /* 设置表格最小宽度，根据实际列数调整 */
 }
 </style>
