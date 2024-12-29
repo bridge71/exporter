@@ -6,8 +6,11 @@
         <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
           <el-submenu index="1">
             <template #title>会计实体信息</template>
+
+
             <el-menu-item index="1-1">会计实体信息</el-menu-item>
             <el-menu-item index="1-2">会计实体银行账户信息</el-menu-item>
+
             <el-menu-item index="1-3">客商信息</el-menu-item>
             <!-- 其他菜单项 -->
           </el-submenu>
