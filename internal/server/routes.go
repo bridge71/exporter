@@ -20,9 +20,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/health", s.healthHandler)
 
-	r.POST("/create/acct", s.CreateAcctHandler)
-	r.POST("/modify/acct", s.CreateAcctHandler)
+	r.POST("/save/acctBank", s.SaveAcctBankHandler)
+	r.POST("/save/acct", s.SaveAcctHandler)
 	r.GET("/find/acct", s.FindAcctHandler)
+	r.GET("/find/acctBank", s.FindAcctBankHandler)
 
 	r.POST("/create/user", s.CreateUserHandler)
 	r.POST("/auth", s.LoginHandler)

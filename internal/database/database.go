@@ -30,7 +30,7 @@ type Service interface {
 	FindUser(user *models.User, email string)
 	ModifyUserPass(user *models.User, passwordHash string)
 	CreateAcct(acct *models.Acct) error
-	CreateAcctBank(acctBank *models.AcctBank) error
+	SaveAcctBank(acctBank *models.AcctBank) error
 	ModifyAcct(acct *models.Acct) error
 	ModifyAcctBank(acctBank *models.AcctBank) error
 	FindAcct(accts *[]models.Acct)
