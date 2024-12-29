@@ -2,20 +2,16 @@ package database
 
 import "exporter/internal/models"
 
-func (s *service) CreateAcct(acct *models.Acct) error {
-	return s.gormDB.Create(acct).Error
+func (s *service) SaveAcct(acct *models.Acct) error {
+	return s.gormDB.Save(acct).Error
 }
 
 func (s *service) SaveAcctBank(acctBank *models.AcctBank) error {
 	return s.gormDB.Save(acctBank).Error
 }
 
-func (s *service) ModifyAcct(acct *models.Acct) error {
-	return s.gormDB.Save(acct).Error
-}
-
-func (s *service) ModifyAcctBank(acctBank *models.AcctBank) error {
-	return s.gormDB.Save(acctBank).Error
+func (s *service) FindFile(file *models.File) {
+	s.gormDB.Where("fileId = ?", file.FileId).Find(file)
 }
 
 func (s *service) FindAcct(accts *[]models.Acct) {

@@ -49,7 +49,7 @@ type File struct {
 	Name   string `gorm:"column:name; not null" json:"Name"`
 	MD5    string `gorm:"column:MD5;  not null" json:"MD5"`
 	Suffix string `gorm:"column:suffix; not null" json:"Suffix"`
-	FileId uint   `gorm:"column:fileId; primaryKey"`
+	FileId uint   `gorm:"column:fileId; primaryKey" form:"FileId" binding:"required"`
 }
 
 type Message struct {

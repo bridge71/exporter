@@ -6,11 +6,8 @@
         <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
           <el-submenu index="1">
             <template #title>会计实体信息</template>
-
-
             <el-menu-item index="1-1">会计实体信息</el-menu-item>
             <el-menu-item index="1-2">会计实体银行账户信息</el-menu-item>
-
             <el-menu-item index="1-3">客商信息</el-menu-item>
             <!-- 其他菜单项 -->
           </el-submenu>
@@ -26,7 +23,7 @@
         </el-header>
         <el-main>
           <!-- 会计实体信息表格 -->
-          <el-table :data="paginatedAcctData" style="width: 100%" max-height="500" v-if="activeMenu === '1-1'">
+          <el-table :data="paginatedAcctData" style="width: 100%" max-height="450" v-if="activeMenu === '1-1'">
             <el-table-column prop="AcctCode" label="会计实体编码"></el-table-column>
             <el-table-column prop="AcctAbbr" label="会计实体缩写"></el-table-column>
             <el-table-column prop="EtyAbbr" label="实体简称"></el-table-column>
@@ -34,6 +31,7 @@
 
 
             <el-table-column label="绑定的银行账户信息">
+              <!-- <el-input v-model="acctForm.BankAccounts" :readonly="true"></el-input> -->
               <template #default="scope">
                 <span v-if="scope.row.AcctBanks && scope.row.AcctBanks.length > 0">
                   {{ scope.row.AcctBanks.map(bank => bank.AccNum).join(', ') }}
@@ -63,7 +61,7 @@
           </el-table>
 
           <!-- 会计实体银行账户信息表格 -->
-          <el-table :data="paginatedBankData" style="width: 100%" max-height="500" v-if="activeMenu === '1-2'">
+          <el-table :data="paginatedBankData" style="width: 100%" max-height="450" v-if="activeMenu === '1-2'">
             <el-table-column prop="AccName" label="账户名称"></el-table-column>
             <el-table-column prop="AccNum" label="账号"></el-table-column>
 
@@ -96,7 +94,7 @@
     </el-container>
 
     <!-- 添加会计实体信息的对话框 -->
-    <el-dialog v-model="showAcctDialog" title="会计实体信息" width="50%">
+    <el-dialog v-model="showAcctDialog" title="会计实体信息" width="80%" @close="resetAcctForm">
       <el-form :model="acctForm" label-width="150px" :rules="acctRules" ref="acctFormRef">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -193,24 +191,43 @@
           </el-col>
         </el-row>
 
+        <!-- 上传文件或下载文件 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="营业执照" prop="License">
-              <el-upload action="https://jsonplaceholder.typicode.com/posts/" :limit="1">
-                <el-button type="primary">上传文件</el-button>
+            <el-form-item label="文件">
+              <el-upload v-if="!acctForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+                :auto-upload="false" :show-file-list="true">
+                <el-button type="primary">选择文件</el-button>
               </el-upload>
+              <el-button v-else type="success" @click="downloadFile(acctForm.FileId)">下载文件</el-button>
             </el-form-item>
           </el-col>
         </el-row>
+
+        <!-- <el-row :gutter="20"> -->
+        <!--   <el-col :span="24"> -->
+        <!---->
+        <!--     <el-form-item label="上传文件"> -->
+        <!--       <el-upload ref="uploadRef" action="" :limit="1" :on-change="handleFileChange" :auto-upload="false" -->
+        <!--         :show-file-list="true"> -->
+        <!--         <el-button type="primary">选择文件</el-button> -->
+        <!--       </el-upload> -->
+        <!---->
+        <!--     </el-form-item> -->
+        <!--   </el-col> -->
+        <!-- </el-row> -->
 
         <!-- 会计实体银行账户信息选择 -->
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联银行账户信息">
-              <el-select v-model="acctForm.BankAccounts" multiple placeholder="请选择银行账户信息">
-                <el-option v-for="bank in bankData" :key="bank.AccNum" :label="`${bank.AccName} (${bank.AccNum})`"
-                  :value="bank.AccNum"></el-option>
-              </el-select>
+
+              <!-- <el-input v-model="acctForm.BankAccounts" :readonly="true"></el-input> -->
+              <el-input v-model="acctForm.AcctBanksDisplay" :readonly="true"></el-input>
+              <!-- <el-select v-model="acctForm.BankAccounts" multiple placeholder="请选择银行账户信息"> -->
+              <!--   <el-option v-for="bank in bankData" :key="bank.AccNum" :label="`${bank.AccName} (${bank.AccNum})`" -->
+              <!--     :value="bank.AccNum"></el-option> -->
+              <!-- </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -225,7 +242,7 @@
     </el-dialog>
 
     <!-- 添加会计实体银行账户信息的对话框 -->
-    <el-dialog v-model="showBankDialog" title="会计实体银行账户信息" width="50%">
+    <el-dialog v-model="showBankDialog" title="会计实体银行账户信息" width="80%" @close="resetBankForm">
       <el-form :model="bankForm" label-width="150px" :rules="bankRules" ref="bankFormRef">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -281,9 +298,10 @@
 
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="附件" prop="File">
-              <el-upload action="https://jsonplaceholder.typicode.com/posts/" :limit="1">
-                <el-button type="primary">上传文件</el-button>
+            <el-form-item label="上传文件">
+              <el-upload ref="bankUploadRef" action="" :limit="1" :on-change="handleBankFileChange" :auto-upload="false"
+                :show-file-list="true">
+                <el-button type="primary">选择文件</el-button>
               </el-upload>
             </el-form-item>
           </el-col>
@@ -314,6 +332,208 @@
         </el-row>
       </el-form>
     </el-dialog>
+
+
+    <!-- 查看会计实体信息的对话框 -->
+    <el-dialog v-model="showshowAcctDialog" title="会计实体信息" width="80%" @close="resetAcctForm">
+      <el-form :model="acctForm" label-width="150px" :rules="acctRules" ref="acctFormRef">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="会计实体编码" prop="AcctCode" :required="true">
+              <el-input v-model="acctForm.AcctCode" placeholder="国家代码+流水码" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="会计实体缩写" prop="AcctAbbr" :required="true">
+              <el-input v-model="acctForm.AcctAbbr" placeholder="名称缩写，一般2-3个字母" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="实体简称" prop="EtyAbbr" :required="true">
+              <el-input v-model="acctForm.EtyAbbr" placeholder="客户名称简称，一般1-2个单词" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="会计实体名称" prop="AcctName" :required="true">
+              <el-input v-model="acctForm.AcctName" placeholder="全称" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="会计实体英文名称" prop="AcctEngName">
+              <el-input v-model="acctForm.AcctEngName" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="会计实体地址" prop="AcctAddr">
+              <el-input v-model="acctForm.AcctAddr" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="国家" prop="Nation">
+              <el-input v-model="acctForm.Nation" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="税号类型" prop="TaxType">
+              <el-input v-model="acctForm.TaxType" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="税号" prop="TaxCode">
+              <el-input v-model="acctForm.TaxCode" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="联系电话" prop="PhoneNum">
+              <el-input v-model="acctForm.PhoneNum" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="Email">
+              <el-input v-model="acctForm.Email" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="网站" prop="Website">
+              <el-input v-model="acctForm.Website" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="注册日期" prop="RegDate">
+              <el-date-picker v-model="acctForm.RegDate" type="date" placeholder="选择日期"
+                :readonly="true"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="备注" prop="Notes">
+              <el-input v-model="acctForm.Notes" type="textarea" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+        <!-- 会计实体银行账户信息选择 -->
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="关联银行账户信息">
+
+              <!-- <el-input v-model="acctForm.BankAccounts" :readonly="true"></el-input> -->
+              <el-input v-model="acctForm.AcctBanksDisplay" :readonly="true"></el-input>
+              <!-- <el-select v-model="acctForm.BankAccounts" multiple placeholder="请选择银行账户信息"> -->
+              <!--   <el-option v-for="bank in bankData" :key="bank.AccNum" :label="`${bank.AccName} (${bank.AccNum})`" -->
+              <!--     :value="bank.AccNum"></el-option> -->
+              <!-- </el-select> -->
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24" style="text-align: right;">
+            <el-button @click="showshowAcctDialog = false">关闭</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
+
+    <!-- 添加会计实体银行账户信息的对话框 -->
+    <el-dialog v-model="showshowBankDialog" title="会计实体银行账户信息" width="80%" @close="resetBankForm">
+      <el-form :model="bankForm" label-width="150px" :rules="bankRules" ref="bankFormRef">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="账户名称" prop="AccName">
+              <el-input v-model="bankForm.AccName" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="账号" prop="AccNum">
+              <el-input v-model="bankForm.AccNum" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="币种" prop="Currency">
+              <el-input v-model="bankForm.Currency" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="开户行名称" prop="BankName">
+              <el-input v-model="bankForm.BankName" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="开户行号" prop="BankNum">
+              <el-input v-model="bankForm.BankNum" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="SWIFT CODE" prop="SwiftCode">
+              <el-input v-model="bankForm.SwiftCode" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="开户行地址" prop="BankAddr">
+              <el-input v-model="bankForm.BankAddr" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="备注" prop="Notes">
+              <el-input v-model="bankForm.Notes" type="textarea" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+        <!-- 会计实体信息选择 -->
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="关联会计实体信息">
+              <el-select v-model="bankForm.AcctId" @change=onAcctChange placeholder="请选择会计实体信息">
+                <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} (${acct.AcctCode})`"
+                  :value="acct.AcctId"></el-option>
+              </el-select>
+              <!-- <el-select v-model="selectedAcct" placeholder="请选择会计实体信息"> -->
+              <!--   <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} `" -->
+              <!--     :value="{ AcctId: acct.AcctId, AcctName: acct.AcctName }"></el-option> -->
+              <!-- </el-select> -->
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24" style="text-align: right;">
+            <el-button @click="showshowBankDialog = false">关闭</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -323,6 +543,115 @@ import { ref, onMounted, computed } from 'vue';
 
 import { ElMessage } from 'element-plus'; // 引入 ElMessage
 import axios from 'axios'; // 引入 axios
+const downloadFile = async (fileId) => {
+  try {
+    const response = await axios.post(
+      '/file',
+      { FileId: fileId }, // 提供 FileId 表单
+      {
+        responseType: 'blob', // 指定响应类型为二进制数据
+      }
+    );
+
+    // 创建下载链接
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `file_${fileId}`); // 设置下载文件名
+    document.body.appendChild(link);
+    link.click(); // 触发下载
+    document.body.removeChild(link); // 移除链接
+    window.URL.revokeObjectURL(url); // 释放 URL 对象
+  } catch (error) {
+    console.error('文件下载失败:', error);
+    ElMessage.error('文件下载失败，请稍后重试');
+  }
+};
+// 文件数据（会计实体银行账户信息）
+const bankFile = ref(null);
+
+// 文件选择事件（会计实体银行账户信息）
+const handleBankFileChange = (uploadFile) => {
+  bankFile.value = uploadFile.raw; // 保存选择的文件
+};
+// 获取 el-upload 组件的引用
+const uploadRef = ref(null);
+// 文件数据
+const file = ref(null);
+
+// 文件选择事件
+const handleFileChange = (uploadFile) => {
+  file.value = uploadFile.raw; // 保存选择的文件
+};
+// 查看按钮逻辑
+const handleView = (index, row) => {
+  if (activeMenu.value === '1-1') {
+    // 填充会计实体信息表单
+    acctForm.value = { ...row }; // 将当前行的数据赋值给 acctForm
+    // 将 AcctBanks 转换为可显示的字符串
+    acctForm.value.AcctBanksDisplay = row.AcctBanks && row.AcctBanks.length > 0
+      ? row.AcctBanks.map(bank => bank.AccNum).join(', ')
+      : '无';
+    showshowAcctDialog.value = true; // 打开会计实体信息对话框
+    // 检查是否已上传文件
+    if (row.FileId) {
+      acctForm.value.FileId = row.FileId; // 保存 FileId
+    }
+  } else if (activeMenu.value === '1-2') {
+    // 填充会计实体银行账户信息表单
+    bankForm.value = { ...row }; // 将当前行的数据赋值给 bankForm
+    selectedAcct.value = { AcctId: row.AcctId, AcctName: row.AcctName }; // 填充关联的会计实体信息
+    showshowBankDialog.value = true; // 打开会计实体银行账户信息对话框
+  }
+};
+// 重置会计实体信息表单
+const resetAcctForm = () => {
+  acctForm.value = {
+    AcctCode: '',
+    AcctAbbr: '',
+    EtyAbbr: '',
+    AcctName: '',
+    AcctEngName: '',
+    AcctAddr: '',
+    Nation: '',
+    TaxType: '',
+    TaxCode: '',
+    PhoneNum: '',
+    Email: '',
+    Website: '',
+    RegDate: '',
+    Notes: '',
+    License: '',
+    BankAccounts: [] // 关联的银行账户信息
+  };
+  file.value = null; // 重置文件数据
+  if (uploadRef.value) {
+    uploadRef.value.clearFiles(); // 清空文件列表
+  }
+};
+// 获取 el-upload 组件的引用（会计实体银行账户信息）
+const bankUploadRef = ref(null);
+// 重置会计实体银行账户信息表单
+const resetBankForm = () => {
+  bankForm.value = {
+    AccName: '',
+    AccNum: '',
+    Currency: '',
+    BankName: '',
+    BankNum: '',
+    SwiftCode: '',
+    BankAddr: '',
+    Notes: '',
+    File: '',
+    AcctId: '', // 关联的会计实体 ID
+    AcctName: '' // 关联的会计实体名称
+  };
+  selectedAcct.value = null; // 重置选择的会计实体信息
+  bankFile.value = null; // 重置文件数据
+  if (bankUploadRef.value) {
+    bankUploadRef.value.clearFiles(); // 清空文件列表
+  }
+};
 // 监听 change 事件并更新 AcctName
 function onAcctChange(value) {
   const selectedAcct = acctData.value.find(acct => acct.AcctId === value);
@@ -338,8 +667,26 @@ const selectedAcct = ref({ AcctId: '', AcctName: '' }); // 默认值为空对象
 // 会计实体信息表单提交逻辑
 const submitAcctForm = async () => {
   try {
-    acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
-    const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
+    // acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
+
+    // const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
+    const formData = new FormData(); // 创建 FormData 对象
+
+    // 添加表单数据
+    Object.keys(acctForm.value).forEach((key) => {
+      formData.append(key, acctForm.value[key]);
+    });
+
+    // 添加文件
+    if (file.value) {
+      formData.append('file', file.value);
+    }
+
+    const response = await axios.post('/save/acct', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // 设置请求头
+      },
+    });
     if (response.status === 200) {
       ElMessage.success('会计实体信息保存成功');
       showAcctDialog.value = false; // 关闭对话框
@@ -348,16 +695,32 @@ const submitAcctForm = async () => {
       ElMessage.error(response.data.RetMessage || '保存失败');
     }
   } catch (error) {
-    console.error('保存会计实体信息失败:', error);
-    ElMessage.error(response.data.RetMessage);
+    ElMessage.error(error.response.data.RetMessage);
   }
 };
 
 // 会计实体银行账户信息表单提交逻辑
 const submitBankForm = async () => {
   try {
+    const formData = new FormData(); // 创建 FormData 对象
+
+    // 添加表单数据
+    Object.keys(bankForm.value).forEach((key) => {
+      formData.append(key, bankForm.value[key]);
+    });
+
+    // 添加文件
+    if (bankFile.value) {
+      formData.append('file', bankFile.value);
+    }
+
+    const response = await axios.post('/save/acctBank', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // 设置请求头
+      },
+    });
     // 将选择的会计实体信息赋值给 bankForm
-    const response = await axios.post('/save/acctBank', bankForm.value); // 调用保存会计实体银行账户信息接口
+    // const response = await axios.post('/save/acctBank', bankForm.value); // 调用保存会计实体银行账户信息接口
     if (response.status === 200) {
       ElMessage.success('会计实体银行账户信息保存成功');
       showBankDialog.value = false; // 关闭对话框
@@ -421,6 +784,11 @@ const showAcctDialog = ref(false);
 // 会计实体银行账户信息对话框显示状态
 const showBankDialog = ref(false);
 
+// 会计实体信息对话框显示状态
+const showshowAcctDialog = ref(false);
+
+// 会计实体银行账户信息对话框显示状态
+const showshowBankDialog = ref(false);
 // 会计实体信息表单数据
 const acctForm = ref({
   AcctCode: '',
@@ -487,6 +855,11 @@ const addButtonText = computed(() => {
 // 菜单项选择事件
 const handleMenuSelect = (index) => {
   activeMenu.value = index;
+  if (index === '1-1') {
+    fetchAcctData(); // 重新获取会计实体信息数据
+  } else if (index === '1-2') {
+    fetchAcctBankData()
+  }
 };
 
 // 添加按钮点击事件
@@ -498,16 +871,16 @@ const handleAdd = () => {
   }
 };
 
-// 操作按钮逻辑
-const handleView = (index, row) => {
-  console.log('查看', index, row);
-};
 
 // 编辑按钮逻辑
 const handleEdit = (index, row) => {
   if (activeMenu.value === '1-1') {
     // 填充会计实体信息表单
+
     acctForm.value = { ...row }; // 将当前行的数据赋值给 acctForm
+    acctForm.value.AcctBanksDisplay = row.AcctBanks && row.AcctBanks.length > 0
+      ? row.AcctBanks.map(bank => bank.AccNum).join(', ')
+      : '无';
     showAcctDialog.value = true; // 打开会计实体信息对话框
   } else if (activeMenu.value === '1-2') {
     // 填充会计实体银行账户信息表单

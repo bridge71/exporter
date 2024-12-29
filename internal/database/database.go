@@ -28,11 +28,10 @@ type Service interface {
 	Close() error
 	CreateUser(user *models.User) error
 	FindUser(user *models.User, email string)
+	FindFile(file *models.File)
 	ModifyUserPass(user *models.User, passwordHash string)
-	CreateAcct(acct *models.Acct) error
+	SaveAcct(acct *models.Acct) error
 	SaveAcctBank(acctBank *models.AcctBank) error
-	ModifyAcct(acct *models.Acct) error
-	ModifyAcctBank(acctBank *models.AcctBank) error
 	FindAcct(accts *[]models.Acct)
 	FindAcctBank(acctBanks *[]models.AcctBank)
 	FindAcctBankById(acctBanks *[]models.AcctBank, acctId uint)

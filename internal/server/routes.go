@@ -20,6 +20,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/health", s.healthHandler)
 
+	r.POST("/file", s.Uploader)
 	r.POST("/save/acctBank", s.SaveAcctBankHandler)
 	r.POST("/save/acct", s.SaveAcctHandler)
 	r.GET("/find/acct", s.FindAcctHandler)

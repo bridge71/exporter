@@ -13,6 +13,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (s *Server) Uploader(c *gin.Context) {
+	file := &models.File{}
+	err := c.ShouldBind(file)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "error in bind of file",
+		})
+		return
+	}
+	s.db.FindFile(file)
+	c.Header("Content-Type", "application/octet-stream")
+	c.Header("Content-Disposition", "attachment; filename*=utf-8''"+file.Name+file.Suffix)
+	c.File("../files/" + file.MD5 + file.Suffix)
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: file.Name,
+	})
+}
+
 func (s *Server) FindAcctHandler(c *gin.Context) {
 	accts := []models.Acct{}
 	s.db.FindAcct(&accts)
@@ -287,8 +306,44 @@ func (s *Server) SaveAcctBankHandler(c *gin.Context) {
 		return
 	}
 	log.Printf("%v\n", acctBank)
-	err = s.db.SaveAcctBank(acctBank)
 
+	file, err := c.FormFile("file")
+	if err == nil {
+		src, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, models.Message{
+				RetMessage: "error when opening file",
+			})
+			return
+		}
+		defer src.Close()
+
+		hash := md5.New()
+		if _, err := io.Copy(hash, src); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   "文件读取失败",
+				"details": err.Error(),
+			})
+			return
+		}
+		MD5 := hex.EncodeToString(hash.Sum(nil))
+		FileName := file.Filename
+		Suffix := filepath.Ext(file.Filename)
+		File := &models.File{
+			Name:   FileName,
+			MD5:    MD5,
+			Suffix: Suffix,
+		}
+		s.db.CreateFile(File)
+
+		c.SaveUploadedFile(file, "../files/"+MD5+Suffix) // 以main程序所在目录为基准
+
+		log.Printf(file.Filename + "\n")
+
+		acctBank.FileId = File.FileId
+	}
+
+	err = s.db.SaveAcctBank(acctBank)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save acctBank",
@@ -373,10 +428,11 @@ func (s *Server) SaveAcctHandler(c *gin.Context) {
 
 		log.Printf(file.Filename + "\n")
 
+		acct.FileId = File.FileId
 	}
 
 	log.Printf("%v", acct)
-	err = s.db.CreateAcct(acct)
+	err = s.db.SaveAcct(acct)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "error when insert accounting information",
