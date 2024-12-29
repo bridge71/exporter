@@ -3,11 +3,14 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside width="200px">
-        <el-menu default-active="1" class="el-menu-vertical-demo">
+        <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
           <el-submenu index="1">
             <template #title>会计实体信息</template>
-            <el-menu-item index="1-1" @click="showAcctDialog = false">会计实体信息</el-menu-item>
-            <el-menu-item index="1-2" @click="showBankDialog = false">会计实体银行账户信息</el-menu-item>
+
+
+            <el-menu-item index="1-1">会计实体信息</el-menu-item>
+            <el-menu-item index="1-2">会计实体银行账户信息</el-menu-item>
+
             <el-menu-item index="1-3">客商信息</el-menu-item>
             <!-- 其他菜单项 -->
           </el-submenu>
@@ -18,12 +21,12 @@
       <!-- 主体内容 -->
       <el-container>
         <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>会计实体信息</h2>
-          <el-button type="primary" @click="showAcctDialog = true">添加会计实体信息</el-button>
+          <h2>{{ headerTitle }}</h2>
+          <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
         </el-header>
         <el-main>
           <!-- 会计实体信息表格 -->
-          <el-table :data="acctData" style="width: 100%">
+          <el-table :data="paginatedAcctData" style="width: 100%" max-height="500" v-if="activeMenu === '1-1'">
             <el-table-column prop="AcctCode" label="会计实体编码"></el-table-column>
             <el-table-column prop="AcctAbbr" label="会计实体缩写"></el-table-column>
             <el-table-column prop="EtyAbbr" label="实体简称"></el-table-column>
@@ -38,13 +41,38 @@
             <el-table-column prop="Website" label="网站"></el-table-column>
             <el-table-column prop="RegDate" label="注册日期"></el-table-column>
             <el-table-column prop="Notes" label="备注"></el-table-column>
-            <el-table-column label="操作">
+
+            <el-table-column label="操作" fixed="right" width="150">
+              <template #default="scope">
+                <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
+                <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+              </template>
+            </el-table-column>
+
+          </el-table>
+
+          <!-- 会计实体银行账户信息表格 -->
+          <el-table :data="paginatedBankData" style="width: 100%" max-height="500" v-if="activeMenu === '1-2'">
+            <el-table-column prop="AccName" label="账户名称"></el-table-column>
+            <el-table-column prop="AccNum" label="账号"></el-table-column>
+            <el-table-column prop="Currency" label="币种"></el-table-column>
+            <el-table-column prop="BankName" label="开户行名称"></el-table-column>
+            <el-table-column prop="BankNum" label="开户行号"></el-table-column>
+            <el-table-column prop="SwiftCode" label="SWIFT CODE"></el-table-column>
+            <el-table-column prop="BankAddr" label="开户行地址"></el-table-column>
+            <el-table-column prop="Notes" label="备注"></el-table-column>
+
+            <el-table-column label="操作" fixed="right" width="150">
               <template #default="scope">
                 <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                 <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
               </template>
             </el-table-column>
           </el-table>
+
+          <el-pagination v-model:current-page="currentPage" :page-size="pageSize"
+            :total="activeMenu === '1-1' ? acctData.length : bankData.length" layout="prev, pager, next"
+            @current-change="handlePageChange" />
         </el-main>
       </el-container>
     </el-container>
@@ -267,7 +295,52 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+
+import { ref, onMounted, computed } from 'vue';
+import axios from 'axios'; // 如果使用 axios
+
+const handlePageChange = (page) => {
+  currentPage.value = page;
+};
+const currentPage = ref(1); // 当前页码
+const pageSize = 8; // 每页显示的行数
+// 计算当前页显示的会计实体信息数据
+const paginatedAcctData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  return acctData.value.slice(start, end);
+});
+
+// 计算当前页显示的会计实体银行账户信息数据
+const paginatedBankData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  return bankData.value.slice(start, end);
+});
+onMounted(() => {
+  fetchAcctData(); // 获取会计实体信息
+  fetchAcctBankData(); // 获取会计实体银行账户信息
+});
+// 定义接口请求函数
+const fetchAcctData = async () => {
+  try {
+    const response = await axios.get('/find/acct'); // 调用会计实体信息接口
+    acctData.value = response.data.Acct; // 假设返回的数据结构中有 Acct 字段
+  } catch (error) {
+    console.error('获取会计实体信息失败:', error);
+  }
+};
+
+const fetchAcctBankData = async () => {
+  try {
+    const response = await axios.get('/find/acctBank'); // 调用会计实体银行账户信息接口
+    bankData.value = response.data.AcctBank; // 假设返回的数据结构中有 AcctBank 字段
+  } catch (error) {
+    console.error('获取会计实体银行账户信息失败:', error);
+  }
+};
+// 当前选中的菜单项
+const activeMenu = ref('1-1');
 
 // 会计实体信息对话框显示状态
 const showAcctDialog = ref(false);
@@ -334,41 +407,32 @@ const submitBankForm = () => {
   showBankDialog.value = false;
 };
 
-// 表格数据（示例数据）
-const acctData = ref([
-  {
-    AcctCode: 'HKG0001',
-    AcctAbbr: 'LFHK',
-    EtyAbbr: 'Lonford',
-    AcctName: 'Lonford International',
-    AcctEngName: 'Lonford International',
-    AcctAddr: 'Hong Kong',
-    Nation: 'China',
-    TaxType: 'VAT',
-    TaxCode: '123456',
-    PhoneNum: '123-456-7890',
-    Email: 'info@lonford.com',
-    Website: 'www.lonford.com',
-    RegDate: '2023-01-01',
-    Notes: '示例数据',
-    BankAccounts: [] // 关联的银行账户信息
-  }
-]);
 
-// 银行账户数据（示例数据）
-const bankData = ref([
-  {
-    AccName: '账户1',
-    AccNum: '1234567890',
-    Currency: 'CNY',
-    BankName: '中国银行',
-    BankNum: '123456',
-    SwiftCode: 'BKCHCNBJ',
-    BankAddr: '北京市',
-    Notes: '示例数据',
-    AcctCode: 'HKG0001' // 关联的会计实体信息
+// 表格数据（初始值为空数组）
+const acctData = ref([]); // 会计实体信息
+const bankData = ref([]); // 会计实体银行账户信息
+// 根据当前选中的菜单项动态更改标题和按钮文本
+const headerTitle = computed(() => {
+  return activeMenu.value === '1-1' ? '会计实体信息' : '会计实体银行账户信息';
+});
+
+const addButtonText = computed(() => {
+  return activeMenu.value === '1-1' ? '添加会计实体信息' : '添加会计实体银行账户信息';
+});
+
+// 菜单项选择事件
+const handleMenuSelect = (index) => {
+  activeMenu.value = index;
+};
+
+// 添加按钮点击事件
+const handleAdd = () => {
+  if (activeMenu.value === '1-1') {
+    showAcctDialog.value = true;
+  } else if (activeMenu.value === '1-2') {
+    showBankDialog.value = true;
   }
-]);
+};
 
 // 操作按钮逻辑
 const handleView = (index, row) => {

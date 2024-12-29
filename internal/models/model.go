@@ -26,7 +26,7 @@ type Acct struct { // 会计实体
 	AcctBanks   []AcctBank `gorm:"foreignKey:AcctId" form:"AcctBanks[]"`
 	FileId      uint       `gorm:"column:fileId" form:"FileId"`
 	AcctId      uint       `gorm:"column:acctId;  primaryKey" form:"AcctId"`
-	IsUpload    bool       `gorm:"column:isUpload; not null" form:"IsUpload" binding:"required"`
+	// IsUpload    bool       `gorm:"column:isUpload; not null" form:"IsUpload" binding:"required"`
 }
 
 type AcctBank struct {
@@ -41,7 +41,7 @@ type AcctBank struct {
 	FileId     uint   `gorm:"column:fileId" form:"FileId"`
 	AcctId     uint   `gorm:"column:acctId" form:"AcctId"`
 	AcctBankId uint   `gorm:"column:acctBankId; primaryKey; " form:"AcctBankId"`
-	IsUpload   bool   `gorm:"column:isUpload; not null" form:"IsUpload" binding:"required"`
+	// IsUpload   bool   `gorm:"column:isUpload; not null" form:"IsUpload" binding:"required"`
 }
 
 type File struct {
