@@ -3,7 +3,6 @@
     <el-menu
       default-active="2"
       class="el-menu-vertical-demo"
-      style="width: 300px; min-height: 100vh; overflow-y: auto;"
       :router="true"
     >
       <el-menu-item index="/testHome/EN_IN">
@@ -84,7 +83,7 @@
         <span>付款单</span>
       </el-menu-item>
     </el-menu>
-    <div style="flex: 1;">
+    <div style="flex: 1; overflow: auto;">
       <el-main>
         <router-view />
       </el-main>
@@ -103,7 +102,7 @@ import {
 
 <style>
 .el-menu-vertical-demo {
-  width: 300px;
+  width: 300px; /* 固定菜单栏宽度 */
   min-height: 100vh;
   overflow-y: auto;
   border-right: 1px solid #ebeef5; /* 添加边框以便更明显 */
