@@ -69,6 +69,93 @@ type Service interface {
 
 	CreateFile(file *models.File) error
 	// FindFile(file *models.File, MD5 string)
+
+	// Save functions
+	SaveMercType(mercType *models.MercType) error
+	SaveSuprType(suprType *models.SuprType) error
+	SavePrdtType(prdtType *models.PrdtType) error
+	SaveFoodAddType(foodAddType *models.FoodAddType) error
+	SaveFeedAddType(feedAddType *models.FeedAddType) error
+	SaveUnitMeas(unitMeas *models.UnitMeas) error
+	SavePackType(packType *models.PackType) error
+	SaveConType(conType *models.ConType) error
+	SaveCurrency(currency *models.Currency) error
+	SaveTradeTerm(tradeTerm *models.TradeTerm) error
+	SaveNation(nation *models.Nation) error
+	SavePort(port *models.Port) error
+	SaveTaxType(taxType *models.TaxType) error
+	SaveBrandType(brandType *models.BrandType) error
+	SaveDegree(degree *models.Degree) error
+	SaveDept(dept *models.Dept) error
+	SavePost(post *models.Post) error
+	SaveQualStd(qualStd *models.QualStd) error
+	SaveInvLoc(invLoc *models.InvLoc) error
+	SaveDocReq(docReq *models.DocReq) error
+	SavePayMth(payMth *models.PayMth) error
+	SavePayLimit(payLimit *models.PayLimit) error
+	SaveFinaDocStatus(finaDocStatus *models.FinaDocStatus) error
+	SaveFinaDocType(finaDocType *models.FinaDocType) error
+	SaveExpType(expType *models.ExpType) error
+	SaveRates(rates *models.Rates) error
+	SaveBussOrderSta(bussOrderSta *models.BussOrderSta) error
+
+	// Find functions
+	FindMercType(mercTypes *[]models.MercType)
+	FindSuprType(suprTypes *[]models.SuprType)
+	FindPrdtType(prdtTypes *[]models.PrdtType)
+	FindFoodAddType(foodAddTypes *[]models.FoodAddType)
+	FindFeedAddType(feedAddTypes *[]models.FeedAddType)
+	FindUnitMeas(unitMeas *[]models.UnitMeas)
+	FindPackType(packTypes *[]models.PackType)
+	FindConType(conTypes *[]models.ConType)
+	FindCurrency(currencies *[]models.Currency)
+	FindTradeTerm(tradeTerms *[]models.TradeTerm)
+	FindNation(nations *[]models.Nation)
+	FindPort(ports *[]models.Port)
+	FindTaxType(taxTypes *[]models.TaxType)
+	FindBrandType(brandTypes *[]models.BrandType)
+	FindDegree(degrees *[]models.Degree)
+	FindDept(depts *[]models.Dept)
+	FindPost(posts *[]models.Post)
+	FindQualStd(qualStds *[]models.QualStd)
+	FindInvLoc(invLocs *[]models.InvLoc)
+	FindDocReq(docReqs *[]models.DocReq)
+	FindPayMth(payMths *[]models.PayMth)
+	FindPayLimit(payLimits *[]models.PayLimit)
+	FindFinaDocStatus(finaDocStatuses *[]models.FinaDocStatus)
+	FindFinaDocType(finaDocTypes *[]models.FinaDocType)
+	FindExpType(expTypes *[]models.ExpType)
+	FindRates(rates *[]models.Rates)
+	FindBussOrderSta(bussOrderStas *[]models.BussOrderSta)
+
+	// Delete functions
+	DeleteMercType(mercType *models.MercType) error
+	DeleteSuprType(suprType *models.SuprType) error
+	DeletePrdtType(prdtType *models.PrdtType) error
+	DeleteFoodAddType(foodAddType *models.FoodAddType) error
+	DeleteFeedAddType(feedAddType *models.FeedAddType) error
+	DeleteUnitMeas(unitMeas *models.UnitMeas) error
+	DeletePackType(packType *models.PackType) error
+	DeleteConType(conType *models.ConType) error
+	DeleteCurrency(currency *models.Currency) error
+	DeleteTradeTerm(tradeTerm *models.TradeTerm) error
+	DeleteNation(nation *models.Nation) error
+	DeletePort(port *models.Port) error
+	DeleteTaxType(taxType *models.TaxType) error
+	DeleteBrandType(brandType *models.BrandType) error
+	DeleteDegree(degree *models.Degree) error
+	DeleteDept(dept *models.Dept) error
+	DeletePost(post *models.Post) error
+	DeleteQualStd(qualStd *models.QualStd) error
+	DeleteInvLoc(invLoc *models.InvLoc) error
+	DeleteDocReq(docReq *models.DocReq) error
+	DeletePayMth(payMth *models.PayMth) error
+	DeletePayLimit(payLimit *models.PayLimit) error
+	DeleteFinaDocStatus(finaDocStatus *models.FinaDocStatus) error
+	DeleteFinaDocType(finaDocType *models.FinaDocType) error
+	DeleteExpType(expType *models.ExpType) error
+	DeleteRates(rates *models.Rates) error
+	DeleteBussOrderSta(bussOrderSta *models.BussOrderSta) error
 }
 
 type service struct {
@@ -115,7 +202,40 @@ func New() Service {
 	}), &gorm.Config{
 		Logger: newLogger,
 	})
-	gormDB.AutoMigrate(&models.User{}, &models.Acct{}, &models.AcctBank{}, &models.File{})
+	// AutoMigrate all models
+	gormDB.AutoMigrate(
+		&models.User{},
+		&models.Acct{},
+		&models.AcctBank{},
+		&models.File{},
+		&models.SuprType{},
+		&models.PrdtType{},
+		&models.FoodAddType{},
+		&models.FeedAddType{},
+		&models.UnitMeas{},
+		&models.PackType{},
+		&models.ConType{},
+		&models.Currency{},
+		&models.TradeTerm{},
+		&models.Nation{},
+		&models.Port{},
+		&models.TaxType{},
+		&models.BrandType{},
+		&models.Degree{},
+		&models.Dept{},
+		&models.Post{},
+		&models.QualStd{},
+		&models.InvLoc{},
+		&models.DocReq{},
+		&models.PayMth{},
+		&models.PayLimit{},
+		&models.FinaDocStatus{},
+		&models.FinaDocType{},
+		&models.ExpType{},
+		&models.Rates{},
+		&models.BussOrderSta{},
+		&models.MercType{},
+	)
 
 	dbInstance = &service{
 		db:     db,

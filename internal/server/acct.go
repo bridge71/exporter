@@ -47,7 +47,7 @@ func (s *Server) FindAcctHandler(c *gin.Context) {
 
 func (s *Server) FindAcctByAcctNameHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	acctName := c.PostForm("acctName")
+	acctName := c.PostForm("AcctName")
 	s.db.FindAcctByAcctName(accts, acctName)
 	c.JSON(http.StatusOK, models.Message{
 		Acct: *accts,
@@ -56,7 +56,7 @@ func (s *Server) FindAcctByAcctNameHandler(c *gin.Context) {
 
 func (s *Server) FindAcctBankByAccNameHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	accName := c.PostForm("accName")
+	accName := c.PostForm("AccName")
 	s.db.FindAcctBankByAccName(acctBanks, accName)
 	c.JSON(http.StatusOK, models.Message{
 		AcctBank: *acctBanks,
@@ -73,7 +73,7 @@ func (s *Server) FindAcctBankHandler(c *gin.Context) {
 // FindAcctBankByAccNumHandler 根据账户编号查找账户银行处理函数
 func (s *Server) FindAcctBankByAccNumHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	accNum := c.PostForm("accNum")
+	accNum := c.PostForm("AccNum")
 	s.db.FindAcctBankByAccNum(acctBanks, accNum)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -81,7 +81,7 @@ func (s *Server) FindAcctBankByAccNumHandler(c *gin.Context) {
 // FindAcctBankByCurrencyHandler 根据货币查找账户银行处理函数
 func (s *Server) FindAcctBankByCurrencyHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	currency := c.PostForm("currency")
+	currency := c.PostForm("Currency")
 	s.db.FindAcctBankByCurrency(acctBanks, currency)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -89,7 +89,7 @@ func (s *Server) FindAcctBankByCurrencyHandler(c *gin.Context) {
 // FindAcctBankByBankNameHandler 根据银行名称查找账户银行处理函数
 func (s *Server) FindAcctBankByBankNameHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	bankName := c.PostForm("bankName")
+	bankName := c.PostForm("BankName")
 	s.db.FindAcctBankByBankName(acctBanks, bankName)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -97,7 +97,7 @@ func (s *Server) FindAcctBankByBankNameHandler(c *gin.Context) {
 // FindAcctBankByIdHandler 根据ID查找账户银行处理函数
 func (s *Server) FindAcctBankByIdHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	acctId := c.PostForm("acctId")
+	acctId := c.PostForm("AcctId")
 	idStr, _ := strconv.Atoi(acctId)
 	id := uint(idStr)
 	s.db.FindAcctBankById(acctBanks, id)
@@ -115,7 +115,7 @@ func (s *Server) FindAcctByEtyAbbrHandler(c *gin.Context) {
 // FindAcctByAcctAddrHandler 根据账户地址查找账户处理函数
 func (s *Server) FindAcctByAcctAddrHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	acctAddr := c.PostForm("acctAddr")
+	acctAddr := c.PostForm("AcctAddr")
 	s.db.FindAcctByAcctAddr(accts, acctAddr)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -123,7 +123,7 @@ func (s *Server) FindAcctByAcctAddrHandler(c *gin.Context) {
 // FzzFindAcctByAcctAddrHandler 根据账户地址模糊查找账户处理函数
 func (s *Server) FzzFindAcctByAcctAddrHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	acctAddr := c.PostForm("acctAddr")
+	acctAddr := c.PostForm("AcctAddr")
 	s.db.FzzFindAcctByAcctAddr(accts, acctAddr)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -131,7 +131,7 @@ func (s *Server) FzzFindAcctByAcctAddrHandler(c *gin.Context) {
 // FindAcctByNationHandler 根据国家查找账户处理函数
 func (s *Server) FindAcctByNationHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	nation := c.PostForm("nation")
+	nation := c.PostForm("Nation")
 	s.db.FindAcctByNation(accts, nation)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -139,7 +139,7 @@ func (s *Server) FindAcctByNationHandler(c *gin.Context) {
 // FindAcctByTaxTypeHandler 根据税务类型查找账户处理函数
 func (s *Server) FindAcctByTaxTypeHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	taxType := c.PostForm("taxType")
+	taxType := c.PostForm("TaxType")
 	s.db.FindAcctByTaxType(accts, taxType)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -147,7 +147,7 @@ func (s *Server) FindAcctByTaxTypeHandler(c *gin.Context) {
 // FindAcctByTaxCodeHandler 根据税务代码查找账户处理函数
 func (s *Server) FindAcctByTaxCodeHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	taxCode := c.PostForm("taxCode")
+	taxCode := c.PostForm("TaxCode")
 	s.db.FindAcctByTaxCode(accts, taxCode)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -155,7 +155,7 @@ func (s *Server) FindAcctByTaxCodeHandler(c *gin.Context) {
 // FindAcctByPhoneNumHandler 根据电话号码查找账户处理函数
 func (s *Server) FindAcctByPhoneNumHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	phoneNum := c.PostForm("phoneNum")
+	phoneNum := c.PostForm("PhoneNum")
 	s.db.FindAcctByPhoneNum(accts, phoneNum)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -163,7 +163,7 @@ func (s *Server) FindAcctByPhoneNumHandler(c *gin.Context) {
 // FzzFindAcctByPhoneNumHandler 根据电话号码模糊查找账户处理函数
 func (s *Server) FzzFindAcctByPhoneNumHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	phoneNum := c.PostForm("phoneNum")
+	phoneNum := c.PostForm("PhoneNum")
 	s.db.FzzFindAcctByPhoneNum(accts, phoneNum)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -171,7 +171,7 @@ func (s *Server) FzzFindAcctByPhoneNumHandler(c *gin.Context) {
 // FindAcctByEmailHandler 根据电子邮件查找账户处理函数
 func (s *Server) FindAcctByEmailHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	email := c.PostForm("email")
+	email := c.PostForm("Email")
 	s.db.FindAcctByEmail(accts, email)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -179,7 +179,7 @@ func (s *Server) FindAcctByEmailHandler(c *gin.Context) {
 // FzzFindAcctByEmailHandler 根据电子邮件模糊查找账户处理函数
 func (s *Server) FzzFindAcctByEmailHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	email := c.PostForm("email")
+	email := c.PostForm("Email")
 	s.db.FzzFindAcctByEmail(accts, email)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -187,7 +187,7 @@ func (s *Server) FzzFindAcctByEmailHandler(c *gin.Context) {
 // FindAcctByWebsiteHandler 根据网站查找账户处理函数
 func (s *Server) FindAcctByWebsiteHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	website := c.PostForm("website")
+	website := c.PostForm("Website")
 	s.db.FindAcctByWebsite(accts, website)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -195,7 +195,7 @@ func (s *Server) FindAcctByWebsiteHandler(c *gin.Context) {
 // FzzFindAcctByWebsiteHandler 根据网站模糊查找账户处理函数
 func (s *Server) FzzFindAcctByWebsiteHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	website := c.PostForm("website")
+	website := c.PostForm("Website")
 	s.db.FzzFindAcctByWebsite(accts, website)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -203,7 +203,7 @@ func (s *Server) FzzFindAcctByWebsiteHandler(c *gin.Context) {
 // FindAcctByRegDateHandler 根据注册日期查找账户处理函数
 func (s *Server) FindAcctByRegDateHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	regDate := c.PostForm("regDate")
+	regDate := c.PostForm("RegDate")
 	s.db.FindAcctByRegDate(accts, regDate)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -211,7 +211,7 @@ func (s *Server) FindAcctByRegDateHandler(c *gin.Context) {
 // FzzFindAcctByRegDateHandler 根据注册日期模糊查找账户处理函数
 func (s *Server) FzzFindAcctByRegDateHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	regDate := c.PostForm("regDate")
+	regDate := c.PostForm("RegDate")
 	s.db.FzzFindAcctByRegDate(accts, regDate)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -219,7 +219,7 @@ func (s *Server) FzzFindAcctByRegDateHandler(c *gin.Context) {
 // FindAcctByNotesHandler 根据备注查找账户处理函数
 func (s *Server) FindAcctByNotesHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	notes := c.PostForm("notes")
+	notes := c.PostForm("Notes")
 	s.db.FindAcctByNotes(accts, notes)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -227,7 +227,7 @@ func (s *Server) FindAcctByNotesHandler(c *gin.Context) {
 // FzzFindAcctByNotesHandler 根据备注模糊查找账户处理函数
 func (s *Server) FzzFindAcctByNotesHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	notes := c.PostForm("notes")
+	notes := c.PostForm("Notes")
 	s.db.FzzFindAcctByNotes(accts, notes)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -235,7 +235,7 @@ func (s *Server) FzzFindAcctByNotesHandler(c *gin.Context) {
 // FzzFindAcctBankByBankNameHandler 根据银行名称模糊查找账户银行处理函数
 func (s *Server) FzzFindAcctBankByBankNameHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	bankName := c.PostForm("bankName")
+	bankName := c.PostForm("BankName")
 	s.db.FzzFindAcctBankByBankName(acctBanks, bankName)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -243,7 +243,7 @@ func (s *Server) FzzFindAcctBankByBankNameHandler(c *gin.Context) {
 // FindAcctBankBySwiftCodeHandler 根据SWIFT代码查找账户银行处理函数
 func (s *Server) FindAcctBankBySwiftCodeHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	swiftCode := c.PostForm("swiftCode")
+	swiftCode := c.PostForm("SwiftCode")
 	s.db.FindAcctBankBySwiftCode(acctBanks, swiftCode)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -251,7 +251,7 @@ func (s *Server) FindAcctBankBySwiftCodeHandler(c *gin.Context) {
 // FindAcctBankByBankAddrHandler 根据银行地址查找账户银行处理函数
 func (s *Server) FindAcctBankByBankAddrHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	bankAddr := c.PostForm("bankAddr")
+	bankAddr := c.PostForm("BankAddr")
 	s.db.FindAcctBankByBankAddr(acctBanks, bankAddr)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -259,7 +259,7 @@ func (s *Server) FindAcctBankByBankAddrHandler(c *gin.Context) {
 // FzzFindAcctBankByBankAddrHandler 根据银行地址模糊查找账户银行处理函数
 func (s *Server) FzzFindAcctBankByBankAddrHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	bankAddr := c.PostForm("bankAddr")
+	bankAddr := c.PostForm("BankAddr")
 	s.db.FzzFindAcctBankByBankAddr(acctBanks, bankAddr)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -267,7 +267,7 @@ func (s *Server) FzzFindAcctBankByBankAddrHandler(c *gin.Context) {
 // FzzFindAcctBankByNotesHandler 根据备注模糊查找账户银行处理函数
 func (s *Server) FzzFindAcctBankByNotesHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	notes := c.PostForm("notes")
+	notes := c.PostForm("Notes")
 	s.db.FzzFindAcctBankByNotes(acctBanks, notes)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -275,7 +275,7 @@ func (s *Server) FzzFindAcctBankByNotesHandler(c *gin.Context) {
 // FindAcctBankByNotesHandler 根据备注查找账户银行处理函数
 func (s *Server) FindAcctBankByNotesHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	notes := c.PostForm("notes")
+	notes := c.PostForm("Notes")
 	s.db.FindAcctBankByNotes(acctBanks, notes)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
@@ -283,7 +283,7 @@ func (s *Server) FindAcctBankByNotesHandler(c *gin.Context) {
 // FindAcctByAcctCodeHandler 根据账户代码查找账户处理函数
 func (s *Server) FindAcctByAcctCodeHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	acctCode := c.PostForm("acctCode")
+	acctCode := c.PostForm("AcctCode")
 	s.db.FindAcctByAcctCode(accts, acctCode)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
@@ -291,7 +291,7 @@ func (s *Server) FindAcctByAcctCodeHandler(c *gin.Context) {
 // FindAcctByAcctAbbrHandler 根据账户缩写查找账户处理函数
 func (s *Server) FindAcctByAcctAbbrHandler(c *gin.Context) {
 	accts := &[]models.Acct{}
-	acctAbbr := c.PostForm("acctAbbr")
+	acctAbbr := c.PostForm("AcctAbbr")
 	s.db.FindAcctByAcctAbbr(accts, acctAbbr)
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
