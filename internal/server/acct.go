@@ -341,6 +341,7 @@ func (s *Server) SaveAcctBankHandler(c *gin.Context) {
 		log.Printf(file.Filename + "\n")
 
 		acctBank.FileId = File.FileId
+		acctBank.FileName = FileName
 	}
 
 	err = s.db.SaveAcctBank(acctBank)
@@ -429,6 +430,9 @@ func (s *Server) SaveAcctHandler(c *gin.Context) {
 		log.Printf(file.Filename + "\n")
 
 		acct.FileId = File.FileId
+		acct.FileName = FileName
+		log.Printf("name")
+		log.Printf(acct.FileName)
 	}
 
 	log.Printf("%v", acct)

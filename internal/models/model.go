@@ -23,6 +23,7 @@ type Acct struct { // 会计实体
 	Website     string     `gorm:"column:website;" form:"Website"`
 	RegDate     string     `gorm:"column:regDate;" form:"RegDate"`
 	Notes       string     `gorm:"column:notes;" form:"Notes"`
+	FileName    string     `gorm:"column:fileName" form:"FileName"`
 	AcctBanks   []AcctBank `gorm:"foreignKey:AcctId" form:"AcctBanks[]"`
 	FileId      uint       `gorm:"column:fileId" form:"FileId"`
 	AcctId      uint       `gorm:"column:acctId;  primaryKey" form:"AcctId"`
@@ -39,6 +40,7 @@ type AcctBank struct {
 	BankAddr   string `gorm:"column:bankAddr" form:"BankAddr"`
 	Notes      string `gorm:"column:notes" form:"Notes"`
 	AcctName   string `gorm:"column:acctName" form:"AcctName"`
+	FileName   string `gorm:"column:fileName" form:"FileName"`
 	FileId     uint   `gorm:"column:fileId" form:"FileId"`
 	AcctId     uint   `gorm:"column:acctId" form:"AcctId"`
 	AcctBankId uint   `gorm:"column:acctBankId; primaryKey; " form:"AcctBankId"`

@@ -24,13 +24,13 @@
         <el-main>
           <!-- 会计实体信息表格 -->
           <el-table :data="paginatedAcctData" style="width: 100%" max-height="450" v-if="activeMenu === '1-1'">
-            <el-table-column prop="AcctCode" label="会计实体编码"></el-table-column>
-            <el-table-column prop="AcctAbbr" label="会计实体缩写"></el-table-column>
-            <el-table-column prop="EtyAbbr" label="实体简称"></el-table-column>
-            <el-table-column prop="AcctName" label="会计实体名称"></el-table-column>
+            <el-table-column prop="AcctCode" label="会计实体编码" width="160%"></el-table-column>
+            <el-table-column prop="AcctAbbr" label="会计实体缩写" width="160%"></el-table-column>
+            <el-table-column prop="EtyAbbr" label="实体简称" width="160%"></el-table-column>
+            <el-table-column prop="AcctName" label="会计实体名称" width="220%"></el-table-column>
 
 
-            <el-table-column label="绑定的银行账户信息">
+            <el-table-column label="绑定的银行账户信息" width="220%">
               <!-- <el-input v-model="acctForm.BankAccounts" :readonly="true"></el-input> -->
               <template #default="scope">
                 <span v-if="scope.row.AcctBanks && scope.row.AcctBanks.length > 0">
@@ -40,17 +40,18 @@
               </template>
             </el-table-column>
 
-            <el-table-column prop="AcctEngName" label="会计实体英文名称"></el-table-column>
-            <el-table-column prop="AcctAddr" label="会计实体地址"></el-table-column>
+            <el-table-column prop="AcctEngName" label="会计实体英文名称" width="220%"></el-table-column>
+            <el-table-column prop="AcctAddr" label="会计实体地址" width="220%"></el-table-column>
             <el-table-column prop="Nation" label="国家"></el-table-column>
-            <el-table-column prop="TaxType" label="税号类型"></el-table-column>
-            <el-table-column prop="TaxCode" label="税号"></el-table-column>
-            <el-table-column prop="PhoneNum" label="联系电话"></el-table-column>
-            <el-table-column prop="Email" label="邮箱"></el-table-column>
-            <el-table-column prop="Website" label="网站"></el-table-column>
-            <el-table-column prop="RegDate" label="注册日期"></el-table-column>
-            <el-table-column prop="Notes" label="备注"></el-table-column>
+            <el-table-column prop="TaxType" label="税号类型" width="220%"></el-table-column>
+            <el-table-column prop="TaxCode" label="税号" width="220%"></el-table-column>
+            <el-table-column prop="PhoneNum" label="联系电话" width="220%"></el-table-column>
+            <el-table-column prop="Email" label="邮箱" width="220%"></el-table-column>
+            <el-table-column prop="Website" label="网站" width="220%"></el-table-column>
+            <el-table-column prop="RegDate" label="注册日期" width="450%"></el-table-column>
+            <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
 
+            <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
             <el-table-column label="操作" fixed="right" width="150">
               <template #default="scope">
                 <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
@@ -62,22 +63,23 @@
 
           <!-- 会计实体银行账户信息表格 -->
           <el-table :data="paginatedBankData" style="width: 100%" max-height="450" v-if="activeMenu === '1-2'">
-            <el-table-column prop="AccName" label="账户名称"></el-table-column>
-            <el-table-column prop="AccNum" label="账号"></el-table-column>
+            <el-table-column prop="AccName" label="账户名称" width="220%"></el-table-column>
+            <el-table-column prop="AccNum" label="账号" width="220%"></el-table-column>
 
-            <el-table-column label="对应的会计实体信息">
+            <el-table-column label="对应的会计实体信息" width="320%">
               <template #default="scope">
                 <span v-if="scope.row.AcctName">{{ scope.row.AcctName }}</span>
                 <span v-else>无</span>
               </template>
             </el-table-column>
-            <el-table-column prop="Currency" label="币种"></el-table-column>
-            <el-table-column prop="BankName" label="开户行名称"></el-table-column>
-            <el-table-column prop="BankNum" label="开户行号"></el-table-column>
-            <el-table-column prop="SwiftCode" label="SWIFT CODE"></el-table-column>
-            <el-table-column prop="BankAddr" label="开户行地址"></el-table-column>
-            <el-table-column prop="Notes" label="备注"></el-table-column>
+            <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
+            <el-table-column prop="BankName" label="开户行名称" width="220%"></el-table-column>
+            <el-table-column prop="BankNum" label="开户行号" width="320%"></el-table-column>
+            <el-table-column prop="SwiftCode" label="SWIFT CODE" width="220%"></el-table-column>
+            <el-table-column prop="BankAddr" label="开户行地址" width="280%"></el-table-column>
+            <el-table-column prop="Notes" label="备注" width="320%"></el-table-column>
 
+            <el-table-column prop="FileName" label="文件名" width="320%"></el-table-column>
             <el-table-column label="操作" fixed="right" width="150">
               <template #default="scope">
                 <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
@@ -199,23 +201,15 @@
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
-              <el-button v-else type="success" @click="downloadFile(acctForm.FileId)">下载文件</el-button>
+              <el-button v-else type="success"
+                @click="downloadFile(acctForm.FileId, acctForm.FileName)">下载文件</el-button>
+            </el-form-item>
+
+            <el-form-item label="文件名" prop="FileName">
+              <el-input v-model="acctForm.FileName" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-
-        <!-- <el-row :gutter="20"> -->
-        <!--   <el-col :span="24"> -->
-        <!---->
-        <!--     <el-form-item label="上传文件"> -->
-        <!--       <el-upload ref="uploadRef" action="" :limit="1" :on-change="handleFileChange" :auto-upload="false" -->
-        <!--         :show-file-list="true"> -->
-        <!--         <el-button type="primary">选择文件</el-button> -->
-        <!--       </el-upload> -->
-        <!---->
-        <!--     </el-form-item> -->
-        <!--   </el-col> -->
-        <!-- </el-row> -->
 
         <!-- 会计实体银行账户信息选择 -->
         <el-row :gutter="20">
@@ -296,16 +290,23 @@
           </el-col>
         </el-row>
 
+        <!-- 上传文件或下载文件 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="上传文件">
-              <el-upload ref="bankUploadRef" action="" :limit="1" :on-change="handleBankFileChange" :auto-upload="false"
-                :show-file-list="true">
+            <el-form-item label="文件">
+              <el-upload v-if="!bankForm.FileId" ref="bankUploadRef" action="" :limit="1"
+                :on-change="handleBankFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
+              <el-button v-else type="success"
+                @click="downloadFile(bankForm.FileId, bankForm.FileName)">下载文件</el-button>
+            </el-form-item>
+            <el-form-item label="文件名" prop="FileName">
+              <el-input v-model="bankForm.FileName" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+
 
         <!-- 会计实体信息选择 -->
         <el-row :gutter="20">
@@ -430,6 +431,23 @@
           </el-col>
         </el-row>
 
+        <!-- 上传文件或下载文件 -->
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="文件">
+              <el-upload v-if="!acctForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+                :auto-upload="false" :show-file-list="true">
+                <el-button type="primary">选择文件</el-button>
+              </el-upload>
+              <el-button v-else type="success"
+                @click="downloadFile(acctForm.FileId, acctForm.FileName)">下载文件</el-button>
+            </el-form-item>
+
+            <el-form-item label="文件名" prop="FileName">
+              <el-input v-model="acctForm.FileName" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <!-- 会计实体银行账户信息选择 -->
         <el-row :gutter="20">
@@ -509,6 +527,22 @@
           </el-col>
         </el-row>
 
+        <!-- 上传文件或下载文件 -->
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="文件">
+              <el-upload v-if="!bankForm.FileId" ref="bankUploadRef" action="" :limit="1"
+                :on-change="handleBankFileChange" :auto-upload="false" :show-file-list="true">
+                <el-button type="primary">选择文件</el-button>
+              </el-upload>
+              <el-button v-else type="success"
+                @click="downloadFile(bankForm.FileId, bankForm.FileName)">下载文件</el-button>
+            </el-form-item>
+            <el-form-item label="文件名" prop="FileName">
+              <el-input v-model="bankForm.FileName" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <!-- 会计实体信息选择 -->
         <el-row :gutter="20">
@@ -543,7 +577,7 @@ import { ref, onMounted, computed } from 'vue';
 
 import { ElMessage } from 'element-plus'; // 引入 ElMessage
 import axios from 'axios'; // 引入 axios
-const downloadFile = async (fileId) => {
+const downloadFile = async (fileId, fileName) => {
   try {
     const response = await axios.post(
       '/file',
@@ -557,7 +591,8 @@ const downloadFile = async (fileId) => {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `file_${fileId}`); // 设置下载文件名
+    // link.setAttribute('download', `file_${fileId}`); // 设置下载文件名
+    link.setAttribute('download', `${fileName}` || `file_${fileId}`); // 使用 fileName 作为文件名，如果不存在则使用默认文件名
     document.body.appendChild(link);
     link.click(); // 触发下载
     document.body.removeChild(link); // 移除链接
@@ -596,12 +631,18 @@ const handleView = (index, row) => {
     // 检查是否已上传文件
     if (row.FileId) {
       acctForm.value.FileId = row.FileId; // 保存 FileId
+      acctForm.value.FileName = row.FileName; // 保存 FileId
     }
   } else if (activeMenu.value === '1-2') {
     // 填充会计实体银行账户信息表单
     bankForm.value = { ...row }; // 将当前行的数据赋值给 bankForm
     selectedAcct.value = { AcctId: row.AcctId, AcctName: row.AcctName }; // 填充关联的会计实体信息
     showshowBankDialog.value = true; // 打开会计实体银行账户信息对话框
+    // 检查是否已上传文件
+    if (row.FileId) {
+      bankForm.value.FileId = row.FileId; // 保存 FileId
+      bankForm.value.FileName = row.FileName; // 保存 FileId
+    }
   }
 };
 // 重置会计实体信息表单
@@ -807,6 +848,7 @@ const acctForm = ref({
   Notes: '',
   License: '',
   AcctId: '',
+  FileName: '', // 添加 FileName 字段
   BankAccounts: [] // 关联的银行账户信息
 });
 
@@ -822,6 +864,8 @@ const bankForm = ref({
   Notes: '',
   File: '',
   AcctId: '',
+  FileId: '', // 添加 FileName 字段
+  FileName: '', // 添加 FileName 字段
   AcctName: ''
 });
 
