@@ -3,32 +3,35 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside width="200px">
-        <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
-          <el-submenu index="1">
-            <template #title>会计实体信息</template>
-            <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
-            <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
-            <el-menu-item index="1-3">客商信息</el-menu-item>
-            <el-menu-item index="1-4">联系人信息</el-menu-item>
-            <el-menu-item index="1-5">银行账户信息</el-menu-item>
-            <el-menu-item index="1-6">库存地点信息</el-menu-item>
-            <el-menu-item index="1-7">付款方式信息</el-menu-item>
-            <el-menu-item index="1-8">品类信息</el-menu-item>
-            <el-menu-item index="1-9">品牌信息</el-menu-item>
-            <el-menu-item index="1-10">包装规格信息</el-menu-item>
-            <el-menu-item index="1-11">员工信息</el-menu-item>
-            <el-menu-item index="1-12">产品明细</el-menu-item>
-            <el-menu-item index="1-13">装货明细</el-menu-item>
-            <el-menu-item index="1-14">费用明细</el-menu-item>
-            <el-menu-item index="1-15">销售订单</el-menu-item>
-            <el-menu-item index="1-16">采购收单</el-menu-item>
-            <el-menu-item index="1-17">应付账款单</el-menu-item>
-            <el-menu-item index="1-18">收款单</el-menu-item>
-            <el-menu-item index="1-19">付款单</el-menu-item>
-            <!-- 其他菜单项 -->
-          </el-submenu>
-          <!-- 其他菜单 -->
-        </el-menu>
+        <div style="height: 100vh; overflow-y: auto;">
+          <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
+            <!-- 菜单项内容保持不变 -->
+            <el-submenu index="1">
+              <template #title>会计实体信息</template>
+              <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
+              <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
+              <el-menu-item index="1-3" @click="pushClient">客商信息</el-menu-item>
+              <el-menu-item index="1-4">联系人信息</el-menu-item>
+              <el-menu-item index="1-5">银行账户信息</el-menu-item>
+              <el-menu-item index="1-6">库存地点信息</el-menu-item>
+              <el-menu-item index="1-7">付款方式信息</el-menu-item>
+              <el-menu-item index="1-8">品类信息</el-menu-item>
+              <el-menu-item index="1-9">品牌信息</el-menu-item>
+              <el-menu-item index="1-10">包装规格信息</el-menu-item>
+              <el-menu-item index="1-11">员工信息</el-menu-item>
+              <el-menu-item index="1-12">产品明细</el-menu-item>
+              <el-menu-item index="1-13">装货明细</el-menu-item>
+              <el-menu-item index="1-14">费用明细</el-menu-item>
+              <el-menu-item index="1-15">销售订单</el-menu-item>
+              <el-menu-item index="1-16">采购收单</el-menu-item>
+              <el-menu-item index="1-17">应付账款单</el-menu-item>
+              <el-menu-item index="1-18">收款单</el-menu-item>
+              <el-menu-item index="1-19">付款单</el-menu-item>
+              <!-- 其他菜单项 -->
+            </el-submenu>
+            <!-- 其他菜单 -->
+          </el-menu>
+        </div>
       </el-aside>
 
       <!-- 主体内容 -->
@@ -58,10 +61,13 @@
             <el-table-column prop="Notes" label="备注" width="320%"></el-table-column>
 
             <el-table-column prop="FileName" label="文件名" width="320%"></el-table-column>
-            <el-table-column label="操作" fixed="right" width="150">
+            <el-table-column label="操作" fixed="right" width="200">
               <template #default="scope">
-                <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
-                <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+                <el-row type="flex" justify="space-between">
+                  <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
+                  <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.AcctId)" type="text" size="small">删除</el-button>
+                </el-row>
               </template>
             </el-table-column>
           </el-table>
@@ -271,8 +277,7 @@
 <script setup>
 
 import { ref, onMounted, computed } from 'vue';
-
-import { ElMessage } from 'element-plus'; // 引入 ElMessage
+import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 
 import { useRouter } from 'vue-router';
@@ -286,6 +291,10 @@ const pushAcct = () => {
 };
 const pushAcctBank = () => {
   router.push('/acctBank');
+};
+
+const pushClient = () => {
+  router.push('/clinet');
 };
 const downloadFile = async (fileId, fileName) => {
   try {
@@ -312,6 +321,33 @@ const downloadFile = async (fileId, fileName) => {
     ElMessage.error('文件下载失败，请稍后重试');
   }
 };
+
+
+const handleDelete = (index, AcctBankId) => {
+  ElMessageBox.confirm('确定要删除该银行账户信息吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    axios.post('/delete/acctBank', {
+      "AcctBankId": AcctBankId,
+    })
+      .then(response => {
+        if (response.status === 200) {
+          ElMessage.success('删除成功');
+          fetchAcctBankData(); // 重新获取银行账户信息数据
+        } else {
+          ElMessage.error(response.data.RetMessage || '删除失败');
+        }
+      })
+      .catch(error => {
+        ElMessage.error(error.response.data.RetMessage);
+      });
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
+};
+
 // 文件数据（会计实体银行账户信息）
 const bankFile = ref(null);
 

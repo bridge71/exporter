@@ -10,7 +10,7 @@
               <template #title>会计实体信息</template>
               <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
               <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
-              <el-menu-item index="1-3">客商信息</el-menu-item>
+              <el-menu-item index="1-3" @click="pushClient">客商信息</el-menu-item>
               <el-menu-item index="1-4">联系人信息</el-menu-item>
               <el-menu-item index="1-5">银行账户信息</el-menu-item>
               <el-menu-item index="1-6">库存地点信息</el-menu-item>
@@ -390,6 +390,10 @@ const pushAcct = () => {
 };
 const pushAcctBank = () => {
   router.push('/acctBank');
+};
+
+const pushClient = () => {
+  router.push('/clinet');
 };
 const downloadFile = async (fileId, fileName) => {
   try {
