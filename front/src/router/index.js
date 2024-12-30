@@ -5,6 +5,7 @@ import Login from '@/views/Login.vue';
 import Home from '@/views/TestHome.vue';
 import Acct from '@/views/Acct.vue';
 import AcctBank from '@/views/AcctBank.vue';
+import TestHome from '@/views/TestHome.vue';
 
 // 创建路由实例
 const router = createRouter({
@@ -33,7 +34,7 @@ const router = createRouter({
       path: '/login',  // 显示登录页面
       name: 'Login',
       component: Login,
-    },
+    }
   ]
 });
 
