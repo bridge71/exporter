@@ -1,13 +1,10 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 // 导入views中的页面组件
-import Login from '../views/Login.vue';
-import Home from '../views/Home.vue';
-import Test from '../views/Test.vue';
-import TestHome from '@/views/TestHome.vue';
-import Client from '@/views/Client.vue';
-import Entity_Information from '@/views/Entity_Information.vue';
-import Bank_Information from '@/views/Bank_Information.vue';
+import Login from '@/views/Login.vue';
+import Home from '@/views/TestHome.vue';
+import Acct from '@/views/Acct.vue';
+import AcctBank from '@/views/AcctBank.vue';
 
 // 创建路由实例
 const router = createRouter({
@@ -15,43 +12,28 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: Home,
-     
+      name: 'acct',
+      component: Acct,
+
     },
     {
-      path: '/test',
-      name: 'Test',
-      component: Test,
+      path: '/acct',
+      name: 'acct',
+      component: Acct,
+
+    },
+
+    {
+      path: '/acctBank',
+      name: 'acctBank',
+      component: AcctBank,
+
     },
     {
       path: '/login',  // 显示登录页面
       name: 'Login',
       component: Login,
     },
-    {
-      path: '/testHome',
-      name: 'TestHome',
-      component: TestHome,
-      children: [
-        {
-          path: '/testHome/CL',
-          name: 'Client',
-          component: Client,
-        },
-        {
-          path: '/testHome/EN_IN',
-          name: 'EntityInformation',
-          component: Entity_Information,
-        },
-        {
-          path: '/testHome/Bank_IN',
-          name: 'BankInformation',
-          component: Bank_Information,
-        }
-      ]
-    }
-    // 你可以根据需求在这里添加更多的路由
   ]
 });
 
