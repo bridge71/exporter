@@ -464,8 +464,8 @@ const selectedAcct = ref({ AcctId: '', AcctName: '' }); // 默认值为空对象
 // 会计实体信息表单提交逻辑
 const submitAcctForm = async () => {
   try {
-    // acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
 
+    // acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
     // const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
     const formData = new FormData(); // 创建 FormData 对象
 

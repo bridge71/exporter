@@ -31,7 +31,9 @@ type Service interface {
 	FindFile(file *models.File)
 	ModifyUserPass(user *models.User, passwordHash string)
 	SaveAcct(acct *models.Acct) error
+	DeleteAcct(acct *models.Acct) error
 	SaveAcctBank(acctBank *models.AcctBank) error
+	DeleteAcctBank(acctBank *models.AcctBank) error
 	FindAcct(accts *[]models.Acct)
 	FindAcctBank(acctBanks *[]models.AcctBank)
 	FindAcctBankById(acctBanks *[]models.AcctBank, acctId uint)

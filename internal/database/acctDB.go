@@ -2,6 +2,14 @@ package database
 
 import "exporter/internal/models"
 
+func (s *service) DeleteAcct(acct *models.Acct) error {
+	return s.gormDB.Delete(acct).Error
+}
+
+func (s *service) DeleteAcctBank(acctBank *models.AcctBank) error {
+	return s.gormDB.Delete(acctBank).Error
+}
+
 func (s *service) SaveAcct(acct *models.Acct) error {
 	return s.gormDB.Save(acct).Error
 }

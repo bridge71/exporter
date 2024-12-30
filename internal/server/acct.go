@@ -296,6 +296,52 @@ func (s *Server) FindAcctByAcctAbbrHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, models.Message{Acct: *accts})
 }
 
+func (s *Server) DeleteAcctBankHandler(c *gin.Context) {
+	acctBank := &models.AcctBank{}
+	err := c.ShouldBind(acctBank)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "error in bind of acctBank",
+		})
+		return
+	}
+	log.Printf("%v\n", acctBank)
+
+	err = s.db.DeleteAcctBank(acctBank)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "failed to delete acctBank",
+		})
+	} else {
+		c.JSON(http.StatusOK, models.Message{
+			RetMessage: "delete acctBank successfully",
+		})
+	}
+}
+
+func (s *Server) DeleteAcctHandler(c *gin.Context) {
+	acct := &models.Acct{}
+	err := c.ShouldBind(acct)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "error in bind of acctBank",
+		})
+		return
+	}
+	log.Printf("%v\n", acct)
+
+	err = s.db.DeleteAcct(acct)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "failed to delete acct",
+		})
+	} else {
+		c.JSON(http.StatusOK, models.Message{
+			RetMessage: "delete acct successfully",
+		})
+	}
+}
+
 func (s *Server) SaveAcctBankHandler(c *gin.Context) {
 	acctBank := &models.AcctBank{}
 	err := c.ShouldBind(acctBank)
