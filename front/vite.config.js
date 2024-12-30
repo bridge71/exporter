@@ -28,6 +28,11 @@ export default defineConfig({
         secure: false
       },
 
+      '/delete': {
+        target: 'http://10.111.3.44:6767',
+        changeOrigin: true,
+        secure: false
+      },
       '/file': {
         target: 'http://10.111.3.44:6767',
         changeOrigin: true,

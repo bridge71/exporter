@@ -3,36 +3,36 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside width="200px">
-  <div style="height: 100vh; overflow-y: auto;">
-    <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
-      <!-- 菜单项内容保持不变 -->
-      <el-submenu index="1">
-        <template #title>会计实体信息</template>
-        <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
-        <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
-        <el-menu-item index="1-3">客商信息</el-menu-item>
-        <el-menu-item index="1-4">联系人信息</el-menu-item>
-        <el-menu-item index="1-5">银行账户信息</el-menu-item>
-        <el-menu-item index="1-6">库存地点信息</el-menu-item>
-        <el-menu-item index="1-7">付款方式信息</el-menu-item>
-        <el-menu-item index="1-8">品类信息</el-menu-item>
-        <el-menu-item index="1-9">品牌信息</el-menu-item>
-        <el-menu-item index="1-10">包装规格信息</el-menu-item>
-        <el-menu-item index="1-11">员工信息</el-menu-item>
-        <el-menu-item index="1-12">产品明细</el-menu-item>
-        <el-menu-item index="1-13">装货明细</el-menu-item>
-        <el-menu-item index="1-14">费用明细</el-menu-item>
-        <el-menu-item index="1-15">销售订单</el-menu-item>
-        <el-menu-item index="1-16">采购收单</el-menu-item>
-        <el-menu-item index="1-17">应付账款单</el-menu-item>
-        <el-menu-item index="1-18">收款单</el-menu-item>
-        <el-menu-item index="1-19">付款单</el-menu-item>
-        <!-- 其他菜单项 -->
-      </el-submenu>
-      <!-- 其他菜单 -->
-    </el-menu>
-  </div>
-</el-aside>
+        <div style="height: 100vh; overflow-y: auto;">
+          <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
+            <!-- 菜单项内容保持不变 -->
+            <el-submenu index="1">
+              <template #title>会计实体信息</template>
+              <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
+              <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
+              <el-menu-item index="1-3">客商信息</el-menu-item>
+              <el-menu-item index="1-4">联系人信息</el-menu-item>
+              <el-menu-item index="1-5">银行账户信息</el-menu-item>
+              <el-menu-item index="1-6">库存地点信息</el-menu-item>
+              <el-menu-item index="1-7">付款方式信息</el-menu-item>
+              <el-menu-item index="1-8">品类信息</el-menu-item>
+              <el-menu-item index="1-9">品牌信息</el-menu-item>
+              <el-menu-item index="1-10">包装规格信息</el-menu-item>
+              <el-menu-item index="1-11">员工信息</el-menu-item>
+              <el-menu-item index="1-12">产品明细</el-menu-item>
+              <el-menu-item index="1-13">装货明细</el-menu-item>
+              <el-menu-item index="1-14">费用明细</el-menu-item>
+              <el-menu-item index="1-15">销售订单</el-menu-item>
+              <el-menu-item index="1-16">采购收单</el-menu-item>
+              <el-menu-item index="1-17">应付账款单</el-menu-item>
+              <el-menu-item index="1-18">收款单</el-menu-item>
+              <el-menu-item index="1-19">付款单</el-menu-item>
+              <!-- 其他菜单项 -->
+            </el-submenu>
+            <!-- 其他菜单 -->
+          </el-menu>
+        </div>
+      </el-aside>
 
       <!-- 主体内容 -->
       <el-container>
@@ -76,7 +76,8 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.AcctCode)" type="text" size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.AcctId)" type="text"
+                    size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -504,16 +505,30 @@ const submitAcctForm = async () => {
 };
 
 // 删除按钮逻辑
-const handleDelete = (index, Acctcode) => {
-  console.log('Delete button clicked', index, row); // 添加调试信息
+const handleDelete = (index, AcctId) => {
+  // console.log('Delete button clicked', index, row); // 添加调试信息
   ElMessageBox.confirm('确定要删除该会计实体信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    console.log('Confirmed delete', row.AcctId); // 添加调试信息
+    console.log('Confirmed delete', AcctId); // 添加调试信息
     // 这里假设你有一个删除接口 /delete/acct
-    axios.delete('/delete/acct', { data: { AcctId: Acctcode } })
+    // const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
+    // acctForm.AcctId.value = AcctId;
+    // acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
+    // acctForm.value.AcctName = "ss";
+    // acctForm.value.AcctCode = "ss";
+    // acctForm.value.EtyAbbr = "ss";
+    // console.log('Confirmed delete', acctForm); // 添加调试信息
+    // console.log('Confirmed delete ss', acctForm.AcctCode); // 添加调试信息
+    axios.post('/delete/acct', {
+      "AcctId": AcctId,
+      "AcctAbbr": "ss",
+      "AcctCode": "ss",
+      "AcctName": "ss",
+      "EtyAbbr": "ss",
+    })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -579,7 +594,7 @@ const showBankDialog = ref(false);
 const showshowAcctDialog = ref(false);
 
 // 会计实体信息表单数据
-const acctForm = ref({
+var acctForm = ref({
   AcctCode: '',
   AcctAbbr: '',
   EtyAbbr: '',
@@ -659,7 +674,7 @@ const handleEdit = (index, row) => {
 
 .el-menu {
   border-right: none;
-  
+
 }
 
 .el-menu-item,

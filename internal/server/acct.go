@@ -324,7 +324,7 @@ func (s *Server) DeleteAcctHandler(c *gin.Context) {
 	err := c.ShouldBind(acct)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of acctBank",
+			RetMessage: "error in bind of acct",
 		})
 		return
 	}
