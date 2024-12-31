@@ -257,6 +257,7 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 
+const searchQuery = ref(''); // 添加搜索查询字段
 const downloadFile = async (fileId, fileName) => {
   try {
     const response = await axios.post(
