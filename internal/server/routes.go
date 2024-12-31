@@ -11,10 +11,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Add your frontend URL
+		AllowOrigins:     []string{"*"}, // 允许所有来源
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
-		AllowCredentials: true, // Enable cookies/auth
+		AllowCredentials: true, // 启用 cookies/auth
 	}))
 	r.GET("/", s.HelloWorldHandler)
 
@@ -31,6 +31,21 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.POST("/create/user", s.CreateUserHandler)
 	r.POST("/auth", s.LoginHandler)
 	r.POST("/modify/user/password", s.ModifyUserPassHandler)
+
+	// Merchant 相关路由
+	r.POST("/save/merchant", s.SaveMerchantHandler)
+	r.POST("/delete/merchant", s.DeleteMerchantHandler)
+	r.GET("/find/merchant", s.FindMerchantHandler)
+
+	// Cust 相关路由
+	r.POST("/save/cust", s.SaveCustHandler)
+	r.POST("/delete/cust", s.DeleteCustHandler)
+	r.GET("/find/cust", s.FindCustHandler)
+
+	// BankAccount 相关路由
+	r.POST("/save/bankAccount", s.SaveBankAccountHandler)
+	r.POST("/delete/bankAccount", s.DeleteBankAccountHandler)
+	r.GET("/find/bankAccount", s.FindBankAccountHandler)
 
 	deleteGroup := r.Group("/delete")
 	{
@@ -91,6 +106,58 @@ func (s *Server) RegisterRoutes() http.Handler {
 		findGroup.GET("/expType", s.FindExpTypeHandler)
 		findGroup.GET("/rates", s.FindRatesHandler)
 		findGroup.GET("/bussOrderSta", s.FindBussOrderStaHandler)
+
+		// Merchant 查找路由
+		merchantGroup := findGroup.Group("/merchant")
+		{
+			merchantGroup.GET("/mercCode", s.FindMerchantByMercCodeHandler)   // 参数: MercCode
+			merchantGroup.GET("/mercAbbr", s.FindMerchantByMercAbbrHandler)   // 参数: MercAbbr
+			merchantGroup.GET("/shortMerc", s.FindMerchantByShortMercHandler) // 参数: ShortMerc
+			merchantGroup.GET("/merc", s.FindMerchantByMercHandler)           // 参数: Merc
+			merchantGroup.GET("/engName", s.FindMerchantByEngNameHandler)     // 参数: EngName
+			merchantGroup.GET("/address", s.FindMerchantByAddressHandler)     // 参数: Address
+			merchantGroup.GET("/nation", s.FindMerchantByNationHandler)       // 参数: Nation
+			merchantGroup.GET("/phoneNum", s.FindMerchantByPhoneNumHandler)   // 参数: PhoneNum
+			merchantGroup.GET("/email", s.FindMerchantByEmailHandler)         // 参数: Email
+			merchantGroup.GET("/fax", s.FindMerchantByFaxHandler)             // 参数: Fax
+			merchantGroup.GET("/website", s.FindMerchantByWebsiteHandler)     // 参数: Website
+			merchantGroup.GET("/taxType", s.FindMerchantByTaxTypeHandler)     // 参数: TaxType
+			merchantGroup.GET("/taxCode", s.FindMerchantByTaxCodeHandler)     // 参数: TaxCode
+			merchantGroup.GET("/mercType", s.FindMerchantByMercTypeHandler)   // 参数: MercType
+			merchantGroup.GET("/regCap", s.FindMerchantByRegCapHandler)       // 参数: RegCap
+			merchantGroup.GET("/notes", s.FindMerchantByNotesHandler)         // 参数: Notes
+		}
+
+		// Cust 查找路由
+		custGroup := findGroup.Group("/cust")
+		{
+			custGroup.GET("/name", s.FindCustByNameHandler)         // 参数: Name
+			custGroup.GET("/gender", s.FindCustByGenderHandler)     // 参数: Gender
+			custGroup.GET("/nation", s.FindCustByNationHandler)     // 参数: Nation
+			custGroup.GET("/addr", s.FindCustByAddrHandler)         // 参数: Addr
+			custGroup.GET("/email", s.FindCustByEmailHandler)       // 参数: Email
+			custGroup.GET("/phoneNum", s.FindCustByPhoneNumHandler) // 参数: PhoneNum
+			custGroup.GET("/qq", s.FindCustByQQHandler)             // 参数: QQ
+			custGroup.GET("/wechat", s.FindCustByWechatHandler)     // 参数: Wechat
+			custGroup.GET("/merc", s.FindCustByMercHandler)         // 参数: Merc
+			custGroup.GET("/post", s.FindCustByPostHandler)         // 参数: Post
+			custGroup.GET("/notes", s.FindCustByNotesHandler)       // 参数: Notes
+		}
+
+		// BankAccount 查找路由
+		bankAccountGroup := findGroup.Group("/bankAccount")
+		{
+			bankAccountGroup.GET("/bankAccName", s.FindBankAccountByBankAccNameHandler) // 参数: BankAccName
+			bankAccountGroup.GET("/compName", s.FindBankAccountByCompNameHandler)       // 参数: CompName
+			bankAccountGroup.GET("/currency", s.FindBankAccountByCurrencyHandler)       // 参数: Currency
+			bankAccountGroup.GET("/bankName", s.FindBankAccountByBankNameHandler)       // 参数: BankName
+			bankAccountGroup.GET("/bankEng", s.FindBankAccountByBankEngHandler)         // 参数: BankEng
+			bankAccountGroup.GET("/bankAddr", s.FindBankAccountByBankAddrHandler)       // 参数: BankAddr
+			bankAccountGroup.GET("/notes", s.FindBankAccountByNotesHandler)             // 参数: Notes
+			bankAccountGroup.GET("/acctNum", s.FindBankAccountByAcctNumHandler)         // 参数: AcctNum
+			bankAccountGroup.GET("/bankNum", s.FindBankAccountByBankNumHandler)         // 参数: BankNum
+			bankAccountGroup.GET("/swiftCode", s.FindBankAccountBySwiftCodeHandler)     // 参数: SwiftCode
+		}
 	}
 
 	// 创建“acct”子分组，用于账户相关的查找

@@ -216,6 +216,62 @@ type BussOrderSta struct {
 	BussOrderStaId uint   `gorm:"column:bussOrderStaId; primaryKey; " form:"BussOrderStaId"`
 }
 
+type Merchant struct {
+	MercCode     string        `gorm:"column:mercCode;not null;unique" form:"MercCode" binding:"required"`
+	MercAbbr     string        `gorm:"column:mercAbbr;not null" form:"MercAbbr" binding:"required"`
+	ShortMerc    string        `gorm:"column:shortMerc;not null" form:"ShortMerc" binding:"required"`
+	Merc         string        `gorm:"column:merc;not null" form:"Merc" `
+	EngName      string        `gorm:"column:engName;" form:"EngName"`
+	Address      string        `gorm:"column:address;" form:"Address"`
+	Nation       string        `gorm:"column:nation;" form:"Nation"`
+	PhoneNum     string        `gorm:"column:phoneNum;" form:"PhoneNum"`
+	Email        string        `gorm:"column:email;" form:"Email"`
+	Fax          string        `gorm:"column:fax;" form:"Fax"`
+	Website      string        `gorm:"column:website;" form:"Website"`
+	TaxType      string        `gorm:"column:taxType;" form:"TaxType"`
+	TaxCode      string        `gorm:"column:taxCode;" form:"TaxCode"`
+	MercType     string        `gorm:"column:mercType;" form:"MercType"`
+	RegCap       string        `gorm:"column:regCap;" form:"RegCap"`
+	Notes        string        `gorm:"column:notes;" form:"Notes"`
+	FileName     string        `gorm:"column:fileName" form:"FileName"`
+	Custs        []Cust        `gorm:"foreignKey:MercId"` // 一对多关系
+	BankAccounts []BankAccount `gorm:"foreignKey:MercId"` // 一对多关系
+	MercId       uint          `gorm:"column:mercId;primaryKey" form:"MercId"`
+	FileId       uint          `gorm:"column:fileId" form:"FileId"`
+}
+
+type Cust struct {
+	Name     string `gorm:"column:name;not null" form:"Name" binding:"required"`
+	Gender   string `gorm:"column:gender;" form:"Gender"`
+	Nation   string `gorm:"column:nation;" form:"Nation"`
+	Addr     string `gorm:"column:addr;" form:"Addr"`
+	Email    string `gorm:"column:email;" form:"Email"`
+	PhoneNum string `gorm:"column:phoneNum;" form:"PhoneNum"`
+	QQ       string `gorm:"column:qq;" form:"QQ"`
+	Wechat   string `gorm:"column:wechat;" form:"Wechat"`
+	Merc     string `gorm:"column:merc;" form:"Merc"`
+	Post     string `gorm:"column:post;" form:"Post"`
+	Notes    string `gorm:"column:notes;" form:"Notes"`
+	CustId   uint   `gorm:"column:custId;primaryKey" form:"CustId"`
+	MercId   uint   `gorm:"column:mercId;" form:"MercId"` // 外键，关联到 Merchant 表的 MercId
+}
+
+type BankAccount struct {
+	BankAccName string `gorm:"column:bankAccName;not null" form:"BankAccName" binding:"required"`
+	CompName    string `gorm:"column:compName;" form:"CompName" binding:"required"`
+	AcctNum     string `gorm:"column:acctNum;not null" form:"AcctNum" binding:"required"`
+	Currency    string `gorm:"column:currency;" form:"Currency"`
+	BankName    string `gorm:"column:bankName;" form:"BankName" binding:"required"`
+	BankEng     string `gorm:"column:bankEng;" form:"BankEng"`
+	BankNum     string `gorm:"column:bankNum;" form:"BankNum"`
+	SwiftCode   string `gorm:"column:swiftCode;" form:"SwiftCode"`
+	BankAddr    string `gorm:"column:bankAddr;" form:"BankAddr"`
+	Notes       string `gorm:"column:notes;" form:"Notes"`
+	FileName    string `gorm:"column:fileName" form:"FileName"`
+	BankAccId   uint   `gorm:"column:bankAccId;primaryKey" form:"BankAccId"`
+	FileId      uint   `gorm:"column:fileId" form:"FileId"`
+	MercId      uint   `gorm:"column:mercId;primaryKey" form:"MercId"`
+}
 type Message struct {
 	Acct          []Acct
 	AcctBank      []AcctBank
@@ -246,6 +302,9 @@ type Message struct {
 	ExpType       []ExpType
 	Rates         []Rates
 	BussOrderSta  []BussOrderSta
+	Merchant      []Merchant
+	Cust          []Cust
+	BankAccount   []BankAccount
 	RetMessage    string
 	User          User
 }

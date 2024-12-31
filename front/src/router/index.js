@@ -6,7 +6,7 @@ import Home from '@/views/TestHome.vue';
 import Acct from '@/views/Acct.vue';
 import AcctBank from '@/views/AcctBank.vue';
 import TestHome from '@/views/TestHome.vue';
-import Client from '@/views/Client.vue';
+import Merchant from '@/views/Merchant.vue';
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(),  // 使用 HTML5 历史模式
@@ -31,9 +31,9 @@ const router = createRouter({
 
     },
     {
-      path: '/clinet',
-      name: 'Clinet',
-      component: Client,
+      path: '/merchant',
+      name: 'Merchant',
+      component: Merchant,
 
     },
     {

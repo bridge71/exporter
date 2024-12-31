@@ -10,7 +10,7 @@
               <template #title>会计实体信息</template>
               <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
               <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
-              <el-menu-item index="1-3" @click="pushClient">客商信息</el-menu-item>
+              <el-menu-item index="1-3" @click="pushMerchant">客商信息</el-menu-item>
               <el-menu-item index="1-4">联系人信息</el-menu-item>
               <el-menu-item index="1-5">银行账户信息</el-menu-item>
               <el-menu-item index="1-6">库存地点信息</el-menu-item>
@@ -392,8 +392,8 @@ const pushAcctBank = () => {
   router.push('/acctBank');
 };
 
-const pushClient = () => {
-  router.push('/clinet');
+const pushMerchant = () => {
+  router.push('/merchant');
 };
 const downloadFile = async (fileId, fileName) => {
   try {
@@ -517,15 +517,6 @@ const handleDelete = (index, AcctId) => {
     type: 'warning'
   }).then(() => {
     console.log('Confirmed delete', AcctId); // 添加调试信息
-    // 这里假设你有一个删除接口 /delete/acct
-    // const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
-    // acctForm.AcctId.value = AcctId;
-    // acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
-    // acctForm.value.AcctName = "ss";
-    // acctForm.value.AcctCode = "ss";
-    // acctForm.value.EtyAbbr = "ss";
-    // console.log('Confirmed delete', acctForm); // 添加调试信息
-    // console.log('Confirmed delete ss', acctForm.AcctCode); // 添加调试信息
     axios.post('/delete/acct', {
       "AcctId": AcctId,
       "AcctAbbr": "ss",

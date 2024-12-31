@@ -156,6 +156,92 @@ type Service interface {
 	DeleteExpType(expType *models.ExpType) error
 	DeleteRates(rates *models.Rates) error
 	DeleteBussOrderSta(bussOrderSta *models.BussOrderSta) error
+	// Merchant 相关接口
+	FindMerchantByMercCode(merchants *[]models.Merchant, mercCode string)
+	FindMerchantByMercAbbr(merchants *[]models.Merchant, mercAbbr string)
+	FindMerchantByShortMerc(merchants *[]models.Merchant, shortMerc string)
+	FindMerchantByMerc(merchants *[]models.Merchant, merc string)
+	FindMerchantByEngName(merchants *[]models.Merchant, engName string)
+	FindMerchantByAddress(merchants *[]models.Merchant, address string)
+	FindMerchantByNation(merchants *[]models.Merchant, nation string)
+	FindMerchantByPhoneNum(merchants *[]models.Merchant, phoneNum string)
+	FindMerchantByEmail(merchants *[]models.Merchant, email string)
+	FindMerchantByFax(merchants *[]models.Merchant, fax string)
+	FindMerchantByWebsite(merchants *[]models.Merchant, website string)
+	FindMerchantByTaxType(merchants *[]models.Merchant, taxType string)
+	FindMerchantByTaxCode(merchants *[]models.Merchant, taxCode string)
+	FindMerchantByMercType(merchants *[]models.Merchant, mercType string)
+	FindMerchantByRegCap(merchants *[]models.Merchant, regCap string)
+	FindMerchantByNotes(merchants *[]models.Merchant, notes string)
+	DeleteMerchant(merchant *models.Merchant) error
+	SaveMerchant(merchant *models.Merchant) error
+	FindMerchant(merchant *[]models.Merchant)
+	FzzFindMerchantByEngName(merchant *[]models.Merchant, EngName string)
+	FindMerchantByMercId(merchant *[]models.Merchant, MercId uint)
+	FzzFindMerchantByMercAbbr(merchant *[]models.Merchant, MercAbbr string)
+	FzzFindMerchantByShortMerc(merchant *[]models.Merchant, ShortMerc string)
+	FzzFindMerchantByMerc(merchant *[]models.Merchant, Merc string)
+	FzzFindMerchantByAddress(merchant *[]models.Merchant, Address string)
+	FzzFindMerchantByNation(merchant *[]models.Merchant, Nation string)
+	FzzFindMerchantByWebsite(merchant *[]models.Merchant, Website string)
+	FzzFindMerchantByTaxType(merchant *[]models.Merchant, TaxType string)
+	FzzFindMerchantByMercType(merchant *[]models.Merchant, MercType string)
+	FzzFindMerchantByNotes(merchant *[]models.Merchant, Notes string)
+
+	// Cust 相关接口
+	FindCustByName(custs *[]models.Cust, name string)
+	FindCustByGender(custs *[]models.Cust, gender string)
+	FindCustByNation(custs *[]models.Cust, nation string)
+	FindCustByAddr(custs *[]models.Cust, addr string)
+	FindCustByEmail(custs *[]models.Cust, email string)
+	FindCustByPhoneNum(custs *[]models.Cust, phoneNum string)
+	FindCustByQQ(custs *[]models.Cust, qq string)
+	FindCustByWechat(custs *[]models.Cust, wechat string)
+	FindCustByMerc(custs *[]models.Cust, merc string)
+	FindCustByPost(custs *[]models.Cust, post string)
+	FindCustByNotes(custs *[]models.Cust, notes string)
+	DeleteCust(cust *models.Cust) error
+	SaveCust(cust *models.Cust) error
+	FindCust(cust *[]models.Cust)
+	FindCustByCustId(cust *[]models.Cust, CustId uint)
+	FzzFindCustByName(cust *[]models.Cust, Name string)
+	FzzFindCustByNation(cust *[]models.Cust, Nation string)
+	FzzFindCustByAddr(cust *[]models.Cust, Addr string)
+	FzzFindCustByMerc(cust *[]models.Cust, Merc string)
+	FzzFindCustByPost(cust *[]models.Cust, Post string)
+	FzzFindCustByNotes(cust *[]models.Cust, Notes string)
+
+	// BankAccount 相关接口
+	FindBankAccountByBankAccName(bankAccounts *[]models.BankAccount, bankAccName string)
+	FindBankAccountByCompName(bankAccounts *[]models.BankAccount, compName string)
+	FindBankAccountByAcctNum(bankAccounts *[]models.BankAccount, acctNum string)
+	FindBankAccountByCurrency(bankAccounts *[]models.BankAccount, currency string)
+	FindBankAccountByBankName(bankAccounts *[]models.BankAccount, bankName string)
+	FindBankAccountByBankEng(bankAccounts *[]models.BankAccount, bankEng string)
+	FindBankAccountByBankNum(bankAccounts *[]models.BankAccount, bankNum string)
+	FindBankAccountBySwiftCode(bankAccounts *[]models.BankAccount, swiftCode string)
+	FindBankAccountByBankAddr(bankAccounts *[]models.BankAccount, bankAddr string)
+	FindBankAccountByNotes(bankAccounts *[]models.BankAccount, notes string)
+	DeleteBankAccount(bankAccount *models.BankAccount) error
+	SaveBankAccount(bankAccount *models.BankAccount) error
+	FindBankAccount(bankAccount *[]models.BankAccount)
+	FindBankAccountByBankAccId(bankAccount *[]models.BankAccount, BankAccId uint)
+	FzzFindBankAccountByBankAccName(bankAccount *[]models.BankAccount, BankAccName string)
+	FzzFindBankAccountByCompName(bankAccount *[]models.BankAccount, CompName string)
+	FzzFindBankAccountByCurrency(bankAccount *[]models.BankAccount, Currency string)
+	FzzFindBankAccountByBankName(bankAccount *[]models.BankAccount, BankName string)
+	FzzFindBankAccountByBankEng(bankAccount *[]models.BankAccount, BankEng string)
+	FzzFindBankAccountByBankAddr(bankAccount *[]models.BankAccount, BankAddr string)
+	FzzFindBankAccountByNotes(bankAccount *[]models.BankAccount, Notes string)
+	FindCustByMercId(custs *[]models.Cust, MercId uint)
+	// Cust 相关接口
+	FzzFindCustByEmail(custs *[]models.Cust, email string)
+	FzzFindCustByPhoneNum(custs *[]models.Cust, phoneNum string)
+	FzzFindCustByQQ(custs *[]models.Cust, qq string)
+	FzzFindCustByWechat(custs *[]models.Cust, wechat string)
+
+	// BankAccount 相关接口
+	FindBankAccountByMercId(bankAccounts *[]models.BankAccount, MercId uint)
 }
 
 type service struct {
@@ -235,6 +321,9 @@ func New() Service {
 		&models.Rates{},
 		&models.BussOrderSta{},
 		&models.MercType{},
+		&models.Merchant{},
+		&models.Cust{},
+		&models.BankAccount{},
 	)
 
 	dbInstance = &service{

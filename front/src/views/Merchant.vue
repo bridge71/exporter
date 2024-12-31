@@ -10,7 +10,7 @@
               <template #title>会计实体信息</template>
               <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
               <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
-              <el-menu-item index="1-3" @click="pushClient">客商信息</el-menu-item>
+              <el-menu-item index="1-3" @click="pushMerchant">客商信息</el-menu-item>
               <el-menu-item index="1-4">联系人信息</el-menu-item>
               <el-menu-item index="1-5">银行账户信息</el-menu-item>
               <el-menu-item index="1-6">库存地点信息</el-menu-item>
@@ -42,7 +42,7 @@
         </el-header>
         <el-main>
           <!-- 商客信息表格 -->
-          <el-table :data="paginatedMerchantData" style="width: 100%" max-height="450" v-if="activeMenu === '1-1'">
+          <el-table :data="paginatedMerchantData" style="width: 100%" max-height="450" v-if="activeMenu === '1-3'">
             <el-table-column prop="MercCode" label="客商编码" width="160%"></el-table-column>
             <el-table-column prop="MercAbbr" label="客商缩写" width="160%"></el-table-column>
             <el-table-column prop="ShortMerc" label="客商简称" width="160%"></el-table-column>
@@ -81,7 +81,8 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.MercId)" type="text" size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.MercId)" type="text"
+                    size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -528,10 +529,16 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const pushClient = () => {
-  router.push('/clinet');
+const pushAcct = () => {
+  router.push('/acct');
+};
+const pushAcctBank = () => {
+  router.push('/acctBank');
 };
 
+const pushMerchant = () => {
+  router.push('/merchant');
+};
 const downloadFile = async (fileId, fileName) => {
   try {
     const response = await axios.post(
@@ -564,6 +571,9 @@ const handleDelete = (index, MercId) => {
     type: 'warning'
   }).then(() => {
     axios.post('/delete/merchant', {
+      "MercCode": "ss",
+      "MercAbbr": "ss",
+      "ShortMerc": "ss",
       "MercId": MercId,
     })
       .then(response => {
@@ -635,7 +645,8 @@ const resetMerchantForm = () => {
     BankAccounts: [],
     File: '',
     FileId: '',
-    FileName: ''
+    FileName: '',
+    MerchantId: ''
   };
   file.value = null; // 重置文件数据
   if (uploadRef.value) {
@@ -656,6 +667,9 @@ const submitMerchantForm = async () => {
   try {
     const formData = new FormData(); // 创建 FormData 对象
 
+    console.log(merchantForm.value.MercCode)
+    console.log(merchantForm.value.ShortMerc)
+    console.log(merchantForm.value.MercAbbr)
     // 添加表单数据
     Object.keys(merchantForm.value).forEach((key) => {
       formData.append(key, merchantForm.value[key]);
@@ -680,6 +694,7 @@ const submitMerchantForm = async () => {
       ElMessage.error(response.data.RetMessage || '保存失败');
     }
   } catch (error) {
+    ElMessage.error(error.response.data.RetMessage || '保存失败');
     console.error('保存客商信息失败:', error);
     ElMessage.error('保存客商信息失败，请稍后重试');
   }
@@ -743,9 +758,10 @@ const merchantForm = ref({
   OperCap: '',
   Contacts: [],
   BankAccounts: [],
-  File: '',
+  // File: '',
   FileId: '',
-  FileName: ''
+  FileName: '',
+  MercId: ''
 });
 
 // 商客信息表单验证规则

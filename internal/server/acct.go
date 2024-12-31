@@ -342,35 +342,18 @@ func (s *Server) DeleteAcctHandler(c *gin.Context) {
 	}
 }
 
-func (s *Server) SaveAcctBankHandler(c *gin.Context) {
-	acctBank := &models.AcctBank{}
-	err := c.ShouldBind(acctBank)
-	if err != nil {
-		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of acctBank",
-		})
-		return
-	}
-	log.Printf("%v\n", acctBank)
-
+func (s *Server) SaveFile(c *gin.Context) (error, uint, string) {
 	file, err := c.FormFile("file")
 	if err == nil {
 		src, err := file.Open()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, models.Message{
-				RetMessage: "error when opening file",
-			})
-			return
+			return err, 0, ""
 		}
 		defer src.Close()
 
 		hash := md5.New()
 		if _, err := io.Copy(hash, src); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   "文件读取失败",
-				"details": err.Error(),
-			})
-			return
+			return err, 0, ""
 		}
 		MD5 := hex.EncodeToString(hash.Sum(nil))
 		FileName := file.Filename
@@ -382,14 +365,31 @@ func (s *Server) SaveAcctBankHandler(c *gin.Context) {
 		}
 		s.db.CreateFile(File)
 
-		c.SaveUploadedFile(file, "../files/"+MD5+Suffix) // 以main程序所在目录为基准
+		c.SaveUploadedFile(file, "../files/"+MD5+Suffix) // 以main文件所在目录为基准
 
 		log.Printf(file.Filename + "\n")
-
-		acctBank.FileId = File.FileId
-		acctBank.FileName = FileName
+		return nil, File.FileId, FileName
 	}
+	return nil, 0, ""
+}
 
+func (s *Server) SaveAcctBankHandler(c *gin.Context) {
+	acctBank := &models.AcctBank{}
+	err := c.ShouldBind(acctBank)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "error in bind of acctBank",
+		})
+		return
+	}
+	log.Printf("%v\n", acctBank)
+
+	err, acctBank.FileId, acctBank.FileName = s.SaveFile(c)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "failed to save file",
+		})
+	}
 	err = s.db.SaveAcctBank(acctBank)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
@@ -417,70 +417,14 @@ func (s *Server) Str2Uint(str string) uint {
 func (s *Server) SaveAcctHandler(c *gin.Context) {
 	acct := &models.Acct{}
 	err := c.ShouldBind(acct)
-	log.Printf("sss\n")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "error in bind of acct",
 		})
-		log.Printf("SSSSSsss\n")
 		return
 	}
 
-	bankIndex := 0
-	for {
-		acctBankId := c.PostForm("AccBank[" + strconv.Itoa(bankIndex) + "].AcctBankId")
-		if acctBankId == "" {
-			break
-		}
-		id := s.Str2Uint(acctBankId)
-		if id == 0 {
-			break
-		}
-		acct.AcctBanks = append(acct.AcctBanks, models.AcctBank{
-			AcctBankId: id,
-		})
-		bankIndex++
-	}
-
-	file, err := c.FormFile("file")
-	if err == nil {
-		src, err := file.Open()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, models.Message{
-				RetMessage: "error when opening file",
-			})
-			return
-		}
-		defer src.Close()
-
-		hash := md5.New()
-		if _, err := io.Copy(hash, src); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error":   "文件读取失败",
-				"details": err.Error(),
-			})
-			return
-		}
-		MD5 := hex.EncodeToString(hash.Sum(nil))
-		FileName := file.Filename
-		Suffix := filepath.Ext(file.Filename)
-		File := &models.File{
-			Name:   FileName,
-			MD5:    MD5,
-			Suffix: Suffix,
-		}
-		s.db.CreateFile(File)
-
-		c.SaveUploadedFile(file, "../files/"+MD5+Suffix) // 以main程序所在目录为基准
-
-		log.Printf(file.Filename + "\n")
-
-		acct.FileId = File.FileId
-		acct.FileName = FileName
-		log.Printf("name")
-		log.Printf(acct.FileName)
-	}
-
+	err, acct.FileId, acct.FileName = s.SaveFile(c)
 	log.Printf("%v", acct)
 	err = s.db.SaveAcct(acct)
 	if err != nil {

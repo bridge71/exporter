@@ -10,7 +10,7 @@
               <template #title>会计实体信息</template>
               <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
               <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
-              <el-menu-item index="1-3" @click="pushClient">客商信息</el-menu-item>
+              <el-menu-item index="1-3" @click="pushMerchant">客商信息</el-menu-item>
               <el-menu-item index="1-4">联系人信息</el-menu-item>
               <el-menu-item index="1-5">银行账户信息</el-menu-item>
               <el-menu-item index="1-6">库存地点信息</el-menu-item>
@@ -66,7 +66,8 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.AcctId)" type="text" size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.AcctId)" type="text"
+                    size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -293,8 +294,8 @@ const pushAcctBank = () => {
   router.push('/acctBank');
 };
 
-const pushClient = () => {
-  router.push('/clinet');
+const pushMerchant = () => {
+  router.push('/merchant');
 };
 const downloadFile = async (fileId, fileName) => {
   try {
@@ -331,6 +332,8 @@ const handleDelete = (index, AcctBankId) => {
   }).then(() => {
     axios.post('/delete/acctBank', {
       "AcctBankId": AcctBankId,
+      "AccName": "ss",
+      "AccNum": "ss"
     })
       .then(response => {
         if (response.status === 200) {
