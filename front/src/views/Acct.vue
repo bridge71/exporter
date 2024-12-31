@@ -37,8 +37,16 @@
       <!-- 主体内容 -->
       <el-container>
         <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
+          <h2>{{ headerTitle }}</h2>  
+          <div>
+            搜索：
+            <el-input
+              v-model="searchQuery"
+              placeholder="输入要搜索的关键字"
+              style="width: 200px;"
+            />
+            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
+          </div>
         </el-header>
         <el-main>
           <!-- 会计实体信息表格 -->
@@ -379,11 +387,16 @@
 import { ref, onMounted, computed } from 'vue';
 
 import { useRouter } from 'vue-router';
+
 import { ElMessage, ElMessageBox } from 'element-plus'; // 确保 ElMessageBox 被引入
 import axios from 'axios'; // 引入 axios
 
 
+
 const router = useRouter();
+const searchQuery = ref(''); // 添加搜索查询字段
+
+
 
 const pushAcct = () => {
   router.push('/acct');
@@ -557,9 +570,28 @@ const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
 // 计算当前页显示的会计实体信息数据
 const paginatedAcctData = computed(() => {
+  let filteredData = acctData.value;
+  if (searchQuery.value) {
+    filteredData = filteredData.filter(item =>
+      item.AcctCode.includes(searchQuery.value) ||
+      item.AcctAbbr.includes(searchQuery.value) ||
+      item.EtyAbbr.includes(searchQuery.value) ||
+      item.AcctName.includes(searchQuery.value) ||
+      item.AcctEngName.includes(searchQuery.value) ||
+      item.AcctAddr.includes(searchQuery.value) ||
+      item.Nation.includes(searchQuery.value) ||
+      item.TaxType.includes(searchQuery.value) ||
+      item.TaxCode.includes(searchQuery.value) ||
+      item.PhoneNum.includes(searchQuery.value) ||
+      item.Email.includes(searchQuery.value) ||
+      item.Website.includes(searchQuery.value) ||
+      item.RegDate.includes(searchQuery.value) ||
+      item.Notes.includes(searchQuery.value)
+    );
+  }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
-  return acctData.value.slice(start, end);
+  return filteredData.slice(start, end);
 });
 
 onMounted(() => {
@@ -667,9 +699,17 @@ const handleEdit = (index, row) => {
   margin-top: 60px;
 }
 
+
 .el-header {
   background-color: #f5f5f5;
   padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.el-input {
+  margin-right: 10px;
 }
 
 .el-aside {

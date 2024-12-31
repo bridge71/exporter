@@ -528,6 +528,13 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+const pushAcct = () => {
+  router.push('/acct');
+};
+const pushAcctBank = () => {
+  router.push('/acctBank');
+};
+
 const pushClient = () => {
   router.push('/clinet');
 };
