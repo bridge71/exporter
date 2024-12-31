@@ -23,6 +23,15 @@ type Service interface {
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
 
+	DeleteBankAccount(bankAccount *models.BankAccount) error
+	SaveBankAccount(bankAccount *models.BankAccount) error
+	FindBankAccount(bankAccounts *[]models.BankAccount)
+	FindBankAccountById(bankAccounts *[]models.BankAccount, mercId uint)
+	DeleteCust(cust *models.Cust) error
+	SaveCust(cust *models.Cust) error
+	FindCust(custs *[]models.Cust)
+	FindCustById(custs *[]models.Cust, mercId uint)
+
 	DeleteMerchant(merchant *models.Merchant) error
 	SaveMerchant(merchant *models.Merchant) error
 	FindMerchant(merchants *[]models.Merchant)

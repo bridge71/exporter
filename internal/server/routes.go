@@ -35,6 +35,16 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/find/acctBank", s.FindAcctBankHandler)
 	r.GET("/find/acctBank/id", s.FindAcctBankByIdHandler)
 
+	r.POST("/save/cust", s.SaveCustHandler)
+	r.POST("/delete/cust", s.DeleteCustHandler)
+	r.GET("/find/cust", s.FindCustHandler)
+	r.GET("/find/cust/id", s.FindCustByIdHandler)
+
+	r.POST("/save/bankAccount", s.SaveBankAccountHandler)
+	r.POST("/delete/bankAccount", s.DeleteBankAccountHandler)
+	r.GET("/find/bankAccount", s.FindBankAccountHandler)
+	r.GET("/find/bankAccount/id", s.FindBankAccountByIdHandler)
+
 	r.POST("/create/user", s.CreateUserHandler)
 	r.POST("/auth", s.LoginHandler)
 	r.POST("/modify/user/password", s.ModifyUserPassHandler)

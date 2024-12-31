@@ -47,13 +47,6 @@ type AcctBank struct {
 	// IsUpload   bool   `gorm:"column:isUpload; not null" form:"IsUpload" binding:"required"`
 }
 
-type File struct {
-	Name   string `gorm:"column:name; not null" json:"Name"`
-	MD5    string `gorm:"column:MD5;  not null" json:"MD5"`
-	Suffix string `gorm:"column:suffix; not null" json:"Suffix"`
-	FileId uint   `gorm:"column:fileId; primaryKey" form:"FileId" binding:"required"`
-}
-
 type Merchant struct {
 	MercCode     string        `gorm:"column:mercCode;not null;unique" form:"MercCode" binding:"required"`
 	MercAbbr     string        `gorm:"column:mercAbbr;not null" form:"MercAbbr" binding:"required"`
@@ -72,8 +65,8 @@ type Merchant struct {
 	RegCap       string        `gorm:"column:regCap;" form:"RegCap"`
 	Notes        string        `gorm:"column:notes;" form:"Notes"`
 	FileName     string        `gorm:"column:fileName" form:"FileName"`
-	Custs        []Cust        `gorm:"foreignKey:MercId"` // 一对多关系
-	BankAccounts []BankAccount `gorm:"foreignKey:MercId"` // 一对多关系
+	Custs        []Cust        `gorm:"foreignKey:MercId" form:"Custs[]"`        // 一对多关系
+	BankAccounts []BankAccount `gorm:"foreignKey:MercId" form:"BankAccounts[]"` // 一对多关系
 	MercId       uint          `gorm:"column:mercId;primaryKey" form:"MercId"`
 	FileId       uint          `gorm:"column:fileId" form:"FileId"`
 }
@@ -90,8 +83,10 @@ type Cust struct {
 	Merc     string `gorm:"column:merc;" form:"Merc"`
 	Post     string `gorm:"column:post;" form:"Post"`
 	Notes    string `gorm:"column:notes;" form:"Notes"`
+	FileName string `gorm:"column:fileName" form:"FileName"`
 	CustId   uint   `gorm:"column:custId;primaryKey" form:"CustId"`
 	MercId   uint   `gorm:"column:mercId;" form:"MercId"` // 外键，关联到 Merchant 表的 MercId
+	FileId   uint   `gorm:"column:fileId" form:"FileId"`
 }
 
 type BankAccount struct {
@@ -108,9 +103,15 @@ type BankAccount struct {
 	FileName    string `gorm:"column:fileName" form:"FileName"`
 	BankAccId   uint   `gorm:"column:bankAccId;primaryKey" form:"BankAccId"`
 	FileId      uint   `gorm:"column:fileId" form:"FileId"`
-	MercId      uint   `gorm:"column:mercId;primaryKey" form:"MercId"`
+	MercId      uint   `gorm:"column:mercId;" form:"MercId"`
 }
 
+type File struct {
+	Name   string `gorm:"column:name; not null" json:"Name"`
+	MD5    string `gorm:"column:MD5;  not null" json:"MD5"`
+	Suffix string `gorm:"column:suffix; not null" json:"Suffix"`
+	FileId uint   `gorm:"column:fileId; primaryKey" form:"FileId" binding:"required"`
+}
 type Message struct {
 	Acct          []Acct
 	AcctBank      []AcctBank
