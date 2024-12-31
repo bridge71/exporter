@@ -38,7 +38,15 @@
       <el-container>
         <el-header style="display: flex; justify-content: space-between; align-items: center;">
           <h2>{{ headerTitle }}</h2>
-          <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
+          <div>
+            搜索：
+            <el-input
+              v-model="searchQuery"
+              placeholder="输入要搜索的关键字"
+              style="width: 200px;"
+            />
+            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
+          </div>
         </el-header>
         <el-main>
 
@@ -285,6 +293,9 @@ import { useRouter } from 'vue-router';
 
 // 根据当前路由动态设置默认选中的菜单项
 const router = useRouter();
+const searchQuery = ref('');
+
+
 
 const pushAcct = () => {
   router.push('/acct');
@@ -442,10 +453,27 @@ const pageSize = 8; // 每页显示的行数
 
 // 计算当前页显示的会计实体银行账户信息数据
 const paginatedBankData = computed(() => {
+  let filteredData = bankData.value;
+  if (searchQuery.value) {
+    filteredData = filteredData.filter(item =>
+      item.AccName.includes(searchQuery.value) ||
+      item.AccNum.includes(searchQuery.value) ||
+      item.AcctName.includes(searchQuery.value) ||
+      item.Currency.includes(searchQuery.value) ||
+      item.BankName.includes(searchQuery.value) ||
+      item.BankNum.includes(searchQuery.value) ||
+      item.SwiftCode.includes(searchQuery.value) ||
+      item.BankAddr.includes(searchQuery.value) ||
+      item.Notes.includes(searchQuery.value) ||
+      item.FileName.includes(searchQuery.value)
+    );
+  }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
-  return bankData.value.slice(start, end);
+  return filteredData.slice(start, end);
 });
+
+
 onMounted(() => {
   fetchAcctData(); // 获取会计实体信息
   fetchAcctBankData(); // 获取会计实体银行账户信息

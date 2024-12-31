@@ -11,22 +11,22 @@
               <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
               <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
               <el-menu-item index="1-3" @click="pushClient">客商信息</el-menu-item>
-              <el-menu-item index="1-4">联系人信息</el-menu-item>
-              <el-menu-item index="1-5">银行账户信息</el-menu-item>
-              <el-menu-item index="1-6">库存地点信息</el-menu-item>
-              <el-menu-item index="1-7">付款方式信息</el-menu-item>
-              <el-menu-item index="1-8">品类信息</el-menu-item>
-              <el-menu-item index="1-9">品牌信息</el-menu-item>
-              <el-menu-item index="1-10">包装规格信息</el-menu-item>
-              <el-menu-item index="1-11">员工信息</el-menu-item>
-              <el-menu-item index="1-12">产品明细</el-menu-item>
-              <el-menu-item index="1-13">装货明细</el-menu-item>
-              <el-menu-item index="1-14">费用明细</el-menu-item>
-              <el-menu-item index="1-15">销售订单</el-menu-item>
-              <el-menu-item index="1-16">采购收单</el-menu-item>
-              <el-menu-item index="1-17">应付账款单</el-menu-item>
-              <el-menu-item index="1-18">收款单</el-menu-item>
-              <el-menu-item index="1-19">付款单</el-menu-item>
+              <el-menu-item index="1-4" @click="pushContact">联系人信息</el-menu-item>
+              <el-menu-item index="1-5" @click="pushBankAccount">银行账户信息</el-menu-item>
+              <el-menu-item index="1-6" @click="pushInventoryLocation">库存地点信息</el-menu-item>
+              <el-menu-item index="1-7" @click="pushPaymentMethod">付款方式信息</el-menu-item>
+              <el-menu-item index="1-8" @click="pushCategory">品类信息</el-menu-item>
+              <el-menu-item index="1-9" @click="pushBrand">品牌信息</el-menu-item>
+              <el-menu-item index="1-10" @click="pushPackagingSpec">包装规格信息</el-menu-item>
+              <el-menu-item index="1-11" @click="pushEmployee">员工信息</el-menu-item>
+              <el-menu-item index="1-12" @click="pushProductDetail">产品明细</el-menu-item>
+              <el-menu-item index="1-13" @click="pushLoadingDetail">装货明细</el-menu-item>
+              <el-menu-item index="1-14" @click="pushCostDetail">费用明细</el-menu-item>
+              <el-menu-item index="1-15" @click="pushSalesOrder">销售订单</el-menu-item>
+              <el-menu-item index="1-16" @click="pushPurchaseOrder">采购收单</el-menu-item>
+              <el-menu-item index="1-17" @click="pushPayableInvoice">应付账款单</el-menu-item>
+              <el-menu-item index="1-18" @click="pushReceipt">收款单</el-menu-item>
+              <el-menu-item index="1-19" @click="pushPayment">付款单</el-menu-item>
               <!-- 其他菜单项 -->
             </el-submenu>
             <!-- 其他菜单 -->
@@ -408,6 +408,71 @@ const pushAcctBank = () => {
 const pushClient = () => {
   router.push('/clinet');
 };
+
+const pushContact = () => {
+  router.push('/contact');
+};
+
+const pushBankAccount = () => {
+  router.push('/bankAccount');
+};
+
+const pushInventoryLocation = () => {
+  router.push('/inventoryLocation');
+};
+
+const pushPaymentMethod = () => {
+  router.push('/paymentMethod');
+};
+
+const pushCategory = () => {
+  router.push('/category');
+};
+
+const pushBrand = () => {
+  router.push('/brand');
+};
+
+const pushPackagingSpec = () => {
+  router.push('/packagingSpec');
+};
+
+const pushEmployee = () => {
+  router.push('/employee');
+};
+
+const pushProductDetail = () => {
+  router.push('/productDetail');
+};
+
+const pushLoadingDetail = () => {
+  router.push('/loadingDetail');
+};
+
+const pushCostDetail = () => {
+  router.push('/costDetail');
+};
+
+const pushSalesOrder = () => {
+  router.push('/salesOrder');
+};
+
+const pushPurchaseOrder = () => {
+  router.push('/purchaseOrder');
+};
+
+const pushPayableInvoice = () => {
+  router.push('/payableInvoice');
+};
+
+const pushReceipt = () => {
+  router.push('/receipt');
+};
+
+const pushPayment = () => {
+  router.push('/payment');
+};
+
 const downloadFile = async (fileId, fileName) => {
   try {
     const response = await axios.post(
