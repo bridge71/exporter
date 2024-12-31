@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 // 导入views中的页面组件
 import Login from '@/views/Login.vue';
+
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(),  // 使用 HTML5 历史模式
@@ -33,7 +34,8 @@ const router = createRouter({
       path: '/login',  // 显示登录页面
       name: 'Login',
       component: Login,
-    }
+    },
+
   ]
 });
 

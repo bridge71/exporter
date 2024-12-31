@@ -1,17 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div>
-    <!-- 侧边栏菜单 -->
-    <SideMenu />
-    <!-- 主内容区域 -->
-    <router-view />
-  </div>
-</template>
-
-<script setup>
-import SideMenu from './components/SideMenu.vue'; // 引入 SideMenu 组件
-</script>
-=======
     <div class="bank-information">
       <p>银行信息</p>
     </div>
@@ -28,4 +15,3 @@ import SideMenu from './components/SideMenu.vue'; // 引入 SideMenu 组件
   <style scoped>
   /* 你可以在这里添加样式 */
   </style>
->>>>>>> 593b97d905b86d5274251b6be73a3d8c8270a1cc

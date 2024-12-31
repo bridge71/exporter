@@ -16,6 +16,7 @@
           <div>
             搜索：
             <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
+            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
             <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
           </div>
         </el-header>
@@ -256,7 +257,6 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 
-const searchQuery = ref('');
 const downloadFile = async (fileId, fileName) => {
   try {
     const response = await axios.post(
@@ -410,19 +410,22 @@ const paginatedBankData = computed(() => {
     filteredData = filteredData.filter(item =>
       item.AccName.includes(searchQuery.value) ||
       item.AccNum.includes(searchQuery.value) ||
+      item.AcctName.includes(searchQuery.value) ||
       item.Currency.includes(searchQuery.value) ||
       item.BankName.includes(searchQuery.value) ||
       item.BankNum.includes(searchQuery.value) ||
       item.SwiftCode.includes(searchQuery.value) ||
       item.BankAddr.includes(searchQuery.value) ||
       item.Notes.includes(searchQuery.value) ||
-      item.AcctName.includes(searchQuery.value)
+      item.FileName.includes(searchQuery.value)
     );
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);
 });
+
+
 onMounted(() => {
   fetchAcctData(); // 获取会计实体信息
   fetchAcctBankData(); // 获取会计实体银行账户信息

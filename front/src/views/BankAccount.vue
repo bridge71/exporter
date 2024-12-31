@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div id="app">
     <el-container>
       <!-- 侧边栏 -->
@@ -548,3 +549,21 @@ const addButtonText = computed(() => {
   padding: 20px;
 }
 </style>
+=======
+    <div class="bank-information">
+      <p>银行信息</p>
+    </div>
+  </template>
+  
+  <script lang="ts">
+  import { defineComponent } from 'vue';
+  
+  export default defineComponent({
+    name: 'bank-information',
+  });
+  </script>
+  
+  <style scoped>
+  /* 你可以在这里添加样式 */
+  </style>
+>>>>>>> 593b97d905b86d5274251b6be73a3d8c8270a1cc
