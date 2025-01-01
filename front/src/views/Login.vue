@@ -20,6 +20,13 @@
             登录
           </el-button>
         </el-form-item>
+
+        <!-- 注册按钮 -->
+        <el-form-item>
+          <el-button type="default" @click="handleRegister" class="register-button">
+            注册
+          </el-button>
+        </el-form-item>
       </el-form>
     </el-card>
   </div>
@@ -65,7 +72,7 @@ const handleLogin = () => {
     .then((response) => {
       if (response.status === 200) {
         ElMessage.success('登录成功');
-        router.push({ name: 'menu' }); // 跳转到菜单页面
+        router.push({ name: 'acct' }); // 跳转到菜单页面
       }
     })
     .catch((error) => {
@@ -74,6 +81,10 @@ const handleLogin = () => {
     .finally(() => {
       loading.value = false; // 结束加载
     });
+};
+// 注册按钮点击事件
+const handleRegister = () => {
+  router.push({ name: 'register' });
 };
 
 // 禁止页面滚动
@@ -191,4 +202,25 @@ body {
   transform: translateY(0);
   box-shadow: 0 2px 5px rgba(106, 17, 203, 0.4);
 }
+
+.register-button {
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #fff;
+}
+
+.register-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(106, 17, 203, 0.4);
+}
+
+.register-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(106, 17, 203, 0.4);
+}
+
 </style>
