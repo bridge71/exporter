@@ -4,61 +4,28 @@
       <!-- 侧边栏 -->
       <el-aside width="200px">
         <div style="height: 100vh; overflow-y: auto;">
-          <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
-            <!-- 菜单项内容保持不变 -->
-            <el-submenu index="1">
-              <template #title>会计实体信息</template>
-              <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
-              <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
-              <el-menu-item index="1-3" @click="pushClient">客商信息</el-menu-item>
-              <el-menu-item index="1-4" @click="pushContact">联系人信息</el-menu-item>
-              <el-menu-item index="1-5" @click="pushBankAccount">银行账户信息</el-menu-item>
-              <el-menu-item index="1-6" @click="pushInventoryLocation">库存地点信息</el-menu-item>
-              <el-menu-item index="1-7" @click="pushPaymentMethod">付款方式信息</el-menu-item>
-              <el-menu-item index="1-8" @click="pushCategory">品类信息</el-menu-item>
-              <el-menu-item index="1-9" @click="pushBrand">品牌信息</el-menu-item>
-              <el-menu-item index="1-10" @click="pushPackagingSpec">包装规格信息</el-menu-item>
-              <el-menu-item index="1-11" @click="pushEmployee">员工信息</el-menu-item>
-              <el-menu-item index="1-12" @click="pushProductDetail">产品明细</el-menu-item>
-              <el-menu-item index="1-13" @click="pushLoadingDetail">装货明细</el-menu-item>
-              <el-menu-item index="1-14" @click="pushCostDetail">费用明细</el-menu-item>
-              <el-menu-item index="1-15" @click="pushSalesOrder">销售订单</el-menu-item>
-              <el-menu-item index="1-16" @click="pushPurchaseOrder">采购收单</el-menu-item>
-              <el-menu-item index="1-17" @click="pushPayableInvoice">应付账款单</el-menu-item>
-              <el-menu-item index="1-18" @click="pushReceipt">收款单</el-menu-item>
-              <el-menu-item index="1-19" @click="pushPayment">付款单</el-menu-item>
-              <!-- 其他菜单项 -->
-            </el-submenu>
-            <!-- 其他菜单 -->
-          </el-menu>
+          <SideMenu :default-active="'1-1'" />
         </div>
       </el-aside>
 
-      <!-- 主体内容 -->
       <el-container>
         <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>  
+          <h2>{{ headerTitle }}</h2>
           <div>
             搜索：
-            <el-input
-              v-model="searchQuery"
-              placeholder="输入要搜索的关键字"
-              style="width: 200px;"
-            />
+            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
             <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
           </div>
         </el-header>
         <el-main>
           <!-- 会计实体信息表格 -->
-          <el-table :data="paginatedAcctData" style="width: 100%" max-height="450" v-if="activeMenu === '1-1'">
+          <el-table :data="paginatedAcctData" style="width: 100%" max-height="450">
             <el-table-column prop="AcctCode" label="会计实体编码" width="160%"></el-table-column>
             <el-table-column prop="AcctAbbr" label="会计实体缩写" width="160%"></el-table-column>
             <el-table-column prop="EtyAbbr" label="实体简称" width="160%"></el-table-column>
             <el-table-column prop="AcctName" label="会计实体名称" width="220%"></el-table-column>
 
-
             <el-table-column label="绑定的银行账户信息" width="220%">
-              <!-- <el-input v-model="acctForm.BankAccounts" :readonly="true"></el-input> -->
               <template #default="scope">
                 <span v-if="scope.row.AcctBanks && scope.row.AcctBanks.length > 0">
                   {{ scope.row.AcctBanks.map(bank => bank.AccNum).join(', ') }}
@@ -89,13 +56,10 @@
                 </el-row>
               </template>
             </el-table-column>
-
           </el-table>
 
-
-          <el-pagination v-model:current-page="currentPage" :page-size="pageSize"
-            :total="activeMenu === '1-1' ? acctData.length : bankData.length" layout="prev, pager, next"
-            @current-change="handlePageChange" />
+          <el-pagination v-model:current-page="currentPage" :page-size="pageSize" :total="acctData.length"
+            layout="prev, pager, next" @current-change="handlePageChange" />
         </el-main>
       </el-container>
     </el-container>
@@ -221,12 +185,7 @@
           <el-col :span="24">
             <el-form-item label="关联银行账户信息">
 
-              <!-- <el-input v-model="acctForm.BankAccounts" :readonly="true"></el-input> -->
               <el-input v-model="acctForm.AcctBanksDisplay" :readonly="true"></el-input>
-              <!-- <el-select v-model="acctForm.BankAccounts" multiple placeholder="请选择银行账户信息"> -->
-              <!--   <el-option v-for="bank in bankData" :key="bank.AccNum" :label="`${bank.AccName} (${bank.AccNum})`" -->
-              <!--     :value="bank.AccNum"></el-option> -->
-              <!-- </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -239,7 +198,6 @@
         </el-row>
       </el-form>
     </el-dialog>
-
 
 
     <!-- 查看会计实体信息的对话框 -->
@@ -360,13 +318,7 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联银行账户信息">
-
-              <!-- <el-input v-model="acctForm.BankAccounts" :readonly="true"></el-input> -->
               <el-input v-model="acctForm.AcctBanksDisplay" :readonly="true"></el-input>
-              <!-- <el-select v-model="acctForm.BankAccounts" multiple placeholder="请选择银行账户信息"> -->
-              <!--   <el-option v-for="bank in bankData" :key="bank.AccNum" :label="`${bank.AccName} (${bank.AccNum})`" -->
-              <!--     :value="bank.AccNum"></el-option> -->
-              <!-- </el-select> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -386,92 +338,14 @@
 
 import { ref, onMounted, computed } from 'vue';
 
-import { useRouter } from 'vue-router';
+import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 
 import { ElMessage, ElMessageBox } from 'element-plus'; // 确保 ElMessageBox 被引入
 import axios from 'axios'; // 引入 axios
 
 
-
-const router = useRouter();
 const searchQuery = ref(''); // 添加搜索查询字段
 
-
-
-const pushAcct = () => {
-  router.push('/acct');
-};
-const pushAcctBank = () => {
-  router.push('/acctBank');
-};
-
-const pushClient = () => {
-  router.push('/clinet');
-};
-
-const pushContact = () => {
-  router.push('/contact');
-};
-
-const pushBankAccount = () => {
-  router.push('/bankAccount');
-};
-
-const pushInventoryLocation = () => {
-  router.push('/inventoryLocation');
-};
-
-const pushPaymentMethod = () => {
-  router.push('/paymentMethod');
-};
-
-const pushCategory = () => {
-  router.push('/category');
-};
-
-const pushBrand = () => {
-  router.push('/brand');
-};
-
-const pushPackagingSpec = () => {
-  router.push('/packagingSpec');
-};
-
-const pushEmployee = () => {
-  router.push('/employee');
-};
-
-const pushProductDetail = () => {
-  router.push('/productDetail');
-};
-
-const pushLoadingDetail = () => {
-  router.push('/loadingDetail');
-};
-
-const pushCostDetail = () => {
-  router.push('/costDetail');
-};
-
-const pushSalesOrder = () => {
-  router.push('/salesOrder');
-};
-
-const pushPurchaseOrder = () => {
-  router.push('/purchaseOrder');
-};
-
-const pushPayableInvoice = () => {
-  router.push('/payableInvoice');
-};
-
-const pushReceipt = () => {
-  router.push('/receipt');
-};
-
-const pushPayment = () => {
-  router.push('/payment');
-};
 
 const downloadFile = async (fileId, fileName) => {
   try {
@@ -510,19 +384,17 @@ const handleFileChange = (uploadFile) => {
 };
 // 查看按钮逻辑
 const handleView = (index, row) => {
-  if (activeMenu.value === '1-1') {
-    // 填充会计实体信息表单
-    acctForm.value = { ...row }; // 将当前行的数据赋值给 acctForm
-    // 将 AcctBanks 转换为可显示的字符串
-    acctForm.value.AcctBanksDisplay = row.AcctBanks && row.AcctBanks.length > 0
-      ? row.AcctBanks.map(bank => bank.AccNum).join(', ')
-      : '无';
-    showshowAcctDialog.value = true; // 打开会计实体信息对话框
-    // 检查是否已上传文件
-    if (row.FileId) {
-      acctForm.value.FileId = row.FileId; // 保存 FileId
-      acctForm.value.FileName = row.FileName; // 保存 FileId
-    }
+  // 填充会计实体信息表单
+  acctForm.value = { ...row }; // 将当前行的数据赋值给 acctForm
+  // 将 AcctBanks 转换为可显示的字符串
+  acctForm.value.AcctBanksDisplay = row.AcctBanks && row.AcctBanks.length > 0
+    ? row.AcctBanks.map(bank => bank.AccNum).join(', ')
+    : '无';
+  showshowAcctDialog.value = true; // 打开会计实体信息对话框
+  // 检查是否已上传文件
+  if (row.FileId) {
+    acctForm.value.FileId = row.FileId; // 保存 FileId
+    acctForm.value.FileName = row.FileName; // 保存 FileId
   }
 };
 // 重置会计实体信息表单
@@ -550,7 +422,6 @@ const resetAcctForm = () => {
     uploadRef.value.clearFiles(); // 清空文件列表
   }
 };
-const selectedAcct = ref({ AcctId: '', AcctName: '' }); // 默认值为空对象
 // 会计实体信息表单提交逻辑
 const submitAcctForm = async () => {
   try {
@@ -595,15 +466,6 @@ const handleDelete = (index, AcctId) => {
     type: 'warning'
   }).then(() => {
     console.log('Confirmed delete', AcctId); // 添加调试信息
-    // 这里假设你有一个删除接口 /delete/acct
-    // const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
-    // acctForm.AcctId.value = AcctId;
-    // acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
-    // acctForm.value.AcctName = "ss";
-    // acctForm.value.AcctCode = "ss";
-    // acctForm.value.EtyAbbr = "ss";
-    // console.log('Confirmed delete', acctForm); // 添加调试信息
-    // console.log('Confirmed delete ss', acctForm.AcctCode); // 添加调试信息
     axios.post('/delete/acct', {
       "AcctId": AcctId,
       "AcctAbbr": "ss",
@@ -634,6 +496,7 @@ const handlePageChange = (page) => {
 const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
 // 计算当前页显示的会计实体信息数据
+
 const paginatedAcctData = computed(() => {
   let filteredData = acctData.value;
   if (searchQuery.value) {
@@ -651,14 +514,14 @@ const paginatedAcctData = computed(() => {
       item.Email.includes(searchQuery.value) ||
       item.Website.includes(searchQuery.value) ||
       item.RegDate.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value)
+      item.Notes.includes(searchQuery.value) ||
+      (item.AcctBanks && item.AcctBanks.some(bank => bank.AccNum.includes(searchQuery.value))) // 新增：检查 AcctBanks 中的 AccNum
     );
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);
 });
-
 onMounted(() => {
   fetchAcctData(); // 获取会计实体信息
 });
@@ -673,23 +536,9 @@ const fetchAcctData = async () => {
   }
 };
 
-const fetchAcctBankData = async () => {
-  try {
-    const response = await axios.get('/find/acctBank'); // 调用会计实体银行账户信息接口
-    bankData.value = response.data.AcctBank; // 假设返回的数据结构中有 AcctBank 字段
-  } catch (error) {
-    ElMessage.error('获取会计实体银行账户信息失败，请稍后重试');
-    console.error('获取会计实体银行账户信息失败:', error);
-  }
-};
-// 当前选中的菜单项
-const activeMenu = ref('1-1');
 
 // 会计实体信息对话框显示状态
 const showAcctDialog = ref(false);
-
-// 会计实体银行账户信息对话框显示状态
-const showBankDialog = ref(false);
 
 // 会计实体信息对话框显示状态
 const showshowAcctDialog = ref(false);
@@ -726,26 +575,19 @@ const acctRules = {
 
 // 表格数据（初始值为空数组）
 const acctData = ref([]); // 会计实体信息
-// 根据当前选中的菜单项动态更改标题和按钮文本
+
 const headerTitle = computed(() => {
-  return activeMenu.value === '1-1' ? '会计实体信息' : '';
+  return '会计实体信息';
 });
 
 const addButtonText = computed(() => {
-  return activeMenu.value === '1-1' ? '添加会计实体信息' : '';
+  return '添加会计实体信息';
 });
-
-// 菜单项选择事件
-const handleMenuSelect = (index) => {
-  activeMenu.value = index;
-  fetchAcctData(); // 重新获取会计实体信息数据
-};
 
 // 添加按钮点击事件
 const handleAdd = () => {
   showAcctDialog.value = true;
 };
-
 
 // 编辑按钮逻辑
 const handleEdit = (index, row) => {
@@ -757,46 +599,4 @@ const handleEdit = (index, row) => {
 };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  margin-top: 60px;
-}
-
-
-.el-header {
-  background-color: #f5f5f5;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.el-input {
-  margin-right: 10px;
-}
-
-.el-aside {
-  background-color: #304156;
-}
-
-.el-menu {
-  border-right: none;
-
-}
-
-.el-menu-item,
-.el-submenu__title {
-  color: #fff;
-}
-
-.el-menu-item:hover,
-.el-submenu__title:hover {
-  background-color: #263445;
-}
-
-.el-main {
-  padding: 20px;
-}
-</style>
+<style src="../assets/styles/Bottom.css"></style>

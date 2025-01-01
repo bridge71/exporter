@@ -4,54 +4,25 @@
       <!-- 侧边栏 -->
       <el-aside width="200px">
         <div style="height: 100vh; overflow-y: auto;">
-          <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
-            <!-- 菜单项内容保持不变 -->
-            <el-submenu index="1">
-              <template #title>会计实体信息</template>
-              <el-menu-item index="1-1" @click="pushAcct">会计实体信息</el-menu-item>
-              <el-menu-item index="1-2" @click="pushAcctBank">会计实体银行账户信息</el-menu-item>
-              <el-menu-item index="1-3" @click="pushClient">客商信息</el-menu-item>
-              <el-menu-item index="1-4">联系人信息</el-menu-item>
-              <el-menu-item index="1-5">银行账户信息</el-menu-item>
-              <el-menu-item index="1-6">库存地点信息</el-menu-item>
-              <el-menu-item index="1-7">付款方式信息</el-menu-item>
-              <el-menu-item index="1-8">品类信息</el-menu-item>
-              <el-menu-item index="1-9">品牌信息</el-menu-item>
-              <el-menu-item index="1-10">包装规格信息</el-menu-item>
-              <el-menu-item index="1-11">员工信息</el-menu-item>
-              <el-menu-item index="1-12">产品明细</el-menu-item>
-              <el-menu-item index="1-13">装货明细</el-menu-item>
-              <el-menu-item index="1-14">费用明细</el-menu-item>
-              <el-menu-item index="1-15">销售订单</el-menu-item>
-              <el-menu-item index="1-16">采购收单</el-menu-item>
-              <el-menu-item index="1-17">应付账款单</el-menu-item>
-              <el-menu-item index="1-18">收款单</el-menu-item>
-              <el-menu-item index="1-19">付款单</el-menu-item>
-              <!-- 其他菜单项 -->
-            </el-submenu>
-            <!-- 其他菜单 -->
-          </el-menu>
+          <SideMenu :default-active="'1-2'" />
         </div>
       </el-aside>
 
       <!-- 主体内容 -->
       <el-container>
+
         <el-header style="display: flex; justify-content: space-between; align-items: center;">
           <h2>{{ headerTitle }}</h2>
           <div>
             搜索：
-            <el-input
-              v-model="searchQuery"
-              placeholder="输入要搜索的关键字"
-              style="width: 200px;"
-            />
+            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
             <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
           </div>
         </el-header>
         <el-main>
 
           <!-- 会计实体银行账户信息表格 -->
-          <el-table :data="paginatedBankData" style="width: 100%" max-height="450" v-if="activeMenu === '1-2'">
+          <el-table :data="paginatedBankData" style="width: 100%" max-height="450">
             <el-table-column prop="AccName" label="账户名称" width="220%"></el-table-column>
             <el-table-column prop="AccNum" label="账号" width="220%"></el-table-column>
 
@@ -74,15 +45,15 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.AcctId)" type="text" size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.AcctBankId)" type="text"
+                    size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
           </el-table>
 
-          <el-pagination v-model:current-page="currentPage" :page-size="pageSize"
-            :total="activeMenu === '1-1' ? acctData.length : bankData.length" layout="prev, pager, next"
-            @current-change="handlePageChange" />
+          <el-pagination v-model:current-page="currentPage" :page-size="pageSize" :total="bankData.length"
+            layout="prev, pager, next" @current-change="handlePageChange" />
         </el-main>
       </el-container>
     </el-container>
@@ -263,10 +234,6 @@
                 <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} (${acct.AcctCode})`"
                   :value="acct.AcctId"></el-option>
               </el-select>
-              <!-- <el-select v-model="selectedAcct" placeholder="请选择会计实体信息"> -->
-              <!--   <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} `" -->
-              <!--     :value="{ AcctId: acct.AcctId, AcctName: acct.AcctName }"></el-option> -->
-              <!-- </el-select> -->
 
             </el-form-item>
           </el-col>
@@ -287,26 +254,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
+import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 
-import { useRouter } from 'vue-router';
-
-
-// 根据当前路由动态设置默认选中的菜单项
-const router = useRouter();
-const searchQuery = ref('');
-
-
-
-const pushAcct = () => {
-  router.push('/acct');
-};
-const pushAcctBank = () => {
-  router.push('/acctBank');
-};
-
-const pushClient = () => {
-  router.push('/clinet');
-};
+const searchQuery = ref(''); // 添加搜索查询字段
 const downloadFile = async (fileId, fileName) => {
   try {
     const response = await axios.post(
@@ -342,6 +292,8 @@ const handleDelete = (index, AcctBankId) => {
   }).then(() => {
     axios.post('/delete/acctBank', {
       "AcctBankId": AcctBankId,
+      "AccName": "ss",
+      "AccNum": "ss"
     })
       .then(response => {
         if (response.status === 200) {
@@ -442,7 +394,8 @@ const submitBankForm = async () => {
     }
   } catch (error) {
     console.error('保存会计实体银行账户信息失败:', error);
-    ElMessage.error('保存会计实体银行账户信息失败，请稍后重试');
+    // ElMessage.error(error.response.data.RetMessage);
+    ElMessage.error("已存在帐号或者请选择绑定的会计实体");
   }
 };
 const handlePageChange = (page) => {
@@ -451,7 +404,6 @@ const handlePageChange = (page) => {
 const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
 
-// 计算当前页显示的会计实体银行账户信息数据
 const paginatedBankData = computed(() => {
   let filteredData = bankData.value;
   if (searchQuery.value) {
@@ -498,8 +450,6 @@ const fetchAcctBankData = async () => {
     console.error('获取会计实体银行账户信息失败:', error);
   }
 };
-// 当前选中的菜单项
-const activeMenu = ref('1-2');
 
 // 会计实体银行账户信息对话框显示状态
 const showBankDialog = ref(false);
@@ -535,17 +485,13 @@ const acctData = ref([]); // 会计实体信息
 const bankData = ref([]); // 会计实体银行账户信息
 // 根据当前选中的菜单项动态更改标题和按钮文本
 const headerTitle = computed(() => {
-  return activeMenu.value === '1-1' ? '会计实体信息' : '会计实体银行账户信息';
+  return '会计实体银行账户信息';
 });
 
 const addButtonText = computed(() => {
-  return activeMenu.value === '1-1' ? '添加会计实体信息' : '添加会计实体银行账户信息';
+  return '添加会计实体银行账户信息';
 });
 
-// 菜单项选择事件
-const handleMenuSelect = (index) => {
-  fetchAcctBankData()
-};
 
 // 添加按钮点击事件
 const handleAdd = () => {
@@ -561,37 +507,4 @@ const handleEdit = (index, row) => {
 };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  margin-top: 60px;
-}
-
-.el-header {
-  background-color: #f5f5f5;
-  padding: 0 20px;
-}
-
-.el-aside {
-  background-color: #304156;
-}
-
-.el-menu {
-  border-right: none;
-}
-
-.el-menu-item,
-.el-submenu__title {
-  color: #fff;
-}
-
-.el-menu-item:hover,
-.el-submenu__title:hover {
-  background-color: #263445;
-}
-
-.el-main {
-  padding: 20px;
-}
-</style>
+<style src="../assets/styles/Bottom.css"></style>

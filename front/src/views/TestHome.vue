@@ -151,13 +151,4 @@ const handleAcctClick = () => {
 };
 </script>
 
-<style>
-.el-menu-vertical-demo {
-  width: 300px;
-  /* 固定菜单栏宽度 */
-  min-height: 100vh;
-  overflow-y: auto;
-  border-right: 1px solid #ebeef5;
-  /* 添加边框以便更明显 */
-}
-</style>
+<style src="../assets/styles/Bottom.css"></style>

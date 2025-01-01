@@ -2,7 +2,6 @@ package database
 
 import "exporter/internal/models"
 
-
 func (s *service) FindMercType(mercTypes *[]models.MercType) {
 	s.gormDB.Find(mercTypes)
 }
@@ -59,7 +58,7 @@ func (s *service) FindBrandType(brandTypes *[]models.BrandType) {
 	s.gormDB.Find(brandTypes)
 }
 
-func (s *service) FindDegree(degrees *[]models.Degree) {
+func (s *service) FindEduLevel(degrees *[]models.EduLevel) {
 	s.gormDB.Find(degrees)
 }
 
@@ -67,7 +66,7 @@ func (s *service) FindDept(depts *[]models.Dept) {
 	s.gormDB.Find(depts)
 }
 
-func (s *service) FindPost(posts *[]models.Post) {
+func (s *service) FindPosition(posts *[]models.Position) {
 	s.gormDB.Find(posts)
 }
 
@@ -110,6 +109,7 @@ func (s *service) FindRates(rates *[]models.Rates) {
 func (s *service) FindBussOrderSta(bussOrderStas *[]models.BussOrderSta) {
 	s.gormDB.Find(bussOrderStas)
 }
+
 func (s *service) DeleteMercType(mercType *models.MercType) error {
 	return s.gormDB.Delete(mercType).Error
 }
@@ -166,7 +166,7 @@ func (s *service) DeleteBrandType(brandType *models.BrandType) error {
 	return s.gormDB.Delete(brandType).Error
 }
 
-func (s *service) DeleteDegree(degree *models.Degree) error {
+func (s *service) DeleteEduLevel(degree *models.EduLevel) error {
 	return s.gormDB.Delete(degree).Error
 }
 
@@ -174,7 +174,7 @@ func (s *service) DeleteDept(dept *models.Dept) error {
 	return s.gormDB.Delete(dept).Error
 }
 
-func (s *service) DeletePost(post *models.Post) error {
+func (s *service) DeletePosition(post *models.Position) error {
 	return s.gormDB.Delete(post).Error
 }
 
@@ -217,6 +217,7 @@ func (s *service) DeleteRates(rates *models.Rates) error {
 func (s *service) DeleteBussOrderSta(bussOrderSta *models.BussOrderSta) error {
 	return s.gormDB.Delete(bussOrderSta).Error
 }
+
 func (s *service) SaveMercType(mercType *models.MercType) error {
 	return s.gormDB.Save(mercType).Error
 }
@@ -273,7 +274,7 @@ func (s *service) SaveBrandType(brandType *models.BrandType) error {
 	return s.gormDB.Save(brandType).Error
 }
 
-func (s *service) SaveDegree(degree *models.Degree) error {
+func (s *service) SaveEduLevel(degree *models.EduLevel) error {
 	return s.gormDB.Save(degree).Error
 }
 
@@ -281,7 +282,7 @@ func (s *service) SaveDept(dept *models.Dept) error {
 	return s.gormDB.Save(dept).Error
 }
 
-func (s *service) SavePost(post *models.Post) error {
+func (s *service) SavePosition(post *models.Position) error {
 	return s.gormDB.Save(post).Error
 }
 
@@ -323,4 +324,14 @@ func (s *service) SaveRates(rates *models.Rates) error {
 
 func (s *service) SaveBussOrderSta(bussOrderSta *models.BussOrderSta) error {
 	return s.gormDB.Save(bussOrderSta).Error
+}
+
+// FindPayMthByID 根据 ID 查询 PayMth 记录
+func (s *service) FindPayMthByID(payMth *models.PayMth, id uint) error {
+	return s.gormDB.First(payMth, id).Error
+}
+
+// FindPayLimitByID 根据 ID 查询 PayLimit 记录
+func (s *service) FindPayLimitByID(payLimit *models.PayLimit, id uint) error {
+	return s.gormDB.First(payLimit, id).Error
 }

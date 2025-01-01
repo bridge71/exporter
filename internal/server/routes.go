@@ -11,22 +11,61 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Add your frontend URL
+		AllowOrigins:     []string{"*"}, // 允许所有来源
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
-		AllowCredentials: true, // Enable cookies/auth
+		AllowCredentials: true, // 启用 cookies/auth
 	}))
 	r.GET("/", s.HelloWorldHandler)
 
 	r.GET("/health", s.healthHandler)
 
 	r.POST("/file", s.Uploader)
-	r.POST("/save/acctBank", s.SaveAcctBankHandler)
+
+	r.GET("/find/empl", s.FindEmplHandler)
+	r.POST("/delete/empl", s.DeleteEmplHandler)
+	r.POST("/save/empl", s.SaveEmplHandler)
+
+	r.GET("/find/packSpec", s.FindPackSpecHandler)
+	r.POST("/delete/packSpec", s.DeletePackSpecHandler)
+	r.POST("/save/packSpec", s.SavePackSpecHandler)
+
+	r.GET("/find/brand", s.FindBrandHandler)
+	r.POST("/delete/brand", s.DeleteBrandHandler)
+	r.POST("/find/brand/id", s.FindBrandByIdHandler)
+	r.POST("/save/brand", s.SaveBrandHandler)
+
+	r.GET("/find/cat", s.FindCatHandler)
+	r.POST("/delete/cat", s.DeleteCatHandler)
+	r.POST("/find/cat/id", s.FindCatByIdHandler)
+	r.POST("/save/cat", s.SaveCatHandler)
+
+	r.POST("/save/payMentMethod", s.SavePayMentMethodHandler)
+	r.POST("/delete/payMentMethod", s.DeletePayMentMethodHandler)
+	r.GET("/find/payMentMethod", s.FindPayMentMethodHandler)
+
+	r.POST("/save/merchant", s.SaveMerchantHandler)
+	r.POST("/delete/merchant", s.DeleteMerchantHandler)
+	r.GET("/find/merchant", s.FindMerchantHandler)
+
 	r.POST("/save/acct", s.SaveAcctHandler)
-	r.POST("/delete/acctBank", s.DeleteAcctBankHandler)
 	r.POST("/delete/acct", s.DeleteAcctHandler)
 	r.GET("/find/acct", s.FindAcctHandler)
+
+	r.POST("/save/acctBank", s.SaveAcctBankHandler)
+	r.POST("/delete/acctBank", s.DeleteAcctBankHandler)
 	r.GET("/find/acctBank", s.FindAcctBankHandler)
+	r.GET("/find/acctBank/id", s.FindAcctBankByIdHandler)
+
+	r.POST("/save/cust", s.SaveCustHandler)
+	r.POST("/delete/cust", s.DeleteCustHandler)
+	r.GET("/find/cust", s.FindCustHandler)
+	r.GET("/find/cust/id", s.FindCustByIdHandler)
+
+	r.POST("/save/bankAccount", s.SaveBankAccountHandler)
+	r.POST("/delete/bankAccount", s.DeleteBankAccountHandler)
+	r.GET("/find/bankAccount", s.FindBankAccountHandler)
+	r.GET("/find/bankAccount/id", s.FindBankAccountByIdHandler)
 
 	r.POST("/create/user", s.CreateUserHandler)
 	r.POST("/auth", s.LoginHandler)
@@ -48,9 +87,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 		deleteGroup.POST("/port", s.DeletePortHandler)
 		deleteGroup.POST("/taxType", s.DeleteTaxTypeHandler)
 		deleteGroup.POST("/brandType", s.DeleteBrandTypeHandler)
-		deleteGroup.POST("/degree", s.DeleteDegreeHandler)
+		deleteGroup.POST("/eduLevel", s.DeleteEduLevelHandler)
 		deleteGroup.POST("/dept", s.DeleteDeptHandler)
-		deleteGroup.POST("/post", s.DeletePostHandler)
+		deleteGroup.POST("/position", s.DeletePositionHandler)
 		deleteGroup.POST("/qualStd", s.DeleteQualStdHandler)
 		deleteGroup.POST("/invLoc", s.DeleteInvLocHandler)
 		deleteGroup.POST("/docReq", s.DeleteDocReqHandler)
@@ -78,9 +117,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 		findGroup.GET("/port", s.FindPortHandler)
 		findGroup.GET("/taxType", s.FindTaxTypeHandler)
 		findGroup.GET("/brandType", s.FindBrandTypeHandler)
-		findGroup.GET("/degree", s.FindDegreeHandler)
+		findGroup.GET("/eduLevel", s.FindEduLevelHandler)
 		findGroup.GET("/dept", s.FindDeptHandler)
-		findGroup.GET("/post", s.FindPostHandler)
+		findGroup.GET("/position", s.FindPositionHandler)
 		findGroup.GET("/qualStd", s.FindQualStdHandler)
 		findGroup.GET("/invLoc", s.FindInvLocHandler)
 		findGroup.GET("/docReq", s.FindDocReqHandler)
@@ -91,51 +130,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 		findGroup.GET("/expType", s.FindExpTypeHandler)
 		findGroup.GET("/rates", s.FindRatesHandler)
 		findGroup.GET("/bussOrderSta", s.FindBussOrderStaHandler)
-	}
 
-	// 创建“acct”子分组，用于账户相关的查找
-	acctGroup := findGroup.Group("/acct")
-	{
-		// 精确查找接口
-		acctGroup.GET("/acctCode", s.FindAcctByAcctCodeHandler) // 参数: AcctCode (账户代码)
-		acctGroup.GET("/acctAbbr", s.FindAcctByAcctAbbrHandler) // 参数: AcctAbbr (账户缩写)
-		acctGroup.GET("/EtyAbbr", s.FindAcctByEtyAbbrHandler)   // 参数: EtyAbbr (实体缩写)
-		acctGroup.GET("/acctName", s.FindAcctByAcctNameHandler) // 参数: AcctName (账户名称)
-		acctGroup.GET("/acctAddr", s.FindAcctByAcctAddrHandler) // 参数: AcctAddr (账户地址)
-		acctGroup.GET("/nation", s.FindAcctByNationHandler)     // 参数: Nation (国家)
-		acctGroup.GET("/taxType", s.FindAcctByTaxTypeHandler)   // 参数: TaxType (税务类型)
-		acctGroup.GET("/taxCode", s.FindAcctByTaxCodeHandler)   // 参数: TaxCode (税务代码)
-		acctGroup.GET("/phoneNum", s.FindAcctByPhoneNumHandler) // 参数: PhoneNum (电话号码)
-		acctGroup.GET("/email", s.FindAcctByEmailHandler)       // 参数: Email (电子邮件)
-		acctGroup.GET("/website", s.FindAcctByWebsiteHandler)   // 参数: Website (网站)
-		acctGroup.GET("/regDate", s.FindAcctByRegDateHandler)   // 参数: RegDate (注册日期)
-		acctGroup.GET("/notes", s.FindAcctByNotesHandler)       // 参数: Notes (备注)
-
-		// 模糊查找接口
-		acctGroup.GET("/fzz/acctAddr", s.FzzFindAcctByAcctAddrHandler) // 参数: AcctAddr (账户地址)
-		acctGroup.GET("/fzz/email", s.FzzFindAcctByEmailHandler)       // 参数: Email (电子邮件)
-		acctGroup.GET("/fzz/website", s.FzzFindAcctByWebsiteHandler)   // 参数: Website (网站)
-		acctGroup.GET("/fzz/regDate", s.FzzFindAcctByRegDateHandler)   // 参数: RegDate (注册日期)
-		acctGroup.GET("/fzz/notes", s.FzzFindAcctByNotesHandler)       // 参数: Notes (备注)
-	}
-
-	// 创建“acctBank”子分组，用于账户银行相关的查找
-	acctBankGroup := findGroup.Group("/acctBank")
-	{
-		// 精确查找接口
-		acctBankGroup.GET("/id", s.FindAcctBankByIdHandler)               // 参数: AcctId (账户ID)
-		acctBankGroup.GET("/accName", s.FindAcctBankByAccNameHandler)     // 参数: AccName (账户名称)
-		acctBankGroup.GET("/accNum", s.FindAcctBankByAccNumHandler)       // 参数: AccNum (账户编号)
-		acctBankGroup.GET("/currency", s.FindAcctBankByCurrencyHandler)   // 参数: Currency (货币)
-		acctBankGroup.GET("/bankName", s.FindAcctBankByBankNameHandler)   // 参数: BankName (银行名称)
-		acctBankGroup.GET("/swiftCode", s.FindAcctBankBySwiftCodeHandler) // 参数: SwiftCode (SWIFT代码)
-		acctBankGroup.GET("/bankAddr", s.FindAcctBankByBankAddrHandler)   // 参数: BankAddr (银行地址)
-		acctBankGroup.GET("/notes", s.FindAcctBankByNotesHandler)         // 参数: Notes (备注)
-
-		// 模糊查找接口
-		acctBankGroup.GET("/fzz/bankName", s.FzzFindAcctBankByBankNameHandler) // 参数: BankName (银行名称)
-		acctBankGroup.GET("/fzz/bankAddr", s.FzzFindAcctBankByBankAddrHandler) // 参数: BankAddr (银行地址)
-		acctBankGroup.GET("/fzz/notes", s.FzzFindAcctBankByNotesHandler)       // 参数: Notes (备注)
 	}
 
 	saveGroup := r.Group("/save")
@@ -154,9 +149,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 		saveGroup.POST("/port", s.SavePortHandler)                   // 参数: port，portId
 		saveGroup.POST("/taxType", s.SaveTaxTypeHandler)             // 参数: taxType，taxTypeId
 		saveGroup.POST("/brandType", s.SaveBrandTypeHandler)         // 参数: brandType，brandTypeId
-		saveGroup.POST("/degree", s.SaveDegreeHandler)               // 参数: degree，degreeId
+		saveGroup.POST("/eduLevel", s.SaveEduLevelHandler)           // 参数: degree，degreeId
 		saveGroup.POST("/dept", s.SaveDeptHandler)                   // 参数: dept，deptId
-		saveGroup.POST("/post", s.SavePostHandler)                   // 参数: post，postId
+		saveGroup.POST("/position", s.SavePositionHandler)           // 参数: post，postId
 		saveGroup.POST("/qualStd", s.SaveQualStdHandler)             // 参数: qualStd，qualStdId
 		saveGroup.POST("/invLoc", s.SaveInvLocHandler)               // 参数: invLoc，invLocId
 		saveGroup.POST("/docReq", s.SaveDocReqHandler)               // 参数: docReq，docReqId

@@ -23,6 +23,41 @@ type Service interface {
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
 
+	DeleteEmpl(Empl *models.Empl) error
+	SaveEmpl(Empl *models.Empl) error
+	FindEmpl(Empls *[]models.Empl)
+
+	DeletePackSpec(PackSpec *models.PackSpec) error
+	SavePackSpec(PackSpec *models.PackSpec) error
+	FindPackSpec(PackSpecs *[]models.PackSpec)
+
+	DeleteBrand(brand *models.Brand) error
+	SaveBrand(brand *models.Brand) error
+	FindBrand(brands *[]models.Brand)
+	FindBrandById(brand *models.Brand, brandId uint) error
+
+	DeleteCat(cat *models.Cat) error
+	SaveCat(cat *models.Cat) error
+	FindCat(cats *[]models.Cat)
+	FindCatById(cat *models.Cat, catId uint) error
+
+	DeletePayMentMethod(payMentMethod *models.PayMentMethod) error
+	SavePayMentMethod(payMentMethod *models.PayMentMethod) error
+	FindPayMentMethods(payMentMethods *[]models.PayMentMethod)
+	FindPayMentMethodByID(payMentMethod *models.PayMentMethod, id uint) error
+
+	DeleteBankAccount(bankAccount *models.BankAccount) error
+	SaveBankAccount(bankAccount *models.BankAccount) error
+	FindBankAccount(bankAccounts *[]models.BankAccount)
+	FindBankAccountById(bankAccounts *[]models.BankAccount, mercId uint)
+	DeleteCust(cust *models.Cust) error
+	SaveCust(cust *models.Cust) error
+	FindCust(custs *[]models.Cust)
+	FindCustById(custs *[]models.Cust, mercId uint)
+
+	DeleteMerchant(merchant *models.Merchant) error
+	SaveMerchant(merchant *models.Merchant) error
+	FindMerchant(merchants *[]models.Merchant)
 	// Close terminates the database connection.
 	// It returns an error if the connection cannot be closed.
 	Close() error
@@ -37,40 +72,11 @@ type Service interface {
 	FindAcct(accts *[]models.Acct)
 	FindAcctBank(acctBanks *[]models.AcctBank)
 	FindAcctBankById(acctBanks *[]models.AcctBank, acctId uint)
-	FindAcctBankByAccName(acctBanks *[]models.AcctBank, accName string)
-	FindAcctBankByAccNum(acctBanks *[]models.AcctBank, accNum string)
-	FindAcctBankByCurrency(acctBanks *[]models.AcctBank, currency string)
-	FindAcctBankByBankName(acctBanks *[]models.AcctBank, bankName string)
-	FzzFindAcctBankByBankName(acctBanks *[]models.AcctBank, bankName string)
-	FindAcctBankBySwiftCode(acctBanks *[]models.AcctBank, swiftCode string)
-	FindAcctBankByBankAddr(acctBanks *[]models.AcctBank, bankAddr string)
-	FzzFindAcctBankByBankAddr(acctBanks *[]models.AcctBank, bankAddr string)
-	FzzFindAcctBankByNotes(acctBanks *[]models.AcctBank, notes string)
-	FindAcctBankByNotes(acctBanks *[]models.AcctBank, notes string)
-	FindAcctByAcctCode(accts *[]models.Acct, acctCode string)
-	FindAcctByAcctAbbr(accts *[]models.Acct, acctAbbr string)
-	FindAcctByEtyAbbr(accts *[]models.Acct, EtyAbbr string)
-	FindAcctByAcctName(accts *[]models.Acct, acctName string)
-	FindAcctByAcctAddr(accts *[]models.Acct, acctAddr string)
-	FzzFindAcctByAcctAddr(accts *[]models.Acct, acctAddr string)
-	FindAcctByNation(accts *[]models.Acct, nation string)
-	FindAcctByTaxType(accts *[]models.Acct, taxType string)
-	FindAcctByTaxCode(accts *[]models.Acct, taxCode string)
-	FindAcctByPhoneNum(accts *[]models.Acct, phoneNum string)
-	FzzFindAcctByPhoneNum(accts *[]models.Acct, phoneNum string)
-	FindAcctByEmail(accts *[]models.Acct, email string)
-	FzzFindAcctByEmail(accts *[]models.Acct, email string)
-	FindAcctByWebsite(accts *[]models.Acct, website string)
-	FzzFindAcctByWebsite(accts *[]models.Acct, website string)
-	FindAcctByRegDate(accts *[]models.Acct, regDate string)
-	FzzFindAcctByRegDate(accts *[]models.Acct, regDate string)
-	FindAcctByNotes(accts *[]models.Acct, notes string)
-	FzzFindAcctByNotes(accts *[]models.Acct, notes string)
 
 	CreateFile(file *models.File) error
 	// FindFile(file *models.File, MD5 string)
 
-	// Save functions
+	// Save functions of data directory
 	SaveMercType(mercType *models.MercType) error
 	SaveSuprType(suprType *models.SuprType) error
 	SavePrdtType(prdtType *models.PrdtType) error
@@ -85,9 +91,9 @@ type Service interface {
 	SavePort(port *models.Port) error
 	SaveTaxType(taxType *models.TaxType) error
 	SaveBrandType(brandType *models.BrandType) error
-	SaveDegree(degree *models.Degree) error
+	SaveEduLevel(degree *models.EduLevel) error
 	SaveDept(dept *models.Dept) error
-	SavePost(post *models.Post) error
+	SavePosition(post *models.Position) error
 	SaveQualStd(qualStd *models.QualStd) error
 	SaveInvLoc(invLoc *models.InvLoc) error
 	SaveDocReq(docReq *models.DocReq) error
@@ -99,7 +105,7 @@ type Service interface {
 	SaveRates(rates *models.Rates) error
 	SaveBussOrderSta(bussOrderSta *models.BussOrderSta) error
 
-	// Find functions
+	// Find functions of data directory
 	FindMercType(mercTypes *[]models.MercType)
 	FindSuprType(suprTypes *[]models.SuprType)
 	FindPrdtType(prdtTypes *[]models.PrdtType)
@@ -114,9 +120,9 @@ type Service interface {
 	FindPort(ports *[]models.Port)
 	FindTaxType(taxTypes *[]models.TaxType)
 	FindBrandType(brandTypes *[]models.BrandType)
-	FindDegree(degrees *[]models.Degree)
+	FindEduLevel(degrees *[]models.EduLevel)
 	FindDept(depts *[]models.Dept)
-	FindPost(posts *[]models.Post)
+	FindPosition(posts *[]models.Position)
 	FindQualStd(qualStds *[]models.QualStd)
 	FindInvLoc(invLocs *[]models.InvLoc)
 	FindDocReq(docReqs *[]models.DocReq)
@@ -128,7 +134,10 @@ type Service interface {
 	FindRates(rates *[]models.Rates)
 	FindBussOrderSta(bussOrderStas *[]models.BussOrderSta)
 
-	// Delete functions
+	FindPayMthByID(payMth *models.PayMth, id uint) error
+	FindPayLimitByID(payLimit *models.PayLimit, id uint) error
+
+	// Delete functions of data directory
 	DeleteMercType(mercType *models.MercType) error
 	DeleteSuprType(suprType *models.SuprType) error
 	DeletePrdtType(prdtType *models.PrdtType) error
@@ -143,9 +152,9 @@ type Service interface {
 	DeletePort(port *models.Port) error
 	DeleteTaxType(taxType *models.TaxType) error
 	DeleteBrandType(brandType *models.BrandType) error
-	DeleteDegree(degree *models.Degree) error
+	DeleteEduLevel(degree *models.EduLevel) error
 	DeleteDept(dept *models.Dept) error
-	DeletePost(post *models.Post) error
+	DeletePosition(post *models.Position) error
 	DeleteQualStd(qualStd *models.QualStd) error
 	DeleteInvLoc(invLoc *models.InvLoc) error
 	DeleteDocReq(docReq *models.DocReq) error
@@ -156,6 +165,7 @@ type Service interface {
 	DeleteExpType(expType *models.ExpType) error
 	DeleteRates(rates *models.Rates) error
 	DeleteBussOrderSta(bussOrderSta *models.BussOrderSta) error
+	// Merchant 相关接口
 }
 
 type service struct {
@@ -204,6 +214,11 @@ func New() Service {
 	})
 	// AutoMigrate all models
 	gormDB.AutoMigrate(
+		&models.Empl{},
+		&models.PayMentMethod{},
+		&models.PackSpec{},
+		&models.Cat{},
+		&models.Brand{},
 		&models.User{},
 		&models.Acct{},
 		&models.AcctBank{},
@@ -221,9 +236,9 @@ func New() Service {
 		&models.Port{},
 		&models.TaxType{},
 		&models.BrandType{},
-		&models.Degree{},
+		&models.EduLevel{},
 		&models.Dept{},
-		&models.Post{},
+		&models.Position{},
 		&models.QualStd{},
 		&models.InvLoc{},
 		&models.DocReq{},
@@ -235,6 +250,9 @@ func New() Service {
 		&models.Rates{},
 		&models.BussOrderSta{},
 		&models.MercType{},
+		&models.Merchant{},
+		&models.Cust{},
+		&models.BankAccount{},
 	)
 
 	dbInstance = &service{
@@ -243,10 +261,6 @@ func New() Service {
 	}
 
 	return dbInstance
-}
-
-func (s *service) CreateFile(file *models.File) error {
-	return s.gormDB.Create(file).Error
 }
 
 // Health checks the health of the database connection by pinging the database.
