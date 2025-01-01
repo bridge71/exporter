@@ -22,6 +22,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.POST("/file", s.Uploader)
 
+	r.GET("/find/empl", s.FindEmplHandler)
+	r.POST("/delete/empl", s.DeleteEmplHandler)
+	r.POST("/save/empl", s.SaveEmplHandler)
+
 	r.GET("/find/packSpec", s.FindPackSpecHandler)
 	r.POST("/delete/packSpec", s.DeletePackSpecHandler)
 	r.POST("/save/packSpec", s.SavePackSpecHandler)
@@ -83,9 +87,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 		deleteGroup.POST("/port", s.DeletePortHandler)
 		deleteGroup.POST("/taxType", s.DeleteTaxTypeHandler)
 		deleteGroup.POST("/brandType", s.DeleteBrandTypeHandler)
-		deleteGroup.POST("/degree", s.DeleteDegreeHandler)
+		deleteGroup.POST("/eduLevel", s.DeleteEduLevelHandler)
 		deleteGroup.POST("/dept", s.DeleteDeptHandler)
-		deleteGroup.POST("/post", s.DeletePostHandler)
+		deleteGroup.POST("/position", s.DeletePositionHandler)
 		deleteGroup.POST("/qualStd", s.DeleteQualStdHandler)
 		deleteGroup.POST("/invLoc", s.DeleteInvLocHandler)
 		deleteGroup.POST("/docReq", s.DeleteDocReqHandler)
@@ -113,9 +117,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 		findGroup.GET("/port", s.FindPortHandler)
 		findGroup.GET("/taxType", s.FindTaxTypeHandler)
 		findGroup.GET("/brandType", s.FindBrandTypeHandler)
-		findGroup.GET("/degree", s.FindDegreeHandler)
+		findGroup.GET("/eduLevel", s.FindEduLevelHandler)
 		findGroup.GET("/dept", s.FindDeptHandler)
-		findGroup.GET("/post", s.FindPostHandler)
+		findGroup.GET("/position", s.FindPositionHandler)
 		findGroup.GET("/qualStd", s.FindQualStdHandler)
 		findGroup.GET("/invLoc", s.FindInvLocHandler)
 		findGroup.GET("/docReq", s.FindDocReqHandler)
@@ -145,9 +149,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 		saveGroup.POST("/port", s.SavePortHandler)                   // 参数: port，portId
 		saveGroup.POST("/taxType", s.SaveTaxTypeHandler)             // 参数: taxType，taxTypeId
 		saveGroup.POST("/brandType", s.SaveBrandTypeHandler)         // 参数: brandType，brandTypeId
-		saveGroup.POST("/degree", s.SaveDegreeHandler)               // 参数: degree，degreeId
+		saveGroup.POST("/eduLevel", s.SaveEduLevelHandler)           // 参数: degree，degreeId
 		saveGroup.POST("/dept", s.SaveDeptHandler)                   // 参数: dept，deptId
-		saveGroup.POST("/post", s.SavePostHandler)                   // 参数: post，postId
+		saveGroup.POST("/position", s.SavePositionHandler)           // 参数: post，postId
 		saveGroup.POST("/qualStd", s.SaveQualStdHandler)             // 参数: qualStd，qualStdId
 		saveGroup.POST("/invLoc", s.SaveInvLocHandler)               // 参数: invLoc，invLocId
 		saveGroup.POST("/docReq", s.SaveDocReqHandler)               // 参数: docReq，docReqId

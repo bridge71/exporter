@@ -160,7 +160,36 @@ type PackSpec struct {
 	PackSpecId  uint   `gorm:"column:packSpecId; primaryKey" form:"PackSpecId"`
 	NetWt       uint   `gorm:"column:netWt" form:"NetWt"`
 }
+
+type Empl struct {
+	EmpName          string `gorm:"column:empName; not null" form:"EmpName"`         // 员工姓名
+	EmpEngName       string `gorm:"column:empEngName" form:"EmpEngName"`             // 员工英文名
+	Dept             string `gorm:"column:dept" form:"Dept"`                         // 部门
+	Position         string `gorm:"column:position" form:"Position"`                 // 岗位
+	JoinDate         string `gorm:"column:joinDate" form:"JoinDate"`                 // 入职日期
+	Gender           string `gorm:"column:gender" form:"Gender"`                     // 性别
+	IDCardNum        string `gorm:"column:idCardNum" form:"IDCardNum"`               // 身份证号
+	EduLevel         string `gorm:"column:eduLevel" form:"EduLevel"`                 // 学历
+	GradSchool       string `gorm:"column:gradSchool" form:"GradSchool"`             // 毕业学校
+	Major            string `gorm:"column:major" form:"Major"`                       // 专业
+	ResArea          string `gorm:"column:resArea" form:"ResArea"`                   // 居住地区
+	AddrDetail       string `gorm:"column:addrDetail" form:"AddrDetail"`             // 详细地址
+	MobileNum        string `gorm:"column:mobileNum" form:"MobileNum"`               // 手机号码
+	EmailAddr        string `gorm:"column:emailAddr" form:"EmailAddr"`               // 电子邮箱
+	EmergContact     string `gorm:"column:emergContact" form:"EmergContact"`         // 紧急联系人
+	EmergContactInfo string `gorm:"column:emergContactInfo" form:"EmergContactInfo"` // 紧急联系方式
+	PersonalPhoto    string `gorm:"column:personalPhoto" form:"PersonalPhoto"`       // 个人照片
+	LaborContract    string `gorm:"column:laborContract" form:"LaborContract"`       // 劳动合同
+	DeptComponent    string `gorm:"column:deptComponent" form:"DeptComponent"`       // 部门组件
+	OrgRole          string `gorm:"column:orgRole" form:"OrgRole"`                   // 组织角色
+	FileName         string `gorm:"column:fileName" form:"FileName"`                 // 文件名
+	Notes            string `gorm:"column:notes" form:"Notes"`                       // 备注
+	Age              uint   `gorm:"column:age" form:"Age"`                           // 年龄
+	FileId           uint   `gorm:"column:fileId" form:"FileId"`                     // 文件ID
+	EmpID            uint   `gorm:"column:empId; primaryKey" form:"EmpId"`           // 员工ID
+}
 type Message struct {
+	Empl          []Empl
 	Acct          []Acct
 	AcctBank      []AcctBank
 	Brand         []Brand
@@ -181,9 +210,9 @@ type Message struct {
 	Port          []Port
 	TaxType       []TaxType
 	BrandType     []BrandType
-	Degree        []Degree
+	EduLevel      []EduLevel
 	Dept          []Dept
-	Post          []Post
+	Position      []Position
 	QualStd       []QualStd
 	InvLoc        []InvLoc
 	DocReq        []DocReq
@@ -280,9 +309,9 @@ type BrandType struct {
 }
 
 // 学历
-type Degree struct {
-	Degree   string `gorm:"column:degree; not null; unique" form:"Degree"`
-	DegreeId uint   `gorm:"column:degreeId; primaryKey; " form:"DegreeId"`
+type EduLevel struct {
+	EduLevel   string `gorm:"column:degree; not null; unique" form:"EduLevel"`
+	EduLevelId uint   `gorm:"column:degreeId; primaryKey; " form:"EduLevelId"`
 }
 
 // 公司部门
@@ -292,9 +321,9 @@ type Dept struct {
 }
 
 // 公司岗位
-type Post struct {
-	Post   string `gorm:"column:post; not null; unique" form:"Post"`
-	PostId uint   `gorm:"column:postId; primaryKey; " form:"PostId"`
+type Position struct {
+	Position   string `gorm:"column:postion; not null; unique" form:"Position"`
+	PositionId uint   `gorm:"column:postId; primaryKey; " form:"PositionId"`
 }
 
 // 质量标准

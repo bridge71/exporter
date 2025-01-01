@@ -315,8 +315,8 @@ func (s *Server) DeleteBrandTypeHandler(c *gin.Context) {
 	}
 }
 
-func (s *Server) DeleteDegreeHandler(c *gin.Context) {
-	degree := &models.Degree{}
+func (s *Server) DeleteEduLevelHandler(c *gin.Context) {
+	degree := &models.EduLevel{}
 	err := c.ShouldBind(degree)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -325,7 +325,7 @@ func (s *Server) DeleteDegreeHandler(c *gin.Context) {
 		return
 	}
 
-	err = s.db.DeleteDegree(degree)
+	err = s.db.DeleteEduLevel(degree)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "failed to delete degree: " + err.Error(),
@@ -359,8 +359,8 @@ func (s *Server) DeleteDeptHandler(c *gin.Context) {
 	}
 }
 
-func (s *Server) DeletePostHandler(c *gin.Context) {
-	post := &models.Post{}
+func (s *Server) DeletePositionHandler(c *gin.Context) {
+	post := &models.Position{}
 	err := c.ShouldBind(post)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -369,7 +369,7 @@ func (s *Server) DeletePostHandler(c *gin.Context) {
 		return
 	}
 
-	err = s.db.DeletePost(post)
+	err = s.db.DeletePosition(post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "failed to delete post: " + err.Error(),
@@ -713,11 +713,11 @@ func (s *Server) FindBrandTypeHandler(c *gin.Context) {
 	})
 }
 
-func (s *Server) FindDegreeHandler(c *gin.Context) {
-	degrees := &[]models.Degree{}
-	s.db.FindDegree(degrees)
+func (s *Server) FindEduLevelHandler(c *gin.Context) {
+	degrees := &[]models.EduLevel{}
+	s.db.FindEduLevel(degrees)
 	c.JSON(http.StatusOK, models.Message{
-		Degree: *degrees,
+		EduLevel: *degrees,
 	})
 }
 
@@ -729,11 +729,11 @@ func (s *Server) FindDeptHandler(c *gin.Context) {
 	})
 }
 
-func (s *Server) FindPostHandler(c *gin.Context) {
-	posts := &[]models.Post{}
-	s.db.FindPost(posts)
+func (s *Server) FindPositionHandler(c *gin.Context) {
+	posts := &[]models.Position{}
+	s.db.FindPosition(posts)
 	c.JSON(http.StatusOK, models.Message{
-		Post: *posts,
+		Position: *posts,
 	})
 }
 
@@ -1125,8 +1125,8 @@ func (s *Server) SaveBrandTypeHandler(c *gin.Context) {
 	}
 }
 
-func (s *Server) SaveDegreeHandler(c *gin.Context) {
-	degree := &models.Degree{}
+func (s *Server) SaveEduLevelHandler(c *gin.Context) {
+	degree := &models.EduLevel{}
 	err := c.ShouldBind(degree)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -1135,7 +1135,7 @@ func (s *Server) SaveDegreeHandler(c *gin.Context) {
 		return
 	}
 
-	err = s.db.SaveDegree(degree)
+	err = s.db.SaveEduLevel(degree)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "failed to save degree: " + err.Error(),
@@ -1169,8 +1169,8 @@ func (s *Server) SaveDeptHandler(c *gin.Context) {
 	}
 }
 
-func (s *Server) SavePostHandler(c *gin.Context) {
-	post := &models.Post{}
+func (s *Server) SavePositionHandler(c *gin.Context) {
+	post := &models.Position{}
 	err := c.ShouldBind(post)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -1179,7 +1179,7 @@ func (s *Server) SavePostHandler(c *gin.Context) {
 		return
 	}
 
-	err = s.db.SavePost(post)
+	err = s.db.SavePosition(post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "failed to save post: " + err.Error(),

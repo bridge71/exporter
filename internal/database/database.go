@@ -23,6 +23,10 @@ type Service interface {
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
 
+	DeleteEmpl(Empl *models.Empl) error
+	SaveEmpl(Empl *models.Empl) error
+	FindEmpl(Empls *[]models.Empl)
+
 	DeletePackSpec(PackSpec *models.PackSpec) error
 	SavePackSpec(PackSpec *models.PackSpec) error
 	FindPackSpec(PackSpecs *[]models.PackSpec)
@@ -87,9 +91,9 @@ type Service interface {
 	SavePort(port *models.Port) error
 	SaveTaxType(taxType *models.TaxType) error
 	SaveBrandType(brandType *models.BrandType) error
-	SaveDegree(degree *models.Degree) error
+	SaveEduLevel(degree *models.EduLevel) error
 	SaveDept(dept *models.Dept) error
-	SavePost(post *models.Post) error
+	SavePosition(post *models.Position) error
 	SaveQualStd(qualStd *models.QualStd) error
 	SaveInvLoc(invLoc *models.InvLoc) error
 	SaveDocReq(docReq *models.DocReq) error
@@ -116,9 +120,9 @@ type Service interface {
 	FindPort(ports *[]models.Port)
 	FindTaxType(taxTypes *[]models.TaxType)
 	FindBrandType(brandTypes *[]models.BrandType)
-	FindDegree(degrees *[]models.Degree)
+	FindEduLevel(degrees *[]models.EduLevel)
 	FindDept(depts *[]models.Dept)
-	FindPost(posts *[]models.Post)
+	FindPosition(posts *[]models.Position)
 	FindQualStd(qualStds *[]models.QualStd)
 	FindInvLoc(invLocs *[]models.InvLoc)
 	FindDocReq(docReqs *[]models.DocReq)
@@ -148,9 +152,9 @@ type Service interface {
 	DeletePort(port *models.Port) error
 	DeleteTaxType(taxType *models.TaxType) error
 	DeleteBrandType(brandType *models.BrandType) error
-	DeleteDegree(degree *models.Degree) error
+	DeleteEduLevel(degree *models.EduLevel) error
 	DeleteDept(dept *models.Dept) error
-	DeletePost(post *models.Post) error
+	DeletePosition(post *models.Position) error
 	DeleteQualStd(qualStd *models.QualStd) error
 	DeleteInvLoc(invLoc *models.InvLoc) error
 	DeleteDocReq(docReq *models.DocReq) error
@@ -210,6 +214,7 @@ func New() Service {
 	})
 	// AutoMigrate all models
 	gormDB.AutoMigrate(
+		&models.Empl{},
 		&models.PayMentMethod{},
 		&models.PackSpec{},
 		&models.Cat{},
@@ -231,9 +236,9 @@ func New() Service {
 		&models.Port{},
 		&models.TaxType{},
 		&models.BrandType{},
-		&models.Degree{},
+		&models.EduLevel{},
 		&models.Dept{},
-		&models.Post{},
+		&models.Position{},
 		&models.QualStd{},
 		&models.InvLoc{},
 		&models.DocReq{},

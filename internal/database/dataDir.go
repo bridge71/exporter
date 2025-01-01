@@ -58,7 +58,7 @@ func (s *service) FindBrandType(brandTypes *[]models.BrandType) {
 	s.gormDB.Find(brandTypes)
 }
 
-func (s *service) FindDegree(degrees *[]models.Degree) {
+func (s *service) FindEduLevel(degrees *[]models.EduLevel) {
 	s.gormDB.Find(degrees)
 }
 
@@ -66,7 +66,7 @@ func (s *service) FindDept(depts *[]models.Dept) {
 	s.gormDB.Find(depts)
 }
 
-func (s *service) FindPost(posts *[]models.Post) {
+func (s *service) FindPosition(posts *[]models.Position) {
 	s.gormDB.Find(posts)
 }
 
@@ -166,7 +166,7 @@ func (s *service) DeleteBrandType(brandType *models.BrandType) error {
 	return s.gormDB.Delete(brandType).Error
 }
 
-func (s *service) DeleteDegree(degree *models.Degree) error {
+func (s *service) DeleteEduLevel(degree *models.EduLevel) error {
 	return s.gormDB.Delete(degree).Error
 }
 
@@ -174,7 +174,7 @@ func (s *service) DeleteDept(dept *models.Dept) error {
 	return s.gormDB.Delete(dept).Error
 }
 
-func (s *service) DeletePost(post *models.Post) error {
+func (s *service) DeletePosition(post *models.Position) error {
 	return s.gormDB.Delete(post).Error
 }
 
@@ -274,7 +274,7 @@ func (s *service) SaveBrandType(brandType *models.BrandType) error {
 	return s.gormDB.Save(brandType).Error
 }
 
-func (s *service) SaveDegree(degree *models.Degree) error {
+func (s *service) SaveEduLevel(degree *models.EduLevel) error {
 	return s.gormDB.Save(degree).Error
 }
 
@@ -282,7 +282,7 @@ func (s *service) SaveDept(dept *models.Dept) error {
 	return s.gormDB.Save(dept).Error
 }
 
-func (s *service) SavePost(post *models.Post) error {
+func (s *service) SavePosition(post *models.Position) error {
 	return s.gormDB.Save(post).Error
 }
 
@@ -335,4 +335,3 @@ func (s *service) FindPayMthByID(payMth *models.PayMth, id uint) error {
 func (s *service) FindPayLimitByID(payLimit *models.PayLimit, id uint) error {
 	return s.gormDB.First(payLimit, id).Error
 }
-
