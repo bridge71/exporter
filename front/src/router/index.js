@@ -23,6 +23,7 @@ import PurchaseOrder from '@/views/PurchaseOrder.vue';
 import PayableInvoice from '@/views/PayableInvoice.vue';
 import Receipt from '@/views/Receipt.vue';
 import Payment from '@/views/Payment.vue';
+import Register from '@/views/Register.vue';
 
 // 创建路由实例
 const router = createRouter({
@@ -30,15 +31,14 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'acct',
-      component: Acct,
+      name: 'login',
+      component: Login,
 
     },
     {
       path: '/acct',
       name: 'acct',
       component: Acct,
-
     },
 
     {
@@ -137,7 +137,12 @@ const router = createRouter({
       path: '/payment',
       name: 'payment',
       component: Payment,
-    }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register,
+    },
     
   ]
 });
