@@ -23,6 +23,25 @@ type Service interface {
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
 
+	DeletePackSpec(PackSpec *models.PackSpec) error
+	SavePackSpec(PackSpec *models.PackSpec) error
+	FindPackSpec(PackSpecs *[]models.PackSpec)
+
+	DeleteBrand(brand *models.Brand) error
+	SaveBrand(brand *models.Brand) error
+	FindBrand(brands *[]models.Brand)
+	FindBrandById(brand *models.Brand, brandId uint) error
+
+	DeleteCat(cat *models.Cat) error
+	SaveCat(cat *models.Cat) error
+	FindCat(cats *[]models.Cat)
+	FindCatById(cat *models.Cat, catId uint) error
+
+	DeletePayMentMethod(payMentMethod *models.PayMentMethod) error
+	SavePayMentMethod(payMentMethod *models.PayMentMethod) error
+	FindPayMentMethods(payMentMethods *[]models.PayMentMethod)
+	FindPayMentMethodByID(payMentMethod *models.PayMentMethod, id uint) error
+
 	DeleteBankAccount(bankAccount *models.BankAccount) error
 	SaveBankAccount(bankAccount *models.BankAccount) error
 	FindBankAccount(bankAccounts *[]models.BankAccount)
@@ -111,6 +130,9 @@ type Service interface {
 	FindRates(rates *[]models.Rates)
 	FindBussOrderSta(bussOrderStas *[]models.BussOrderSta)
 
+	FindPayMthByID(payMth *models.PayMth, id uint) error
+	FindPayLimitByID(payLimit *models.PayLimit, id uint) error
+
 	// Delete functions of data directory
 	DeleteMercType(mercType *models.MercType) error
 	DeleteSuprType(suprType *models.SuprType) error
@@ -188,6 +210,10 @@ func New() Service {
 	})
 	// AutoMigrate all models
 	gormDB.AutoMigrate(
+		&models.PayMentMethod{},
+		&models.PackSpec{},
+		&models.Cat{},
+		&models.Brand{},
 		&models.User{},
 		&models.Acct{},
 		&models.AcctBank{},

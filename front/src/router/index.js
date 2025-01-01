@@ -8,6 +8,8 @@ const router = createRouter({
   history: createWebHistory(),  // 使用 HTML5 历史模式
 
   routes: [
+
+    { path: '/', component: () => import('@/views/Acct.vue') },
     { path: '/acct', component: () => import('@/views/Acct.vue') },
     { path: '/acctBank', component: () => import('@/views/AcctBank.vue') },
     { path: '/merchant', component: () => import('@/views/Merchant.vue') },

@@ -22,6 +22,24 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.POST("/file", s.Uploader)
 
+	r.GET("/find/packSpec", s.FindPackSpecHandler)
+	r.POST("/delete/packSpec", s.DeletePackSpecHandler)
+	r.POST("/save/packSpec", s.SavePackSpecHandler)
+
+	r.GET("/find/brand", s.FindBrandHandler)
+	r.POST("/delete/brand", s.DeleteBrandHandler)
+	r.POST("/find/brand/id", s.FindBrandByIdHandler)
+	r.POST("/save/brand", s.SaveBrandHandler)
+
+	r.GET("/find/cat", s.FindCatHandler)
+	r.POST("/delete/cat", s.DeleteCatHandler)
+	r.POST("/find/cat/id", s.FindCatByIdHandler)
+	r.POST("/save/cat", s.SaveCatHandler)
+
+	r.POST("/save/payMentMethod", s.SavePayMentMethodHandler)
+	r.POST("/delete/payMentMethod", s.DeletePayMentMethodHandler)
+	r.GET("/find/payMentMethod", s.FindPayMentMethodHandler)
+
 	r.POST("/save/merchant", s.SaveMerchantHandler)
 	r.POST("/delete/merchant", s.DeleteMerchantHandler)
 	r.GET("/find/merchant", s.FindMerchantHandler)

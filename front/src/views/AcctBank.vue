@@ -16,7 +16,6 @@
           <div>
             搜索：
             <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
             <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
           </div>
         </el-header>
