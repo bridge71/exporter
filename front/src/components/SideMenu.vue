@@ -150,6 +150,10 @@ const pushOut = () => {
 
 <style scoped>
 .el-menu-vertical-demo {
+  height: 100%;
+  /* 或者设置一个足够的高度 */
+  overflow-y: auto;
+  /* 如果内容超出高度，允许滚动 */
   width: 200px;
   /* 设置菜单宽度 */
   background-color: white;

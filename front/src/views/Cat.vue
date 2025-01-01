@@ -436,37 +436,4 @@ const headerTitle = computed(() => '品类管理');
 const addButtonText = computed(() => '添加品类');
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  margin-top: 60px;
-}
-
-.el-header {
-  background-color: #f5f5f5;
-  padding: 0 20px;
-}
-
-.el-aside {
-  background-color: #304156;
-}
-
-.el-menu {
-  border-right: none;
-}
-
-.el-menu-item,
-.el-submenu__title {
-  color: #fff;
-}
-
-.el-menu-item:hover,
-.el-submenu__title:hover {
-  background-color: #263445;
-}
-
-.el-main {
-  padding: 20px;
-}
-</style>
+<style src="../assets/styles/Bottom.css"></style>
