@@ -8,5 +8,5 @@
 </template>
 
 <script setup>
-import SideMenu from './components/SideMenu.vue'; // 引入 SideMenu 组件
+import SideMenu from '../components/SideMenu.vue';
 </script>
