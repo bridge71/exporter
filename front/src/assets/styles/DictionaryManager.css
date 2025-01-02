@@ -1,0 +1,75 @@
+/* src/assets/styles/Bottom.css */
+
+/* 基本样式 */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* 容器样式 */
+  #app {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .el-container {
+    height: 100%;
+  }
+  
+  .el-aside {
+    background-color: #f7f7f7;
+    border-right: 1px solid #dcdcdc;
+  }
+  
+  .el-main {
+    padding: 20px;
+  }
+  
+  /* 表格样式 */
+  .el-table {
+    width: 100%;
+  }
+  
+  .el-pagination {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  /* 对话框样式 */
+  .el-dialog {
+    max-width: 800px;
+  }
+  
+  .el-form-item__label {
+    color: #606266;
+  }
+  
+  .el-button {
+    margin-right: 10px;
+  }
+  
+  /* 输入框样式 */
+  .el-input {
+    width: 100%;
+  }
+  
+  /* 按钮样式 */
+  .el-button--primary {
+    background-color: #409eff;
+    border-color: #409eff;
+  }
+  
+  .el-button--text {
+    color: #409eff;
+  }
+  
+  /* 删除按钮样式 */
+  .el-button--text.el-button--small {
+    color: red;
+  }
+  
+  /* 其他样式 */
+  .dialog-footer .el-button {
+    margin-left: 10px;
+  }

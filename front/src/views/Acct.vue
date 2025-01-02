@@ -331,6 +331,12 @@
       </el-form>
     </el-dialog>
 
+
+    <header class="top-bar">
+      <el-button @click="navigateToDictionaryManager">数据字典</el-button>
+    </header>
+    
+
   </div>
 </template>
 
@@ -342,6 +348,14 @@ import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 
 import { ElMessage, ElMessageBox } from 'element-plus'; // 确保 ElMessageBox 被引入
 import axios from 'axios'; // 引入 axios
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+// 方法：导航到 DictionaryManager 页面
+const navigateToDictionaryManager = () => {
+  router.push('/dictionaryManager');
+};
 
 
 const searchQuery = ref(''); // 添加搜索查询字段
@@ -600,3 +614,17 @@ const handleEdit = (index, row) => {
 </script>
 
 <style src="../assets/styles/Bottom.css"></style>
+
+
+<style scoped>
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f0f0;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+</style>
