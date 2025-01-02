@@ -10,7 +10,7 @@ import (
 
 func (s *Server) FindAcctHandler(c *gin.Context) {
 	accts := []models.Acct{}
-	s.db.FindAcct(&accts)
+	s.db.Find(&accts)
 	for i := range accts {
 		acctBank := []models.AcctBank{}
 		s.db.FindAcctBankById(&acctBank, accts[i].AcctId)
@@ -38,7 +38,7 @@ func (s *Server) SaveAcctHandler(c *gin.Context) {
 			RetMessage: "failed to save file",
 		})
 	}
-	err = s.db.SaveAcct(acct)
+	err = s.db.Save(acct)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save acct",
@@ -61,7 +61,7 @@ func (s *Server) DeleteAcctHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", acct)
 
-	err = s.db.DeleteAcct(acct)
+	err = s.db.Delete(acct)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to delete acct",

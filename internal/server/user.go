@@ -2,10 +2,9 @@ package server
 
 import (
 	"exporter/internal/models"
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -19,29 +18,76 @@ func EncryptPassword(password string) (string, error) {
 	return string(hashedPassword), nil
 }
 
-func (s *Server) CreateUserHandler(c *gin.Context) {
+func (s *Server) CreateRootHandler(c *gin.Context) {
 	user := &models.User{}
-	err := c.ShouldBindJSON(user)
+	user.UserId = 1
+	user.UserName = "root"
+	user.Email = os.Getenv("rootEmail")
+	user.Password = os.Getenv("rootPasswd")
+	user.Priority = 2
+	var err error
+	user.Password, err = EncryptPassword(user.Password)
+
+	isUser := &models.User{}
+	s.db.FindUserById(isUser, 1)
+	if isUser.Email != "" {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "there is a first root",
+		})
+		return
+	}
+
+	err = s.db.Save(user)
+
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "failed to create root",
+		})
+	} else {
+		c.JSON(http.StatusOK, models.Message{
+			RetMessage: "create root successfully",
+		})
+	}
+}
+
+func (s *Server) FindUserHandler(c *gin.Context) {
+	User := []models.User{}
+
+	s.db.Find(&User)
+	all := len(User)
+	for i := 0; i < all; i++ {
+		User[i].Password = ""
+	}
+	c.JSON(http.StatusOK, models.Message{
+		Users: User,
+	})
+}
+
+func (s *Server) SaveUserHandler(c *gin.Context) {
+	user := &models.User{}
+	err := c.ShouldBind(user)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "error in bind of user",
 		})
 		return
 	}
-	fmt.Printf("%v\n", *user)
-
+	if user.Password == "" {
+		user.Password = os.Getenv("defaultPasswd")
+	}
 	isLong, message := CheckStringLen(*user, false)
+	log.Printf("sss %s", user.Password)
 	if isLong {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: message,
 		})
 		return
 	}
-	user.PasswordHash, err = EncryptPassword(user.PasswordHash)
+	user.Password, err = EncryptPassword(user.Password)
 
-	err = s.db.CreateUser(user)
+	err = s.db.Save(user)
 
-	user.PasswordHash = ""
+	user.Password = ""
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "email may be illegal",
@@ -55,7 +101,7 @@ func (s *Server) CreateUserHandler(c *gin.Context) {
 }
 
 func CheckStringLen(user models.User, flag bool) (bool, string) {
-	if len(user.PasswordHash) > 36 || len(user.PasswordHash) == 0 {
+	if len(user.Password) > 36 || len(user.Password) == 0 {
 		return true, "password length is illegal"
 	}
 	if len(user.Email) > 36 || len(user.Email) == 0 {
@@ -70,35 +116,10 @@ func CheckStringLen(user models.User, flag bool) (bool, string) {
 	return false, ""
 }
 
-func (s *Server) ModifyUserPassHandler(c *gin.Context) {
-	user := &models.User{}
-	idStr, err := c.Cookie("UserId")
-	if err != nil {
-		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "failed to get cookie of UserId ",
-		})
-		return
-	}
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "failed to transform string to number",
-		})
-		return
-	}
-	user.UserId = uint(id)
-
-	password := c.PostForm("password")
-	log.Printf("sss   %u\n", user.UserId)
-
-	passwordHash, _ := EncryptPassword(password)
-	s.db.ModifyUserPass(user, passwordHash)
-}
-
 func (s *Server) LoginHandler(c *gin.Context) {
 	log.Printf("sss\n")
 	user := &models.User{}
-	err := c.ShouldBindJSON(user)
+	err := c.ShouldBind(user)
 	log.Printf("%v ss\n", *user)
 	if err != nil {
 		log.Printf("error in bind of user\n")
@@ -116,14 +137,14 @@ func (s *Server) LoginHandler(c *gin.Context) {
 	}
 
 	auth := &models.User{}
-	s.db.FindUser(auth, user.Email)
-	err = bcrypt.CompareHashAndPassword([]byte(auth.PasswordHash), []byte(user.PasswordHash))
+	s.db.FindUserByEmail(auth, user.Email)
+	err = bcrypt.CompareHashAndPassword([]byte(auth.Password), []byte(user.Password))
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to login",
 		})
 	}
-	auth.PasswordHash = ""
+	auth.Password = ""
 	c.JSON(http.StatusOK, models.Message{
 		RetMessage: "login successfully",
 		User:       *auth,

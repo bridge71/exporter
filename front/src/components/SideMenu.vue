@@ -71,9 +71,6 @@ const pushMerchant = () => {
 const pushCust = () => {
   router.push('/cust');
 };
-const pushContact = () => {
-  router.push('/contact');
-};
 
 const pushBankAccount = () => {
   router.push('/bankAccount');
