@@ -7,6 +7,7 @@
 
     <el-main class="dictionary-container">
       <el-row :gutter="20">
+        <!-- 动态生成多个表格 -->
         <el-col :span="8" v-for="(dict, index) in dictionaryData" :key="dict.dictId">
           <el-card class="custom-card">
             <div class="card-header">
@@ -59,8 +60,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 interface DictionaryItem {
   itemId: number;
@@ -77,8 +79,8 @@ interface Dictionary {
 // 路由实例
 const router = useRouter();
 
-// 示例数据
-const dictionaryData = ref<Dictionary[]>([
+// 示例数据（增加7-8个表格）
+const defaultDictionaryData: Dictionary[] = [
   {
     dictId: 1,
     dictName: '客户类型',
@@ -91,7 +93,91 @@ const dictionaryData = ref<Dictionary[]>([
       { itemId: 6, itemName: '其他分类', color: 'green' },
     ],
   },
-]);
+  {
+    dictId: 2,
+    dictName: '供应商类型',
+    items: [
+      { itemId: 7, itemName: '电子产品', color: 'blue' },
+      { itemId: 8, itemName: '机械设备', color: 'yellow' },
+      { itemId: 9, itemName: '服装', color: 'orange' },
+      { itemId: 10, itemName: '食品', color: 'red' },
+      { itemId: 11, itemName: '家居', color: 'pink' },
+      { itemId: 12, itemName: '其他', color: 'green' },
+    ],
+  },
+  {
+    dictId: 3,
+    dictName: '产品类别',
+    items: [
+      { itemId: 13, itemName: '物流', color: 'blue' },
+      { itemId: 14, itemName: '咨询', color: 'yellow' },
+      { itemId: 15, itemName: '维修', color: 'orange' },
+      { itemId: 16, itemName: '安装', color: 'red' },
+      { itemId: 17, itemName: '培训', color: 'pink' },
+      { itemId: 18, itemName: '其他', color: 'green' },
+    ],
+  },
+  {
+    dictId: 4,
+    dictName: '食品添加剂类别',
+    items: [
+      { itemId: 19, itemName: '制造业', color: 'blue' },
+      { itemId: 20, itemName: '零售业', color: 'yellow' },
+      { itemId: 21, itemName: '服务业', color: 'orange' },
+      { itemId: 22, itemName: '金融业', color: 'red' },
+      { itemId: 23, itemName: '教育行业', color: 'pink' },
+      { itemId: 24, itemName: '其他', color: 'green' },
+    ],
+  },
+  {
+    dictId: 5,
+    dictName: '饲料添加剂类别',
+    items: [
+      { itemId: 25, itemName: '华北', color: 'blue' },
+      { itemId: 26, itemName: '华东', color: 'yellow' },
+      { itemId: 27, itemName: '华南', color: 'orange' },
+      { itemId: 28, itemName: '西南', color: 'red' },
+      { itemId: 29, itemName: '西北', color: 'pink' },
+      { itemId: 30, itemName: '其他', color: 'green' },
+    ],
+  },
+  {
+    dictId: 6,
+    dictName: '计量单位',
+    items: [
+      { itemId: 31, itemName: '中文', color: 'blue' },
+      { itemId: 32, itemName: '英文', color: 'yellow' },
+      { itemId: 33, itemName: '法文', color: 'orange' },
+      { itemId: 34, itemName: '德文', color: 'red' },
+      { itemId: 35, itemName: '西班牙文', color: 'pink' },
+      { itemId: 36, itemName: '其他', color: 'green' },
+    ],
+  },
+  {
+    dictId: 7,
+    dictName: '包装类型',
+    items: [
+      { itemId: 37, itemName: '小学', color: 'blue' },
+      { itemId: 38, itemName: '初中', color: 'yellow' },
+      { itemId: 39, itemName: '高中', color: 'orange' },
+      { itemId: 40, itemName: '本科', color: 'red' },
+      { itemId: 41, itemName: '研究生', color: 'pink' },
+      { itemId: 42, itemName: '其他', color: 'green' },
+    ],
+  },
+  {
+    dictId: 8,
+    dictName: '集装箱类型',
+    items: [
+      { itemId: 43, itemName: '小型', color: 'blue' },
+      { itemId: 44, itemName: '中型', color: 'yellow' },
+      { itemId: 45, itemName: '大型', color: 'orange' },
+    ],
+  },
+];
+
+// 示例数据
+const dictionaryData = ref<Dictionary[]>(defaultDictionaryData);
 
 const showEditDialog = ref(false);
 const dictForm = ref<Dictionary>({
@@ -108,37 +194,109 @@ const goBack = () => {
 };
 
 // 添加字典项
-const addItem = () => {
-  dictForm.value.items.push({ itemId: Date.now(), itemName: '', color: 'blue' });
+const addItem = async () => {
+  const newItem = { itemId: Date.now(), itemName: '', color: 'blue' };
+  dictForm.value.items.push(newItem);
+
+  try {
+    // 发送新添加的字典项到后端
+    await axios.post(`/api/dictionaries/${dictForm.value.dictId}/items`, newItem); // 替换为你的后端 API 地址
+  } catch (error) {
+    console.error('添加字典项失败:', error);
+    // 如果后端未实现，使用默认数据
+    // 这里不需要额外操作，因为已经将新项添加到本地数据中
+  }
 };
 
 // 删除字典项
-const removeItem = (index: number) => {
+const removeItem = async (index: number) => {
+  const itemId = dictForm.value.items[index].itemId;
   dictForm.value.items.splice(index, 1);
+
+  try {
+    // 发送要删除的字典项到后端
+    await axios.delete(`/api/dictionaries/${dictForm.value.dictId}/items/${itemId}`); // 替换为你的后端 API 地址
+  } catch (error) {
+    console.error('删除字典项失败:', error);
+    // 如果后端未实现，使用默认数据
+    // 这里不需要额外操作，因为已经从本地数据中删除了该项
+  }
 };
 
 // 保存字典
-const saveDictionary = () => {
-  if (currentIndex.value !== null) {
-    dictionaryData.value[currentIndex.value] = { ...dictForm.value };
-  } else {
-    dictForm.value.dictId = Date.now();
-    dictionaryData.value.push({ ...dictForm.value });
+const saveDictionary = async () => {
+  try {
+    if (currentIndex.value !== null) {
+      // 更新字典
+      await axios.put(`/api/dictionaries/${dictForm.value.dictId}`, dictForm.value); // 替换为你的后端 API 地址
+      dictionaryData.value[currentIndex.value] = { ...dictForm.value };
+    } else {
+      // 添加新字典
+      const response = await axios.post('/api/dictionaries', dictForm.value); // 替换为你的后端 API 地址
+      dictForm.value.dictId = response.data.dictId; // 假设后端返回新的 dictId
+      dictionaryData.value.push({ ...dictForm.value });
+    }
+    showEditDialog.value = false;
+  } catch (error) {
+    console.error('保存字典失败:', error);
+    // 如果后端未实现，使用默认数据
+    if (currentIndex.value !== null) {
+      dictionaryData.value[currentIndex.value] = { ...dictForm.value };
+    } else {
+      dictForm.value.dictId = Date.now();
+      dictionaryData.value.push({ ...dictForm.value });
+    }
+    showEditDialog.value = false;
   }
-  showEditDialog.value = false;
 };
 
 // 编辑字典
-const editDictionary = (dict: Dictionary, index: number) => {
+const editDictionary = async (dict: Dictionary, index: number) => {
   currentIndex.value = index;
-  dictForm.value = JSON.parse(JSON.stringify(dict));
+
+  try {
+    // 尝试从后端获取最新的字典数据
+    const response = await axios.get(`/api/dictionaries/${dict.dictId}`); // 替换为你的后端 API 地址
+    dictForm.value = JSON.parse(JSON.stringify(response.data));
+  } catch (error) {
+    console.error('获取字典数据失败:', error);
+    // 如果后端未实现，使用本地数据
+    dictForm.value = JSON.parse(JSON.stringify(dict));
+  }
+
   showEditDialog.value = true;
 };
 
 // 删除字典
-const deleteDictionary = (index: number) => {
-  dictionaryData.value.splice(index, 1);
+const deleteDictionary = async (index: number) => {
+  try {
+    await axios.delete(`/api/dictionaries/${dictionaryData.value[index].dictId}`); // 替换为你的后端 API 地址
+    dictionaryData.value.splice(index, 1);
+  } catch (error) {
+    console.error('删除字典失败:', error);
+    // 如果后端未实现，使用默认数据
+    dictionaryData.value.splice(index, 1);
+  }
 };
+
+// 获取数据
+const fetchData = async () => {
+  try {
+    const response = await axios.get('/api/dictionaries'); // 替换为你的后端 API 地址
+    dictionaryData.value = response.data;
+  } catch (error) {
+    console.error('获取数据失败:', error);
+    // 如果后端未实现，使用默认数据
+    dictionaryData.value = defaultDictionaryData;
+  }
+};
+
+// onMounted(() => {
+//   fetchData();
+// });
+
+
+
 </script>
 
 <style scoped>
@@ -159,7 +317,7 @@ const deleteDictionary = (index: number) => {
 .dictionary-container {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
+  overflow-y: auto; /* 启用垂直滚动 */
 }
 
 .custom-card {
