@@ -10,6 +10,11 @@ const router = createRouter({
   routes: [
 
     {
+      path: "/dictionaryManager",
+      name: "dictionaryManager",
+      component: () => import('@/views/DictionaryManager.vue'),
+    },
+    {
       path: '/acct', // 账户页面
       name: 'Acct',
       component: () => import('@/views/Acct.vue'),

@@ -12,6 +12,21 @@ type Hh struct {
 	Priority uint `gorm:"default:1" form:"Priority"`
 }
 
+type PrdtInfo struct {
+	CatEngName   string `form:"CatEngName"`   // 产品
+	BrandEngName string `form:"BrandEngName"` // 品牌
+	Factory      string `form:"Factory"`      // 生产工厂
+	Currency     string `form:"currency"`     // 币种
+	UnitPrice    uint   `form:"unitPrice"`    // 单价
+	Unit         string `form:"unit"`         // 单位
+	PackSpec     string `form:"packSpec"`     // 包装规格
+	WeightUnit   string `form:"weightUnit"`   // 重量单位
+	TradeTerm    string `form:"tradeTerm"`    // 贸易条款
+	DeliveryLoc  string `form:"deliveryLoc"`  // 交货地点
+	Weight       uint   `form:"weight"`       // 重量
+	Amount       uint   `form:"amount"`       // 金额
+	ItemNum      uint   `form:"itemNum"`      // 件数
+}
 type Empl struct {
 	EmpName          string `gorm:"column:empName; not null" form:"EmpName"`         // 员工姓名
 	EmpEngName       string `gorm:"column:empEngName" form:"EmpEngName"`             // 员工英文名
@@ -154,9 +169,9 @@ type PayMentMethod struct {
 	PayRat          uint   `gorm:"column:payRat;" form:"PayRat"`
 }
 type File struct {
-	Name   string `gorm:"column:name; not null" json:"Name"`
-	MD5    string `gorm:"column:MD5;  not null" json:"MD5"`
-	Suffix string `gorm:"column:suffix; not null" json:"Suffix"`
+	Name   string `gorm:"column:name; not null" form:"Name"`
+	MD5    string `gorm:"column:MD5;  not null" form:"MD5"`
+	Suffix string `gorm:"column:suffix; not null" form:"Suffix"`
 	FileId uint   `gorm:"column:fileId; primaryKey" form:"FileId" binding:"required"`
 }
 

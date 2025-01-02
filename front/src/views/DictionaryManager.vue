@@ -1,206 +1,182 @@
 <template>
-  <div id="dictionary-manager" class="dictionary-manager">
-    <el-header class="header">
-      <h2>数据字典管理</h2>
-      <el-button type="success" plain @click="goBack">返回</el-button>
-    </el-header>
-
-    <el-main class="dictionary-container">
-      <el-row :gutter="20">
-        <el-col :span="8" v-for="(dict, index) in dictionaryData" :key="dict.dictId">
-          <el-card class="custom-card">
-            <div class="card-header">
-              <h4>{{ dict.dictName }} ({{ dict.items.length }})</h4>
-              <div class="button-group">
-                <el-button size="mini" type="primary" plain @click="editDictionary(dict, index)">编辑</el-button>
-                <el-button size="mini" type="danger" plain @click="deleteDictionary(index)">删除</el-button>
-              </div>
-            </div>
-            <div class="card-body">
-              <ul class="scrollable-list">
-                <li v-for="item in dict.items" :key="item.itemId" class="dictionary-item">
-                  <el-tag effect="plain" size="medium" class="dictionary-tag">{{ item.itemName }}</el-tag>
-                </li>
-              </ul>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </el-main>
-
-    <!-- 编辑数据字典对话框 -->
-    <el-dialog v-model="showEditDialog" title="编辑数据字典" width="50%">
-      <el-form :model="dictForm" label-width="80px">
-        <el-form-item label="字典名称">
-          <el-input v-model="dictForm.dictName"></el-input>
-        </el-form-item>
-        <el-form-item label="字典项">
-          <el-button type="success" plain size="small" @click="addItem">+ 添加字典项</el-button>
-          <el-table :data="dictForm.items" border style="margin-top: 10px;" size="small">
-            <el-table-column prop="itemName" label="字典项名称">
-              <template #default="scope">
-                <el-input v-model="scope.row.itemName" size="small"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="80">
-              <template #default="scope">
-                <el-button size="mini" type="danger" @click="removeItem(scope.$index)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button size="small" @click="showEditDialog = false">取消</el-button>
-        <el-button size="small" type="success" plain @click="saveDictionary">确认</el-button>
-      </template>
-    </el-dialog>
-  </div>
+  <el-container>
+    <el-aside width="200px">
+      <el-menu>
+        <el-menu-item index="1" @click="selectDict('MercType')">MercType 数据字典</el-menu-item>
+        <!-- 这里可以添加更多的字典项 -->
+      </el-menu>
+    </el-aside>
+    <el-container>
+      <el-header>
+        <h1>数据字典管理</h1>
+      </el-header>
+      <el-main>
+        <el-table v-if="currentIndex === '1'" :data="currentDict" style="width: 100%" class="dict-table">
+          <el-table-column prop="MercType" label="MercType"></el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-button v-if="currentIndex === '1'" type="primary" @click="handleAdd">新增</el-button>
+        <el-dialog v-model="dialogVisible" :title="dialogTitle" width="30%">
+          <el-form :model="form">
+            <el-form-item label="MercType">
+              <el-input v-model="form.MercType"></el-input>
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleSave">保存</el-button>
+          </template>
+        </el-dialog>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+<script>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
-interface DictionaryItem {
-  itemId: number;
-  itemName: string;
-  color: string;
-}
+export default {
+  setup() {
+    const mercTypes = ref([]);
+    const dialogVisible = ref(false);
+    const isEdit = ref(false);
+    const dialogTitle = ref('');
+    const form = ref({
+      MercTypeId: '',
+      MercType: ''
+    });
+    const currentDict = ref([]);
+    const currentIndex = ref('');
 
-interface Dictionary {
-  dictId: number;
-  dictName: string;
-  items: DictionaryItem[];
-}
+    const fetchMercTypes = async () => {
+      const response = await axios.get('/find/mercType');
+      mercTypes.value = response.data.MercType;
+      currentDict.value = mercTypes.value;
+    };
 
-// 路由实例
-const router = useRouter();
+    const handleAdd = () => {
+      dialogTitle.value = '新增 MercType';
+      isEdit.value = false;
+      form.value = { MercTypeId: '', MercType: '' };
+      dialogVisible.value = true;
+    };
 
-// 示例数据
-const dictionaryData = ref<Dictionary[]>([
-  {
-    dictId: 1,
-    dictName: '客户类型',
-    items: [
-      { itemId: 1, itemName: '国外终端', color: 'blue' },
-      { itemId: 2, itemName: '国外贸易商', color: 'yellow' },
-      { itemId: 3, itemName: '国内贸易商', color: 'orange' },
-      { itemId: 4, itemName: '国内终端', color: 'red' },
-      { itemId: 5, itemName: '外贸离岸公司', color: 'pink' },
-      { itemId: 6, itemName: '其他分类', color: 'green' },
-    ],
-  },
-]);
+    const handleEdit = (index, row) => {
+      dialogTitle.value = '编辑 MercType';
+      isEdit.value = true;
+      form.value = { ...row };
+      dialogVisible.value = true;
+    };
 
-const showEditDialog = ref(false);
-const dictForm = ref<Dictionary>({
-  dictId: 0,
-  dictName: '',
-  items: [],
-});
+    const handleDelete = async (index, row) => {
+      await axios.post('/delete/mercType', { MercTypeId: row.MercTypeId });
+      fetchMercTypes();
+    };
 
-const currentIndex = ref<number | null>(null);
+    const handleSave = async () => {
+      if (isEdit.value) {
+        await axios.post('/save/mercType', form.value);
+      } else {
+        await axios.post('/save/mercType', { MercType: form.value.MercType });
+      }
+      dialogVisible.value = false;
+      fetchMercTypes();
+    };
 
-// 返回按钮
-const goBack = () => {
-  router.back();
-};
+    const selectDict = (dictName) => {
+      currentIndex.value = '1'; // 设置当前 index 为 1
+      // 这里可以根据 dictName 来选择显示哪个字典的数据
+      // 例如，如果有一个字典列表，可以在这里根据名称来筛选
+      currentDict.value = mercTypes.value.filter(item => item.dictName === dictName);
+    };
 
-// 添加字典项
-const addItem = () => {
-  dictForm.value.items.push({ itemId: Date.now(), itemName: '', color: 'blue' });
-};
+    onMounted(() => {
+      fetchMercTypes();
+    });
 
-// 删除字典项
-const removeItem = (index: number) => {
-  dictForm.value.items.splice(index, 1);
-};
-
-// 保存字典
-const saveDictionary = () => {
-  if (currentIndex.value !== null) {
-    dictionaryData.value[currentIndex.value] = { ...dictForm.value };
-  } else {
-    dictForm.value.dictId = Date.now();
-    dictionaryData.value.push({ ...dictForm.value });
+    return {
+      mercTypes,
+      dialogVisible,
+      isEdit,
+      dialogTitle,
+      form,
+      currentDict,
+      currentIndex,
+      handleAdd,
+      handleEdit,
+      handleDelete,
+      handleSave,
+      selectDict
+    };
   }
-  showEditDialog.value = false;
-};
-
-// 编辑字典
-const editDictionary = (dict: Dictionary, index: number) => {
-  currentIndex.value = index;
-  dictForm.value = JSON.parse(JSON.stringify(dict));
-  showEditDialog.value = true;
-};
-
-// 删除字典
-const deleteDictionary = (index: number) => {
-  dictionaryData.value.splice(index, 1);
 };
 </script>
 
 <style scoped>
-.dictionary-manager {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  background-color: #f5f5f5;
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.dictionary-container {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.custom-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.card-body ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 120px; /* 设置最大高度 */
-  overflow-y: auto; /* 超出部分滚动 */
-  border-top: 1px solid #ddd;
-  padding-top: 10px;
-}
-
-.card-body ul li {
-  margin-bottom: 10px;
+/* Header styles */
+.el-header {
+  background-color: #f09eff;
+  /* 浅粉色 */
+  color: white;
   text-align: center;
+  line-height: 60px;
+  font-size: 18px;
+  border-radius: 4px;
+  margin-bottom: 20px;
 }
 
-.dictionary-tag {
-  display: flex;
-  align-items: center; /* 垂直居中 */
-  justify-content: center; /* 水平居中 */
+/* Main content styles */
+.el-main {
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Table styles */
+.dict-table {
+  margin-top: 20px;
   width: 100%;
-  height: 40px; /* 固定高度 */
-  font-size: 16px; /* 字体稍大 */
-  border: 1px solid #e0e0e0; /* 添加边框 */
-  border-radius: 5px;
-  background-color: #f9f9f9; /* 背景颜色 */
+}
+
+/* Button styles */
+.el-button {
+  margin-top: 20px;
+}
+
+/* Dialog styles */
+.el-dialog__body {
+  padding: 20px;
+}
+
+/* Form item styles */
+.el-form-item {
+  margin-bottom: 20px;
+}
+
+/* Aside (sidebar) styles */
+.el-aside {
+  background-color: #933744;
+  /* 深紫色 */
+  color: #1ff;
+  /* 亮绿色 */
+}
+
+/* Menu item styles */
+.el-menu-item {
+  color: #f2f;
+  /* 浅灰色 */
+}
+
+/* Hover effect for menu items */
+.el-menu-item:hover {
+  background-color: #9A4A4A;
+  /* 暗紫色 */
 }
 </style>
