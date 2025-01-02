@@ -23,6 +23,13 @@ type Service interface {
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
 
+	FindUserById(user *models.User, userId uint)
+	FindUserByEmail(user *models.User, email string)
+
+	Delete(model interface{}) error
+	Save(model interface{}) error
+	Find(model interface{})
+
 	DeleteEmpl(Empl *models.Empl) error
 	SaveEmpl(Empl *models.Empl) error
 	FindEmpl(Empls *[]models.Empl)
@@ -61,10 +68,7 @@ type Service interface {
 	// Close terminates the database connection.
 	// It returns an error if the connection cannot be closed.
 	Close() error
-	CreateUser(user *models.User) error
-	FindUser(user *models.User, email string)
 	FindFile(file *models.File)
-	ModifyUserPass(user *models.User, passwordHash string)
 	SaveAcct(acct *models.Acct) error
 	DeleteAcct(acct *models.Acct) error
 	SaveAcctBank(acctBank *models.AcctBank) error
@@ -215,6 +219,8 @@ func New() Service {
 	// AutoMigrate all models
 	gormDB.AutoMigrate(
 		&models.Empl{},
+		&models.Hh{},
+		&models.Ss{},
 		&models.PayMentMethod{},
 		&models.PackSpec{},
 		&models.Cat{},

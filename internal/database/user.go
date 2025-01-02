@@ -2,14 +2,22 @@ package database
 
 import "exporter/internal/models"
 
-func (s *service) CreateUser(user *models.User) error {
-	return s.gormDB.Create(user).Error
+func (s *service) SaveUser(user *models.User) error {
+	return s.gormDB.Save(user).Error
 }
 
-func (s *service) FindUser(user *models.User, email string) {
+func (s *service) DeleteUser(user *models.User) error {
+	return s.gormDB.Delete(user).Error
+}
+
+func (s *service) FindUser(user *[]models.User) {
+	s.gormDB.Find(user)
+}
+
+func (s *service) FindUserByEmail(user *models.User, email string) {
 	s.gormDB.First(user, "email = ?", email)
 }
 
-func (s *service) ModifyUserPass(user *models.User, passwordHash string) {
-	s.gormDB.Model(user).Where("userId = ?", user.UserId).Update("passwordHash", passwordHash)
+func (s *service) FindUserById(user *models.User, userId uint) {
+	s.gormDB.First(user, "userId = ?", userId)
 }

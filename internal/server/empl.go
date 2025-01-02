@@ -19,9 +19,11 @@ func (s *Server) FindEmplHandler(c *gin.Context) {
 func (s *Server) SaveEmplHandler(c *gin.Context) {
 	Empl := &models.Empl{}
 	err := c.ShouldBind(Empl)
+	log.Printf("%v\n", *Empl)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of Empl",
+			RetMessage: err.Error(),
+			// RetMessage: "error in bind of Empl",
 		})
 		return
 	}

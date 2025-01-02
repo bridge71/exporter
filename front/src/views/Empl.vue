@@ -31,13 +31,14 @@
             <el-table-column prop="EduLevel" label="学历" width="220%"></el-table-column>
             <el-table-column prop="Notes" label="备注" width="320%"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="320%"></el-table-column>
-            <el-table-column label="操作" fixed="right" width="200">
+            <el-table-column label="操作" fixed="right" width="260">
               <template #default="scope">
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.EmpID)" type="text"
+                  <el-button @click="handleDelete(scope.$index, scope.row.EmplId)" type="text"
                     size="small">删除</el-button>
+                  <el-button @click="handleRegister(scope.row)" type="text" size="small">注册</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -377,8 +378,27 @@ const positionData = ref([]); // 岗位数据
 const eduLevelData = ref([]); // 学历数据
 const showEmplDialog = ref(false);
 const showViewEmplDialog = ref(false);
+const handleRegister = async (row) => {
+  try {
+    const userData = {
+      Email: row.EmailAddr,
+      UserName: row.EmpName,
+      EmplId: row.EmplId,
+    };
+
+    const response = await axios.post('/save/user', userData);
+    if (response.status === 200) {
+      ElMessage.success('用户注册成功');
+    } else {
+      ElMessage.error(response.data.RetMessage || '注册失败');
+    }
+  } catch (error) {
+    console.error('用户注册失败:', error);
+    ElMessage.error(error.response.data.RetMessage);
+  }
+};
 const emplForm = ref({
-  EmpID: '',
+  EmplId: '',
   EmpName: '',
   EmpEngName: '',
   Dept: '',
@@ -442,13 +462,13 @@ const handleView = (index, row) => {
   showViewEmplDialog.value = true;
 };
 
-const handleDelete = (index, EmpID) => {
+const handleDelete = (index, EmplId) => {
   ElMessageBox.confirm('确定要删除该员工信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/empl', { EmpID })
+    axios.post('/delete/empl', { EmplId })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -467,7 +487,7 @@ const handleDelete = (index, EmpID) => {
 
 const resetEmplForm = () => {
   emplForm.value = {
-    EmpID: '',
+    EmplId: '',
     EmpName: '',
     EmpEngName: '',
     Dept: '',

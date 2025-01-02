@@ -67,9 +67,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/find/bankAccount", s.FindBankAccountHandler)
 	r.GET("/find/bankAccount/id", s.FindBankAccountByIdHandler)
 
-	r.POST("/create/user", s.CreateUserHandler)
+	r.POST("/save/user", s.SaveUserHandler)
 	r.POST("/auth", s.LoginHandler)
-	r.POST("/modify/user/password", s.ModifyUserPassHandler)
+	r.GET("/qut/root", s.CreateRootHandler)
+	r.GET("/find/user", s.FindUserHandler)
 
 	deleteGroup := r.Group("/delete")
 	{
