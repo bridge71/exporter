@@ -19,13 +19,13 @@ type PrdtInfo struct {
 	Currency     string `form:"currency"`     // 币种
 	UnitPrice    uint   `form:"unitPrice"`    // 单价
 	Unit         string `form:"unit"`         // 单位
+	Amount       uint   `form:"amount"`       // 金额
+	ItemNum      uint   `form:"itemNum"`      // 件数
 	PackSpec     string `form:"packSpec"`     // 包装规格
+	Weight       uint   `form:"weight"`       // 重量
 	WeightUnit   string `form:"weightUnit"`   // 重量单位
 	TradeTerm    string `form:"tradeTerm"`    // 贸易条款
 	DeliveryLoc  string `form:"deliveryLoc"`  // 交货地点
-	Weight       uint   `form:"weight"`       // 重量
-	Amount       uint   `form:"amount"`       // 金额
-	ItemNum      uint   `form:"itemNum"`      // 件数
 }
 type Empl struct {
 	EmpName          string `gorm:"column:empName; not null" form:"EmpName"`         // 员工姓名

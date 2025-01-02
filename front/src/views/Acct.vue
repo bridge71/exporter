@@ -335,7 +335,7 @@
     <header class="top-bar">
       <el-button @click="navigateToDictionaryManager">数据字典</el-button>
     </header>
-    
+
 
   </div>
 </template>

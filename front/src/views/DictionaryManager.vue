@@ -1,39 +1,42 @@
 <template>
   <el-container>
+    <!-- 左侧导航栏 -->
     <el-aside width="200px">
-      <el-menu>
-        <el-menu-item index="1" @click="selectDict('MercType')">MercType 数据字典</el-menu-item>
-        <!-- 这里可以添加更多的字典项 -->
+      <el-menu default-active="customer" @select="handleMenuSelect">
+        <el-menu-item index="customer">客户类型</el-menu-item>
+        <el-menu-item index="supplier">供应商类型</el-menu-item>
       </el-menu>
     </el-aside>
-    <el-container>
-      <el-header>
-        <h1>数据字典管理</h1>
-      </el-header>
-      <el-main>
-        <el-table v-if="currentIndex === '1'" :data="currentDict" style="width: 100%" class="dict-table">
-          <el-table-column prop="MercType" label="MercType"></el-table-column>
-          <el-table-column label="操作">
-            <template #default="scope">
-              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-button v-if="currentIndex === '1'" type="primary" @click="handleAdd">新增</el-button>
-        <el-dialog v-model="dialogVisible" :title="dialogTitle" width="30%">
-          <el-form :model="form">
-            <el-form-item label="MercType">
-              <el-input v-model="form.MercType"></el-input>
-            </el-form-item>
-          </el-form>
-          <template #footer>
-            <el-button @click="dialogVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleSave">保存</el-button>
+
+    <!-- 右侧内容 -->
+    <el-main>
+      <!-- 添加按钮 -->
+      <el-button type="primary" @click="handleAdd">添加</el-button>
+
+      <!-- 表格 -->
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column prop="type" label="类型" />
+        <el-table-column label="操作">
+          <template #default="scope">
+            <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
-        </el-dialog>
-      </el-main>
-    </el-container>
+        </el-table-column>
+      </el-table>
+
+      <!-- 添加/编辑对话框 -->
+      <el-dialog v-model="dialogVisible" :title="dialogTitle">
+        <el-form :model="form">
+          <el-form-item label="类型">
+            <el-input v-model="form.type" />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
+        </template>
+      </el-dialog>
+    </el-main>
   </el-container>
 </template>
 
@@ -43,140 +46,146 @@ import axios from 'axios';
 
 export default {
   setup() {
-    const mercTypes = ref([]);
-    const dialogVisible = ref(false);
-    const isEdit = ref(false);
-    const dialogTitle = ref('');
-    const form = ref({
-      MercTypeId: '',
-      MercType: ''
-    });
-    const currentDict = ref([]);
-    const currentIndex = ref('');
+    const activeMenu = ref('customer'); // 当前选中的菜单项
+    const tableData = ref([]); // 表格数据
+    const dialogVisible = ref(false); // 对话框是否可见
+    const dialogTitle = ref(''); // 对话框标题
+    const form = ref({ type: '', id: '' }); // 表单数据
+    const isEdit = ref(false); // 是否是编辑模式
 
-    const fetchMercTypes = async () => {
-      const response = await axios.get('/find/mercType');
-      mercTypes.value = response.data.MercType;
-      currentDict.value = mercTypes.value;
-    };
-
-    const handleAdd = () => {
-      dialogTitle.value = '新增 MercType';
-      isEdit.value = false;
-      form.value = { MercTypeId: '', MercType: '' };
-      dialogVisible.value = true;
-    };
-
-    const handleEdit = (index, row) => {
-      dialogTitle.value = '编辑 MercType';
-      isEdit.value = true;
-      form.value = { ...row };
-      dialogVisible.value = true;
-    };
-
-    const handleDelete = async (index, row) => {
-      await axios.post('/delete/mercType', { MercTypeId: row.MercTypeId });
-      fetchMercTypes();
-    };
-
-    const handleSave = async () => {
-      if (isEdit.value) {
-        await axios.post('/save/mercType', form.value);
-      } else {
-        await axios.post('/save/mercType', { MercType: form.value.MercType });
+    // 获取数据
+    const fetchData = async () => {
+      let url;
+      if (activeMenu.value === 'customer') {
+        url = '/find/mercType';
+      } else if (activeMenu.value === 'supplier') {
+        url = '/find/suprType';
       }
-      dialogVisible.value = false;
-      fetchMercTypes();
+      const response = await axios.get(url);
+      if (activeMenu.value === 'customer') {
+        tableData.value = response.data.MercType.map(item => ({
+          type: item.MercType,
+          id: item.MercTypeId,
+        }));
+      } else if (activeMenu.value === 'supplier') {
+        tableData.value = response.data.SuprType.map(item => ({
+          type: item.SuprType,
+          id: item.SuprTypeId,
+        }));
+      }
     };
 
-    const selectDict = (dictName) => {
-      currentIndex.value = '1'; // 设置当前 index 为 1
-      // 这里可以根据 dictName 来选择显示哪个字典的数据
-      // 例如，如果有一个字典列表，可以在这里根据名称来筛选
-      currentDict.value = mercTypes.value.filter(item => item.dictName === dictName);
+    // 处理菜单选择
+    const handleMenuSelect = (index) => {
+      activeMenu.value = index;
+      fetchData();
     };
 
+    // 处理添加按钮点击
+    const handleAdd = () => {
+      dialogTitle.value = '添加';
+      form.value = { type: '', id: '' };
+      isEdit.value = false;
+      dialogVisible.value = true;
+    };
+
+    // 处理编辑按钮点击
+    const handleEdit = (row) => {
+      dialogTitle.value = '编辑';
+      form.value = { type: row.type, id: row.id };
+      isEdit.value = true;
+      dialogVisible.value = true;
+    };
+
+    // 处理删除按钮点击
+    const handleDelete = async (row) => {
+      let url;
+      if (activeMenu.value === 'customer') {
+        url = '/delete/mercType';
+      } else if (activeMenu.value === 'supplier') {
+        url = '/delete/suprType';
+      }
+      await axios.post(url, { MercTypeId: row.id, SuprTypeId: row.id });
+      fetchData();
+    };
+
+    // 处理表单提交
+    const handleSubmit = async () => {
+      let url;
+      let data;
+      if (activeMenu.value === 'customer') {
+        url = '/save/mercType';
+        if (isEdit.value) {
+          data = { MercType: form.value.type, MercTypeId: form.value.id }; // 编辑时传递 MercType 和 MercTypeId
+        } else {
+          data = { MercType: form.value.type }; // 添加时只传递 MercType
+        }
+      } else if (activeMenu.value === 'supplier') {
+        url = '/save/suprType';
+        if (isEdit.value) {
+          data = { SuprType: form.value.type, SuprTypeId: form.value.id }; // 编辑时传递 SuprType 和 SuprTypeId
+        } else {
+          data = { SuprType: form.value.type }; // 添加时只传递 SuprType
+        }
+      }
+      await axios.post(url, data); // 调用保存接口
+      dialogVisible.value = false; // 关闭对话框
+      fetchData(); // 重新获取数据
+    };
+
+    // 组件挂载时获取数据
     onMounted(() => {
-      fetchMercTypes();
+      fetchData();
     });
 
     return {
-      mercTypes,
+      activeMenu,
+      tableData,
       dialogVisible,
-      isEdit,
       dialogTitle,
       form,
-      currentDict,
-      currentIndex,
+      isEdit,
+      handleMenuSelect,
       handleAdd,
       handleEdit,
       handleDelete,
-      handleSave,
-      selectDict
+      handleSubmit,
     };
-  }
+  },
 };
 </script>
 
-<style scoped>
-/* Header styles */
-.el-header {
-  background-color: #f09eff;
-  /* 浅粉色 */
-  color: white;
-  text-align: center;
-  line-height: 60px;
-  font-size: 18px;
-  border-radius: 4px;
-  margin-bottom: 20px;
+<style>
+/* 修改全局文字颜色 */
+body {
+  color: #333;
 }
 
-/* Main content styles */
-.el-main {
-  background-color: white;
-  padding: 20px;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+/* 修改表格文字颜色 */
+.el-table {
+  color: #333;
 }
 
-/* Table styles */
-.dict-table {
-  margin-top: 20px;
-  width: 100%;
+/* 修改对话框文字颜色 */
+.el-dialog {
+  color: #333;
 }
 
-/* Button styles */
+/* 修改导航栏文字颜色 */
+.el-menu {
+  color: #333;
+}
+
+/* 修改按钮文字颜色 */
 .el-button {
-  margin-top: 20px;
+  color: #333;
 }
 
-/* Dialog styles */
-.el-dialog__body {
-  padding: 20px;
-}
-
-/* Form item styles */
-.el-form-item {
-  margin-bottom: 20px;
-}
-
-/* Aside (sidebar) styles */
 .el-aside {
-  background-color: #933744;
-  /* 深紫色 */
-  color: #1ff;
-  /* 亮绿色 */
+  background-color: #f5f5f5;
 }
 
-/* Menu item styles */
-.el-menu-item {
-  color: #f2f;
-  /* 浅灰色 */
-}
-
-/* Hover effect for menu items */
-.el-menu-item:hover {
-  background-color: #9A4A4A;
-  /* 暗紫色 */
+.el-main {
+  padding: 20px;
 }
 </style>

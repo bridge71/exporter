@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 // 导入views中的页面组件
 import Login from '@/views/Login.vue';
+import DictionaryManager from '@/views/DictionaryManager.vue';
 
 // 创建路由实例
 const router = createRouter({
@@ -129,6 +130,11 @@ const router = createRouter({
       name: 'Login',
       component: Login,
     },
+    {
+      path: '/dictionaryManager',  // 显示登录页面
+      name: 'dictionaryManager',
+      component: DictionaryManager,
+    }
 
   ]
 });
