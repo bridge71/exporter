@@ -26,8 +26,11 @@ type Service interface {
 	FindUserById(user *models.User, userId uint)
 	FindUserByEmail(user *models.User, email string)
 
+	FindById(id uint, model interface{})
+
 	Delete(model interface{}) error
 	Save(model interface{}) error
+	Create(model interface{}) error
 	Find(model interface{})
 
 	DeleteEmpl(Empl *models.Empl) error
@@ -193,7 +196,7 @@ func New() Service {
 	}
 
 	// Opening a driver typically will not attempt to connect to the database.
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&loc=Local", username, password, host, port, dbname))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&loc=Local&parseTime=true", username, password, host, port, dbname))
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
@@ -218,6 +221,9 @@ func New() Service {
 	})
 	// AutoMigrate all models
 	gormDB.AutoMigrate(
+		&models.PrdtInfo{},
+		&models.LoadingInfo{},
+		&models.CostInfo{},
 		&models.Empl{},
 		&models.Hh{},
 		&models.Ss{},

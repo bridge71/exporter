@@ -22,9 +22,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.POST("/file", s.Uploader)
 
-	r.GET("/find/empl", s.FindEmplHandler)
-	r.POST("/delete/empl", s.DeleteEmplHandler)
-	r.POST("/save/empl", s.SaveEmplHandler)
+	r.GET("/find/prdtInfo", s.FindPrdtInfoHandler)
+	r.POST("/delete/prdtInfo", s.DeletePrdtInfoHandler)
+	r.POST("/save/prdtInfo", s.SavePrdtInfoHandler)
+	r.POST("/create/prdtInfo", s.SavePrdtInfoHandler)
 
 	r.GET("/find/packSpec", s.FindPackSpecHandler)
 	r.POST("/delete/packSpec", s.DeletePackSpecHandler)
@@ -136,33 +137,33 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	saveGroup := r.Group("/save")
 	{
-		saveGroup.POST("/mercType", s.SaveMercTypeHandler)           // 参数: mercType，mercTypeId
-		saveGroup.POST("/suprType", s.SaveSuprTypeHandler)           // 参数: suprType，suprTypeId
-		saveGroup.POST("/prdtType", s.SavePrdtTypeHandler)           // 参数: prdtType，prdtTypeId
-		saveGroup.POST("/foodAddType", s.SaveFoodAddTypeHandler)     // 参数: foodAddType，foodAddTypeId
-		saveGroup.POST("/feedAddType", s.SaveFeedAddTypeHandler)     // 参数: feedAddType，feedAddTypeId
-		saveGroup.POST("/unitMeas", s.SaveUnitMeasHandler)           // 参数: unitMeas，unitMeasId
-		saveGroup.POST("/packType", s.SavePackTypeHandler)           // 参数: packType，packTypeId
-		saveGroup.POST("/conType", s.SaveConTypeHandler)             // 参数: conType，conTypeId
-		saveGroup.POST("/currency", s.SaveCurrencyHandler)           // 参数: currency，currencyId
-		saveGroup.POST("/tradeTerm", s.SaveTradeTermHandler)         // 参数: tradeTerm，tradeTermId
-		saveGroup.POST("/nation", s.SaveNationHandler)               // 参数: nation，nationId
-		saveGroup.POST("/port", s.SavePortHandler)                   // 参数: port，portId
-		saveGroup.POST("/taxType", s.SaveTaxTypeHandler)             // 参数: taxType，taxTypeId
-		saveGroup.POST("/brandType", s.SaveBrandTypeHandler)         // 参数: brandType，brandTypeId
-		saveGroup.POST("/eduLevel", s.SaveEduLevelHandler)           // 参数: degree，degreeId
-		saveGroup.POST("/dept", s.SaveDeptHandler)                   // 参数: dept，deptId
-		saveGroup.POST("/position", s.SavePositionHandler)           // 参数: post，postId
-		saveGroup.POST("/qualStd", s.SaveQualStdHandler)             // 参数: qualStd，qualStdId
-		saveGroup.POST("/invLoc", s.SaveInvLocHandler)               // 参数: invLoc，invLocId
-		saveGroup.POST("/docReq", s.SaveDocReqHandler)               // 参数: docReq，docReqId
-		saveGroup.POST("/payMth", s.SavePayMthHandler)               // 参数: payMth，payMthId
-		saveGroup.POST("/payLimit", s.SavePayLimitHandler)           // 参数: payLimit，payLimitId
-		saveGroup.POST("/finaDocStatus", s.SaveFinaDocStatusHandler) // 参数: finaDocStatus，finaDocStatusId
-		saveGroup.POST("/finaDocType", s.SaveFinaDocTypeHandler)     // 参数: finaDocType，finaDocTypeId
-		saveGroup.POST("/expType", s.SaveExpTypeHandler)             // 参数: expType，expTypeId
-		saveGroup.POST("/rates", s.SaveRatesHandler)                 // 参数: rates，ratesId
-		saveGroup.POST("/bussOrderSta", s.SaveBussOrderStaHandler)   // 参数: bussOrderSta，bussOrderStaId
+		saveGroup.POST("/mercType", s.SaveMercTypeHandler)
+		saveGroup.POST("/suprType", s.SaveSuprTypeHandler)
+		saveGroup.POST("/prdtType", s.SavePrdtTypeHandler)
+		saveGroup.POST("/foodAddType", s.SaveFoodAddTypeHandler)
+		saveGroup.POST("/feedAddType", s.SaveFeedAddTypeHandler)
+		saveGroup.POST("/unitMeas", s.SaveUnitMeasHandler)
+		saveGroup.POST("/packType", s.SavePackTypeHandler)
+		saveGroup.POST("/conType", s.SaveConTypeHandler)
+		saveGroup.POST("/currency", s.SaveCurrencyHandler)
+		saveGroup.POST("/tradeTerm", s.SaveTradeTermHandler)
+		saveGroup.POST("/nation", s.SaveNationHandler)
+		saveGroup.POST("/port", s.SavePortHandler)
+		saveGroup.POST("/taxType", s.SaveTaxTypeHandler)
+		saveGroup.POST("/brandType", s.SaveBrandTypeHandler)
+		saveGroup.POST("/eduLevel", s.SaveEduLevelHandler)
+		saveGroup.POST("/dept", s.SaveDeptHandler)
+		saveGroup.POST("/position", s.SavePositionHandler)
+		saveGroup.POST("/qualStd", s.SaveQualStdHandler)
+		saveGroup.POST("/invLoc", s.SaveInvLocHandler)
+		saveGroup.POST("/docReq", s.SaveDocReqHandler)
+		saveGroup.POST("/payMth", s.SavePayMthHandler)
+		saveGroup.POST("/payLimit", s.SavePayLimitHandler)
+		saveGroup.POST("/finaDocStatus", s.SaveFinaDocStatusHandler)
+		saveGroup.POST("/finaDocType", s.SaveFinaDocTypeHandler)
+		saveGroup.POST("/expType", s.SaveExpTypeHandler)
+		saveGroup.POST("/rates", s.SaveRatesHandler)
+		saveGroup.POST("/bussOrderSta", s.SaveBussOrderStaHandler)
 	}
 	return r
 }

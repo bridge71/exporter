@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Ss struct {
 	Hh   Hh
@@ -12,21 +16,49 @@ type Hh struct {
 	Priority uint `gorm:"default:1" form:"Priority"`
 }
 
-type PrdtInfo struct {
-	CatEngName   string `form:"CatEngName"`   // 产品
-	BrandEngName string `form:"BrandEngName"` // 品牌
-	Factory      string `form:"Factory"`      // 生产工厂
-	Currency     string `form:"currency"`     // 币种
-	UnitPrice    uint   `form:"unitPrice"`    // 单价
-	Unit         string `form:"unit"`         // 单位
-	Amount       uint   `form:"amount"`       // 金额
-	ItemNum      uint   `form:"itemNum"`      // 件数
-	PackSpec     string `form:"packSpec"`     // 包装规格
-	Weight       uint   `form:"weight"`       // 重量
-	WeightUnit   string `form:"weightUnit"`   // 重量单位
-	TradeTerm    string `form:"tradeTerm"`    // 贸易条款
-	DeliveryLoc  string `form:"deliveryLoc"`  // 交货地点
+type LoadingInfo struct {
+	Product   string `gorm:"column:product" form:"Product"`      // 产品
+	Brand     string `gorm:"column:brand" form:"Brand"`          // 品牌
+	PrdtPlant string `gorm:"column:prdt_plant" form:"PrdtPlant"` // 生产工厂
+	BatNum    string `gorm:"column:batNum" form:"BatNum"`        // 批次号
+	ItemNum   uint   `gorm:"column:itemNum" form:"ItemNum"`      // 件数
+	PackSpec  string `gorm:"column:packSpec" form:"PackSpec"`    // 包装规格
+	NetWeight uint   `gorm:"column:netWeight" form:"NetWeight"`  // 净重量
+	Unit      string `gorm:"column:unit" form:"Unit"`            // 单位
+	CnrNum    string `gorm:"column:cnrNum" form:"CnrNum"`        // 集装箱号
+	SealNum   string `gorm:"column:sealNum" form:"SealNum"`      // 铅封号
+	VehNum    string `gorm:"column:vehNum" form:"VehNum"`        // 车辆号
 }
+type MyModel struct {
+	CreatedAt time.Time `json:"createdAt" gorm:"autoCreateTime"`
+}
+type PrdtInfo struct {
+	CatEngName   string `gorm:"column:catEngName" form:"CatEngName"`     // 产品
+	BrandEngName string `gorm:"column:brandEngName" form:"BrandEngName"` // 品牌
+	Factory      string `gorm:"column:factory" form:"Factory"`           // 生产工厂
+	Currency     string `gorm:"column:currency" form:"currency"`         // 币种
+	UnitPrice    uint   `gorm:"column:unitPrice" form:"UnitPrice"`       // 单价
+	Unit         string `gorm:"column:unit" form:"Unit"`                 // 单位
+	Amount       uint   `gorm:"column:amount" form:"Amount"`             // 金额
+	ItemNum      uint   `gorm:"column:itemNum" form:"ItemNum"`           // 件数
+	PackSpec     string `gorm:"column:packSpec" form:"PackSpec"`         // 包装规格
+	Weight       uint   `gorm:"column:weight" form:"Weight"`             // 重量
+	WeightUnit   string `gorm:"column:weightUnit" form:"WeightUnit"`     // 重量单位
+	TradeTerm    string `gorm:"column:tradeTerm" form:"TradeTerm"`       // 贸易条款
+	DeliveryLoc  string `gorm:"column:deliveryLoc" form:"DeliveryLoc"`   // 交货地点
+	gorm.Model
+}
+
+type CostInfo struct {
+	ExpType   string `gorm:"column:expType" form:"ExpType"`     // 费用类型
+	Rates     string `gorm:"column:rates" form:"Rates"`         // 收费标准
+	UnitPrice uint   `gorm:"column:unitPrice" form:"UnitPrice"` // 单价
+	Number    uint   `gorm:"column:number" form:"Number"`       // 数量
+	Amount    uint   `gorm:"column:amount" form:"Amount"`       // 金额
+	Currency  string `gorm:"column:currency" form:"Currency"`   // 币种
+	gorm.Model
+}
+
 type Empl struct {
 	EmpName          string `gorm:"column:empName; not null" form:"EmpName"`         // 员工姓名
 	EmpEngName       string `gorm:"column:empEngName" form:"EmpEngName"`             // 员工英文名
@@ -218,6 +250,9 @@ type PackSpec struct {
 }
 
 type Message struct {
+	LoadingInfo   []LoadingInfo
+	PrdtInfo      []PrdtInfo
+	CostInfo      []CostInfo
 	Users         []User
 	Empl          []Empl
 	Acct          []Acct
