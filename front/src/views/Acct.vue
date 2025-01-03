@@ -15,6 +15,7 @@
             搜索：
             <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
             <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
+            <el-button @click="navigateToDictionaryManager">数据字典</el-button>
           </div>
         </el-header>
         <el-main>
@@ -332,9 +333,9 @@
     </el-dialog>
 
 
-    <header class="top-bar">
+    <!-- <header class="top-bar">
       <el-button @click="navigateToDictionaryManager">数据字典</el-button>
-    </header>
+    </header> -->
 
 
   </div>
