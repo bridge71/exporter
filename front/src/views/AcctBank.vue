@@ -359,6 +359,9 @@ function onAcctChange(value) {
   const selectedAcct = acctData.value.find(acct => acct.AcctId === value);
   if (selectedAcct) {
     bankForm.value.AcctName = selectedAcct.AcctName;
+    // bankData.value.AcctName = selectedAcct.AcctName;
+    // console.log('Selected Acct:', selectedAcct.AcctName);
+    // console.log('bankData Acct:', bankData.value.AcctName);
   }
 }
 const selectedAcct = ref({ AcctId: '', AcctName: '' }); // 默认值为空对象
@@ -435,6 +438,7 @@ const fetchAcctData = async () => {
   try {
     const response = await axios.get('/find/acct'); // 调用会计实体信息接口
     acctData.value = response.data.Acct; // 假设返回的数据结构中有 Acct 字段
+    console.log("已经赋值了");
   } catch (error) {
     console.error('获取会计实体信息失败:', error);
     ElMessage.error('获取会计实体信息失败，请稍后重试');
@@ -442,9 +446,28 @@ const fetchAcctData = async () => {
 };
 
 const fetchAcctBankData = async () => {
+  //fetchAcctData();
+  
+  console.log(acctData.value[0]);
   try {
     const response = await axios.get('/find/acctBank'); // 调用会计实体银行账户信息接口
     bankData.value = response.data.AcctBank; // 假设返回的数据结构中有 AcctBank 字段
+    console.log("这是Bank");
+    //console.log(acctData.value);
+    //console.log(acctData.value[0].AcctBanks[0].AccName);
+    for(let i = 0; i < bankData.value.length; i ++)
+      for(let j = 0; j < acctData.value.length; j ++)
+        {
+          for(let k = 0; k < acctData.value[j].AcctBanks.length; k ++)
+          {
+              if(acctData.value[j].AcctBanks[k].AccName == bankData.value[i].AccName)
+              {
+                bankData.value[i].AcctName = acctData.value[j].AcctName;
+              }
+          }
+        }
+    //console.log(bankData.value);
+
   } catch (error) {
     ElMessage.error('获取会计实体银行账户信息失败，请稍后重试');
     console.error('获取会计实体银行账户信息失败:', error);
