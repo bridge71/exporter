@@ -4,7 +4,7 @@
       <!-- 侧边栏 -->
       <el-aside width="200px">
         <div style="height: 100vh; overflow-y: auto;">
-          <SideMenu :default-active="'1-9'" />
+          <SideMenu :default-active="'1-12'" />
         </div>
       </el-aside>
 
@@ -315,8 +315,6 @@ const prdtForm = ref({
   TradeTerm: '',
   DeliveryLoc: '',
   PrdtId: '',
-  CreatedAt: '', // 添加 CreatedAt
-  UpdatedAt: '', // 添加 UpdatedAt
 });
 const prdtFormRef = ref(null);
 
@@ -418,6 +416,12 @@ const resetPrdtForm = () => {
 
 const submitPrdtForm = async () => {
   try {
+    console.log(prdtForm.value)
+
+    prdtForm.value.Weight = parseInt(prdtForm.value.Weight, 10);
+    prdtForm.value.UnitPrice = parseInt(prdtForm.value.UnitPrice, 10);
+    prdtForm.value.Amount = parseInt(prdtForm.value.Amount, 10);
+    prdtForm.value.ItemNum = parseInt(prdtForm.value.ItemNum, 10);
     const response = await axios.post('/save/prdtInfo', prdtForm.value);
     if (response.status === 200) {
       ElMessage.success('产品信息保存成功');

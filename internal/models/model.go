@@ -6,16 +6,9 @@ import (
 	"gorm.io/gorm"
 )
 
-type Ss struct {
-	Hh   Hh
-	HhID int
-	P    uint `gorm:"default:1" form:"Priority"`
+type mytime struct {
+	donotnotes time.Time
 }
-type Hh struct {
-	gorm.Model
-	Priority uint `gorm:"default:1" form:"Priority"`
-}
-
 type LoadingInfo struct {
 	Product   string `gorm:"column:product" form:"Product"`      // 产品
 	Brand     string `gorm:"column:brand" form:"Brand"`          // 品牌
@@ -28,9 +21,7 @@ type LoadingInfo struct {
 	CnrNum    string `gorm:"column:cnrNum" form:"CnrNum"`        // 集装箱号
 	SealNum   string `gorm:"column:sealNum" form:"SealNum"`      // 铅封号
 	VehNum    string `gorm:"column:vehNum" form:"VehNum"`        // 车辆号
-}
-type MyModel struct {
-	CreatedAt time.Time `json:"createdAt" gorm:"autoCreateTime"`
+	gorm.Model
 }
 type PrdtInfo struct {
 	CatEngName   string `gorm:"column:catEngName" form:"CatEngName"`     // 产品

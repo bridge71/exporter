@@ -12,7 +12,7 @@
     <el-menu-item index="1-10" @click="pushSpec">包装规格信息</el-menu-item>
     <el-menu-item index="1-11" @click="pushEmpl">员工信息</el-menu-item>
     <el-menu-item index="1-12" @click="pushPrdt">产品明细</el-menu-item>
-    <el-menu-item index="1-13" @click="pushUnload">装货明细</el-menu-item>
+    <el-menu-item index="1-13" @click="pushLoadingInfo">装货明细</el-menu-item>
     <el-menu-item index="1-14" @click="pushCost">费用明细</el-menu-item>
     <el-menu-item index="1-15" @click="pushSale">销售订单</el-menu-item>
     <el-menu-item index="1-16" @click="pushBuy">采购收单</el-menu-item>
@@ -104,8 +104,8 @@ const pushPrdt = () => {
   router.push('/prdt');
 };
 
-const pushUnload = () => {
-  router.push('/unload');
+const pushLoadingInfo = () => {
+  router.push('/loadingInfo');
 };
 
 const pushCost = () => {

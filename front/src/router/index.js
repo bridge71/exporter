@@ -76,9 +76,9 @@ const router = createRouter({
       component: () => import('@/views/Prdt.vue'),
     },
     {
-      path: '/unload', // 卸载页面
-      name: 'Unload',
-      component: () => import('@/views/Unload.vue'),
+      path: '/loadingInfo', // 卸载页面
+      name: 'LoadingInfo',
+      component: () => import('@/views/LoadingInfo.vue'),
     },
     {
       path: '/cost', // 成本页面

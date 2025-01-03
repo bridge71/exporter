@@ -64,28 +64,3 @@ func (s *Server) SavePrdtInfoHandler(c *gin.Context) {
 		RetMessage: "保存成功",
 	})
 }
-
-func (s *Server) CreatePrdtInfoHandler(c *gin.Context) {
-	PrdtInfo := &models.PrdtInfo{}
-	if err := c.ShouldBind(PrdtInfo); err != nil {
-		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
-		})
-		return
-	}
-
-	log.Printf("保存 PrdtInfo: %+v\n", PrdtInfo)
-
-	// 保存 PrdtInfo 记录
-	if err := s.db.Create(PrdtInfo); err != nil {
-		c.JSON(http.StatusInternalServerError, models.Message{
-			RetMessage: "保存失败",
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, models.Message{
-		RetMessage: "保存成功",
-	})
-}

@@ -225,8 +225,6 @@ func New() Service {
 		&models.LoadingInfo{},
 		&models.CostInfo{},
 		&models.Empl{},
-		&models.Hh{},
-		&models.Ss{},
 		&models.PayMentMethod{},
 		&models.PackSpec{},
 		&models.Cat{},
