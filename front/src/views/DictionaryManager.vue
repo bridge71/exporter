@@ -36,7 +36,10 @@
     <!-- 右侧内容 -->
     <el-main>
       <!-- 添加按钮 -->
-      <el-button type="primary" @click="handleAdd">添加</el-button>
+      <div class="button-container">
+        <el-button type="primary" @click="handleAdd">添加</el-button>
+        <el-button @click="handleBack" class="back-button">返回</el-button>
+      </div>
 
       <!-- 表格 -->
       <el-table :data="tableData" style="width: 100%">
@@ -78,6 +81,10 @@ export default {
     const form = ref({ type: '', id: '' }); // 表单数据
     const isEdit = ref(false); // 是否是编辑模式
 
+
+    const handleBack = () => {
+      window.history.back();
+  };
     // 获取数据
     const fetchData = async () => {
       let url;
@@ -793,43 +800,37 @@ export default {
       handleEdit,
       handleDelete,
       handleSubmit,
+      handleBack,
     };
   },
 };
 </script>
 
-<style>
-/* 修改全局文字颜色 */
-body {
-  color: #333;
+<style scoped>
+/* 按钮容器样式 */
+.button-container {
+  display: flex;
+  justify-content: space-between; /* 左右两端对齐 */
+  align-items: center;
+  margin-bottom: 20px; /* 与表格间距 */
 }
 
-/* 修改表格文字颜色 */
-.el-table {
-  color: #333;
+/* 返回按钮样式 */
+.back-button {
+  margin-left: auto;
+  color: white;
+  background-color: #409eff;
 }
 
-/* 修改对话框文字颜色 */
-.el-dialog {
-  color: #333;
+/* 操作按钮的样式调整 */
+.edit-button,
+.delete-button {
+  margin-right: 10px; /* 按钮间距 */
 }
 
-/* 修改导航栏文字颜色 */
-.el-menu {
-  color: #333;
-}
-
-/* 修改按钮文字颜色 */
-.el-button {
-  color: #333;
-}
-
-.el-aside {
-  background-color: #f5f5f5;
-}
-
-.el-main {
-  padding: 20px;
+.delete-button {
+  background-color: #f56c6c;
+  color: white;
 }
 </style>
 
