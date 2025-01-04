@@ -36,9 +36,9 @@
     <!-- 右侧内容 -->
     <el-main>
       <!-- 添加按钮 -->
-      <div class="button-container">
+      <div class="header-buttons">
+        <el-button @click="handleBack" type="default" icon="el-icon-arrow-left">返回</el-button>
         <el-button type="primary" @click="handleAdd">添加</el-button>
-        <el-button @click="handleBack" class="back-button">返回</el-button>
       </div>
 
       <!-- 表格 -->
@@ -805,35 +805,6 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* 按钮容器样式 */
-.button-container {
-  display: flex;
-  justify-content: space-between; /* 左右两端对齐 */
-  align-items: center;
-  margin-bottom: 20px; /* 与表格间距 */
-}
-
-/* 返回按钮样式 */
-.back-button {
-  margin-left: auto;
-  color: white;
-  background-color: #409eff;
-}
-
-/* 操作按钮的样式调整 */
-.edit-button,
-.delete-button {
-  margin-right: 10px; /* 按钮间距 */
-}
-
-.delete-button {
-  background-color: #f56c6c;
-  color: white;
-}
-</style>
-
 
 
 <style src="../assets/styles/DictionaryManager.css" scoped></style>
