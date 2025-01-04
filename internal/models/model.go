@@ -1,14 +1,105 @@
 package models
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
-type mytime struct {
-	donotnotes time.Time
+type Message struct {
+	Sale          []Sale
+	LoadingInfo   []LoadingInfo
+	PrdtInfo      []PrdtInfo
+	CostInfo      []CostInfo
+	Users         []User
+	Empl          []Empl
+	Acct          []Acct
+	AcctBank      []AcctBank
+	Brand         []Brand
+	PayMentMethod []PayMentMethod
+	PackSpec      []PackSpec
+	MercType      []MercType
+	Cat           []Cat
+	SuprType      []SuprType
+	PrdtType      []PrdtType
+	FoodAddType   []FoodAddType
+	FeedAddType   []FeedAddType
+	UnitMeas      []UnitMeas
+	PackType      []PackType
+	ConType       []ConType
+	Currency      []Currency
+	TradeTerm     []TradeTerm
+	Nation        []Nation
+	Port          []Port
+	TaxType       []TaxType
+	BrandType     []BrandType
+	EduLevel      []EduLevel
+	Dept          []Dept
+	Position      []Position
+	QualStd       []QualStd
+	InvLoc        []InvLoc
+	DocReq        []DocReq
+	PayMth        []PayMth
+	PayLimit      []PayLimit
+	FinaDocStatus []FinaDocStatus
+	FinaDocType   []FinaDocType
+	ExpType       []ExpType
+	Rates         []Rates
+	BussOrderSta  []BussOrderSta
+	Merchant      []Merchant
+	Cust          []Cust
+	BankAccount   []BankAccount
+	RetMessage    string
+	User          User
 }
+type Sale struct {
+	OrderNum        string     `gorm:"column:orderNum" form:"OrderNum"`   // 订单编号
+	OrderDate       string     `gorm:"column:orderDate" form:"OrderDate"` // 订单日期
+	AcctId          uint       `form:"AcctId"`
+	MercId          uint       `form:"MercId"`
+	QualStd         string     `gorm:"column:QualStd" form:"QualStd"`
+	BillValidity    string     `gorm:"column:BillValidity" form:"BillValidity"` // 账单有效期
+	BussOrderSta    string     `gorm:"column:BussOrderSta" form:"BussOrderSta"`
+	StartShip       string     `gorm:"column:StartShip" form:"StartShip"` // 发货开始日期
+	EndShip         string     `gorm:"column:EndShip" form:"EndShip"`     // 发货截止日期
+	SrcPlace        string     `gorm:"column:SrcPlace" form:"SrcPlace"`   // 起运地
+	Des             string     `gorm:"column:Des" form:"Des"`             // 目的地
+	DocReq          string     `gorm:"column:DocReq" form:"DocReq"`       // 单据要求
+	PayMentMethodId uint       `gorm:"column:PayMentMethodId" form:"PayMentMethodId"`
+	PrdtInfos       []PrdtInfo `gorm:"many2many:salePrdtInfo" form:"PrdtInfos"`
+	TotAmt          uint       `gorm:"column:TotAmt" form:"TotAmt"`                 // 总金额
+	Currency        string     `gorm:"column:Currency" form:"Currency"`             // 币种
+	TotNum          uint       `gorm:"column:TotNum" form:"TotNum"`                 // 总件数
+	PackSpecId      uint       `gorm:"column:PackSpecId" form:"PackSpecId"`         // 包装规格
+	TotalNetWeight  string     `gorm:"column:TotalNetWeight" form:"TotalNetWeight"` // 总净重
+	UnitMeas        string     `gorm:"column:UnitMeas" form:"UnitMeas"`             // 单位
+	AcctBankId      uint       `form:"AcctBankId"`
+	BankAccountId   uint       `form:"BankAccountId"`
+	Notes           string     `gorm:"column:Notes" form:"Notes"`
+	Files           []File     `gorm:"many2many:saleFile" form:"Files"`
+	// Sends           []Send     `gorm:"many2many:saleSend" form:"Sends"`
+	gorm.Model
+}
+
+//	type Send struct {
+//		SaleInvNum     string     `gorm:"column:SaleInvNum" form:"saleInvNum"`   // 销售发票号
+//		SaleInvDate    string     `gorm:"column:SaleInvDate" form:"saleInvDate"` // 销售发票日期
+//		Sales          []Sale     `gorm:"many2many:saleSend" form:"Sales"`
+//		Merchants      []Merchant `gorm:"many2many:sendMerchant" form:"Merchant"`
+//		AcctId         uint       `gorm:"column:AcctId" form:"AcctId"`
+//		SrcPlace       string     `gorm:"column:SrcPlace" form:"srcPlace"`             // 起运地
+//		Des            string     `gorm:"column:Des" form:"des"`                       // 目的地
+//		ShipName       string     `gorm:"column:ShipName" form:"shipName"`             // 船名
+//		Voyage         string     `gorm:"column:Voyage" form:"voyage"`                 // 航次
+//		TotNum         string     `gorm:"column:TotNum" form:"totNum"`                 // 总件数
+//		Type           string     `gorm:"column:Type" form:"type"`                     // 类型
+//		TotalNetWeight string     `gorm:"column:TotalNetWeight" form:"totalNetWeight"` // 总净重
+//		Unit           string     `gorm:"column:Unit" form:"unit"`                     // 单位
+//		TotVol         string     `gorm:"column:TotVol" form:"totVol"`                 // 总体积
+//		Size           string     `gorm:"column:Size" form:"size"`                     // 尺码
+//		BillLadNum     string     `gorm:"column:BillLadNum" form:"billLadNum"`         // 提单号
+//		DateOfShip     string     `gorm:"column:DateOfShip" form:"dateOfShip"`         // 发货（开船）日期
+//		PayMethod      string     `gorm:"column:PayMethod" form:"payMethod"`           // 付款方式
+//		RecBank        string     `gorm:"column:RecBank" form:"recBank"`               // 收款银行
+//	}
 type LoadingInfo struct {
 	Product   string `gorm:"column:product" form:"Product"`      // 产品
 	Brand     string `gorm:"column:brand" form:"Brand"`          // 品牌
@@ -106,6 +197,7 @@ type Acct struct { // 会计实体
 	AcctBanks   []AcctBank `gorm:"foreignKey:AcctId" form:"AcctBanks[]"`
 	FileId      uint       `gorm:"column:fileId" form:"FileId"`
 	AcctId      uint       `gorm:"column:acctId;  primaryKey" form:"AcctId"`
+	Sales       []Sale     `gorm:"foreignKey:AcctId"`
 }
 
 type AcctBank struct {
@@ -122,6 +214,7 @@ type AcctBank struct {
 	FileId     uint   `gorm:"column:fileId" form:"FileId"`
 	AcctId     uint   `gorm:"column:acctId" form:"AcctId"`
 	AcctBankId uint   `gorm:"column:acctBankId; primaryKey; " form:"AcctBankId"`
+	Sales      []Sale `gorm:"foreignKey:AcctBankId"`
 }
 
 type Merchant struct {
@@ -144,6 +237,7 @@ type Merchant struct {
 	FileName     string        `gorm:"column:fileName" form:"FileName"`
 	Custs        []Cust        `gorm:"foreignKey:MercId" form:"Custs[]"`        // 一对多关系
 	BankAccounts []BankAccount `gorm:"foreignKey:MercId" form:"BankAccounts[]"` // 一对多关系
+	Sales        []Sale        `gorm:"foreignKey:MercId"`
 	MercId       uint          `gorm:"column:mercId;primaryKey" form:"MercId"`
 	FileId       uint          `gorm:"column:fileId" form:"FileId"`
 }
@@ -178,24 +272,26 @@ type BankAccount struct {
 	BankAddr    string `gorm:"column:bankAddr;" form:"BankAddr"`
 	Notes       string `gorm:"column:notes;" form:"Notes"`
 	FileName    string `gorm:"column:fileName" form:"FileName"`
-	BankAccId   uint   `gorm:"column:bankAccId;primaryKey" form:"BankAccId"`
 	FileId      uint   `gorm:"column:fileId" form:"FileId"`
 	MercId      uint   `gorm:"column:mercId;" form:"MercId"`
+	Sales       []Sale `gorm:"foreignKey:BankAccountId"`
+	gorm.Model
 }
 
 type PayMentMethod struct {
-	PayMtdName      string `gorm:"column:PayMtdName; unique" form:"PayMtdName"`
-	Notes           string `gorm:"column:notes;" form:"Notes"`
-	PayMth          string `gorm:"column:payMth;" form:"PayMth"`
-	PayLimit        string `gorm:"column:payLimit;" form:"PayLimit"`
-	PayMentMethodId uint   `gorm:"column:payMentMethodId; primaryKey" form:"PayMentMethodId"`
-	PayRat          uint   `gorm:"column:payRat;" form:"PayRat"`
+	PayMtdName string `gorm:"column:PayMtdName; unique" form:"PayMtdName"`
+	Notes      string `gorm:"column:notes;" form:"Notes"`
+	PayMth     string `gorm:"column:payMth;" form:"PayMth"`
+	PayLimit   string `gorm:"column:payLimit;" form:"PayLimit"`
+	PayRat     uint   `gorm:"column:payRat;" form:"PayRat"`
+	Sales      []Sale `gorm:"foreignKey:PayMentMethodId"`
+	gorm.Model
 }
 type File struct {
 	Name   string `gorm:"column:name; not null" form:"Name"`
 	MD5    string `gorm:"column:MD5;  not null" form:"MD5"`
 	Suffix string `gorm:"column:suffix; not null" form:"Suffix"`
-	FileId uint   `gorm:"column:fileId; primaryKey" form:"FileId" binding:"required"`
+	gorm.Model
 }
 
 // 国家
@@ -236,54 +332,9 @@ type PackSpec struct {
 	FileName    string `gorm:"column:fileName" form:"FileName"`
 	Notes       string `gorm:"column:notes" form:"Notes"` // 备注
 	FileId      uint   `gorm:"column:fileId" form:"FileId"`
-	PackSpecId  uint   `gorm:"column:packSpecId; primaryKey" form:"PackSpecId"`
 	NetWt       uint   `gorm:"column:netWt" form:"NetWt"`
-}
-
-type Message struct {
-	LoadingInfo   []LoadingInfo
-	PrdtInfo      []PrdtInfo
-	CostInfo      []CostInfo
-	Users         []User
-	Empl          []Empl
-	Acct          []Acct
-	AcctBank      []AcctBank
-	Brand         []Brand
-	PayMentMethod []PayMentMethod
-	PackSpec      []PackSpec
-	MercType      []MercType
-	Cat           []Cat
-	SuprType      []SuprType
-	PrdtType      []PrdtType
-	FoodAddType   []FoodAddType
-	FeedAddType   []FeedAddType
-	UnitMeas      []UnitMeas
-	PackType      []PackType
-	ConType       []ConType
-	Currency      []Currency
-	TradeTerm     []TradeTerm
-	Nation        []Nation
-	Port          []Port
-	TaxType       []TaxType
-	BrandType     []BrandType
-	EduLevel      []EduLevel
-	Dept          []Dept
-	Position      []Position
-	QualStd       []QualStd
-	InvLoc        []InvLoc
-	DocReq        []DocReq
-	PayMth        []PayMth
-	PayLimit      []PayLimit
-	FinaDocStatus []FinaDocStatus
-	FinaDocType   []FinaDocType
-	ExpType       []ExpType
-	Rates         []Rates
-	BussOrderSta  []BussOrderSta
-	Merchant      []Merchant
-	Cust          []Cust
-	BankAccount   []BankAccount
-	RetMessage    string
-	User          User
+	Sales       []Sale `gorm:"foreignKey:PackSpecId"`
+	gorm.Model
 }
 
 // 客商（户）类型

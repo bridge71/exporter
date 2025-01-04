@@ -58,7 +58,7 @@ func (s *Server) SaveFile(c *gin.Context) (error, uint, string) {
 		c.SaveUploadedFile(file, "../files/"+MD5+Suffix) // 以main文件所在目录为基准
 
 		log.Printf(file.Filename + "\n")
-		return nil, File.FileId, FileName
+		return nil, File.ID, FileName
 	}
 	return nil, 0, ""
 }

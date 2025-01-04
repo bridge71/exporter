@@ -221,15 +221,6 @@ func New() Service {
 	})
 	// AutoMigrate all models
 	gormDB.AutoMigrate(
-		&models.PrdtInfo{},
-		&models.LoadingInfo{},
-		&models.CostInfo{},
-		&models.Empl{},
-		&models.PayMentMethod{},
-		&models.PackSpec{},
-		&models.Cat{},
-		&models.Brand{},
-		&models.User{},
 		&models.Acct{},
 		&models.AcctBank{},
 		&models.File{},
@@ -263,6 +254,16 @@ func New() Service {
 		&models.Merchant{},
 		&models.Cust{},
 		&models.BankAccount{},
+		&models.PrdtInfo{},
+		&models.LoadingInfo{},
+		&models.CostInfo{},
+		&models.Empl{},
+		&models.PayMentMethod{},
+		&models.PackSpec{},
+		&models.Cat{},
+		&models.Brand{},
+		&models.User{},
+		&models.Sale{},
 	)
 
 	dbInstance = &service{
