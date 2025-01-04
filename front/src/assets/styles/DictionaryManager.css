@@ -1,75 +1,192 @@
-/* src/assets/styles/Bottom.css */
+/* 全局字体样式 */
+body {
+  font-family: 'Microsoft YaHei', Arial, sans-serif;
+  color: #333;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
 
-/* 基本样式 */
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* 容器样式 */
-  #app {
-    display: flex;
-    height: 100vh;
-  }
-  
-  .el-container {
-    height: 100%;
-  }
-  
-  .el-aside {
-    background-color: #f7f7f7;
-    border-right: 1px solid #dcdcdc;
-  }
-  
-  .el-main {
-    padding: 20px;
-  }
-  
-  /* 表格样式 */
-  .el-table {
-    width: 100%;
-  }
-  
-  .el-pagination {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  /* 对话框样式 */
-  .el-dialog {
-    max-width: 800px;
-  }
-  
-  .el-form-item__label {
-    color: #606266;
-  }
-  
-  .el-button {
-    margin-right: 10px;
-  }
-  
-  /* 输入框样式 */
-  .el-input {
-    width: 100%;
-  }
-  
-  /* 按钮样式 */
-  .el-button--primary {
-    background-color: #409eff;
-    border-color: #409eff;
-  }
-  
-  .el-button--text {
-    color: #409eff;
-  }
-  
-  /* 删除按钮样式 */
-  .el-button--text.el-button--small {
-    color: red;
-  }
-  
-  /* 其他样式 */
-  .dialog-footer .el-button {
-    margin-left: 10px;
-  }
+/* 主布局样式 */
+.el-container {
+  height: 100vh;
+}
+
+/* 左侧导航栏样式 */
+.el-aside {
+  background-color: #ffffff; /* 白色背景 */
+  border-right: 1px solid #dcdcdc;
+  height: 100%;
+  overflow-y: auto; /* 支持滚动 */
+}
+
+.el-menu {
+  border: none;
+  color: #333;
+}
+
+.el-menu-item {
+  font-size: 14px;
+  line-height: 40px;
+  color: #555;
+  padding: 0 20px;
+}
+
+.el-menu-item:hover {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.el-menu-item.is-active {
+  background-color: #1890ff !important;
+  color: #fff !important;
+}
+
+/* 顶部按钮区域样式 */
+.header-buttons {
+  display: flex;
+  justify-content: flex-end; /* 右对齐 */
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 10px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e8e8e8;
+  height: 50px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header-buttons .el-button {
+  margin-left: 10px;
+}
+
+/* 返回按钮样式 */
+.el-button[type="default"] {
+  background-color: #f5f5f5;
+  color: #606266;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.el-button[type="default"]:hover {
+  background-color: #e6e6e6;
+  color: #333;
+}
+
+/* 添加按钮样式 */
+.el-button[type="primary"] {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  color: #fff;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.el-button[type="primary"]:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+/* 表格样式 */
+.el-table {
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #e8e8e8;
+  overflow: hidden;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.el-table th {
+  background-color: #fafafa;
+  text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.el-table td {
+  text-align: center;
+  font-size: 13px;
+  color: #555;
+}
+
+/* 表格操作按钮 */
+.el-button {
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.el-button[type="danger"] {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+  color: #fff;
+  padding: 4px 8px;
+  transition: all 0.3s ease;
+}
+
+.el-button[type="danger"]:hover {
+  background-color: #ff7875;
+  border-color: #ff7875;
+}
+
+/* 对话框样式 */
+.el-dialog {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.el-dialog__body {
+  padding: 20px;
+  font-size: 14px;
+}
+
+.el-dialog .el-form-item {
+  margin-bottom: 15px;
+}
+
+.el-dialog .el-button {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.el-dialog .el-button + .el-button {
+  margin-left: 10px;
+}
+
+.el-dialog__footer {
+  text-align: right;
+  padding: 10px 20px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ebeef5;
+}
+
+/* 按钮在对话框中对齐 */
+.el-dialog .el-dialog__footer .el-button[type="primary"] {
+  background-color: #1890ff;
+}
+
+.el-dialog .el-dialog__footer .el-button[type="primary"]:hover {
+  background-color: #40a9ff;
+}
+
+.el-dialog .el-dialog__footer .el-button[type="default"] {
+  background-color: #f5f5f5;
+  color: #606266;
+  border: 1px solid #dcdcdc;
+}
+
+.el-dialog .el-dialog__footer .el-button[type="default"]:hover {
+  background-color: #e6e6e6;
+  color: #333;
+}
+
+/* 右侧内容样式 */
+.el-main {
+  padding: 20px;
+  background-color: #f5f5f5;
+  overflow-y: auto; /* 右侧内容支持滚动 */
+}
