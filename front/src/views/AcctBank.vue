@@ -45,8 +45,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.AcctBankId)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -138,7 +137,7 @@
             <el-form-item label="关联会计实体信息">
               <el-select v-model="bankForm.AcctId" @change=onAcctChange placeholder="请选择会计实体信息">
                 <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} (${acct.AcctCode})`"
-                  :value="acct.AcctId"></el-option>
+                  :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -232,7 +231,7 @@
             <el-form-item label="关联会计实体信息">
               <el-select v-model="bankForm.AcctId" @change=onAcctChange placeholder="请选择会计实体信息">
                 <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} (${acct.AcctCode})`"
-                  :value="acct.AcctId"></el-option>
+                  :value="acct.ID"></el-option>
               </el-select>
 
             </el-form-item>
@@ -284,14 +283,14 @@ const downloadFile = async (fileId, fileName) => {
 };
 
 
-const handleDelete = (index, AcctBankId) => {
+const handleDelete = (index, ID) => {
   ElMessageBox.confirm('确定要删除该银行账户信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
     axios.post('/delete/acctBank', {
-      "AcctBankId": AcctBankId,
+      "ID": ID,
       "AccName": "ss",
       "AccNum": "ss"
     })
@@ -323,7 +322,7 @@ const handleBankFileChange = (uploadFile) => {
 const handleView = (index, row) => {
   // 填充会计实体银行账户信息表单
   bankForm.value = { ...row }; // 将当前行的数据赋值给 bankForm
-  selectedAcct.value = { AcctId: row.AcctId, AcctName: row.AcctName }; // 填充关联的会计实体信息
+  selectedAcct.value = { AcctId: row.ID, AcctName: row.AcctName }; // 填充关联的会计实体信息
   showshowBankDialog.value = true; // 打开会计实体银行账户信息对话框
   // 检查是否已上传文件
   if (row.FileId) {
@@ -356,7 +355,7 @@ const resetBankForm = () => {
 };
 // 监听 change 事件并更新 AcctName
 function onAcctChange(value) {
-  const selectedAcct = acctData.value.find(acct => acct.AcctId === value);
+  const selectedAcct = acctData.value.find(acct => acct.ID === value);
   if (selectedAcct) {
     bankForm.value.AcctName = selectedAcct.AcctName;
     // bankData.value.AcctName = selectedAcct.AcctName;
@@ -398,7 +397,7 @@ const submitBankForm = async () => {
   } catch (error) {
     console.error('保存会计实体银行账户信息失败:', error);
     // ElMessage.error(error.response.data.RetMessage);
-    ElMessage.error("已存在帐号或者请选择绑定的会计实体");
+    ElMessage.error(error.response.data.RetMessage);
   }
 };
 const handlePageChange = (page) => {
@@ -447,25 +446,22 @@ const fetchAcctData = async () => {
 
 const fetchAcctBankData = async () => {
   //fetchAcctData();
-  
+
   console.log(acctData.value[0]);
   try {
     const response = await axios.get('/find/acctBank'); // 调用会计实体银行账户信息接口
     bankData.value = response.data.AcctBank; // 假设返回的数据结构中有 AcctBank 字段
-    console.log("这是Bank");
+    // console.log("这是Bank");
     //console.log(acctData.value);
     //console.log(acctData.value[0].AcctBanks[0].AccName);
-    for(let i = 0; i < bankData.value.length; i ++)
-      for(let j = 0; j < acctData.value.length; j ++)
-        {
-          for(let k = 0; k < acctData.value[j].AcctBanks.length; k ++)
-          {
-              if(acctData.value[j].AcctBanks[k].AccName == bankData.value[i].AccName)
-              {
-                bankData.value[i].AcctName = acctData.value[j].AcctName;
-              }
-          }
-        }
+    // for (let i = 0; i < bankData.value.length; i++)
+    //   for (let j = 0; j < acctData.value.length; j++) {
+    //     for (let k = 0; k < acctData.value[j].AcctBanks.length; k++) {
+    //       if (acctData.value[j].AcctBanks[k].AccName == bankData.value[i].AccName) {
+    //         bankData.value[i].AcctName = acctData.value[j].AcctName;
+    //       }
+    //     }
+    //   }
     //console.log(bankData.value);
 
   } catch (error) {
@@ -493,7 +489,8 @@ const bankForm = ref({
   AcctId: '',
   FileId: '', // 添加 FileName 字段
   FileName: '', // 添加 FileName 字段
-  AcctName: ''
+  AcctName: '',
+  ID: '',
 });
 
 
@@ -525,7 +522,7 @@ const handleAdd = () => {
 const handleEdit = (index, row) => {
   // 填充会计实体银行账户信息表单
   bankForm.value = { ...row }; // 将当前行的数据赋值给 bankForm
-  selectedAcct.value = { AcctId: row.AcctId, AcctName: row.AcctName }; // 填充关联的会计实体信息
+  selectedAcct.value = { ID: row.AcctId, AcctName: row.AcctName }; // 填充关联的会计实体信息
   showBankDialog.value = true; // 打开会计实体银行账户信息对话框
 };
 </script>

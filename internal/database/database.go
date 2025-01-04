@@ -77,6 +77,7 @@ type Service interface {
 	SaveAcctBank(acctBank *models.AcctBank) error
 	DeleteAcctBank(acctBank *models.AcctBank) error
 	FindAcct(accts *[]models.Acct)
+	FirstAcct(id uint, acct *[]models.Acct)
 	FindAcctBank(acctBanks *[]models.AcctBank)
 	FindAcctBankById(acctBanks *[]models.AcctBank, acctId uint)
 

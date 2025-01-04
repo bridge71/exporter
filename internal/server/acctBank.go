@@ -10,9 +10,15 @@ import (
 )
 
 func (s *Server) FindAcctBankHandler(c *gin.Context) {
-	acctBanks := &[]models.AcctBank{}
-	s.db.FindAcctBank(acctBanks)
-	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
+	acctBanks := []models.AcctBank{}
+	s.db.FindAcctBank(&acctBanks)
+	length := len(acctBanks)
+	var acct []models.Acct
+	for i := 0; i < length; i++ {
+		s.db.FirstAcct(acctBanks[i].AcctId, &acct)
+		acctBanks[i].AcctName = acct[0].AcctName
+	}
+	c.JSON(http.StatusOK, models.Message{AcctBank: acctBanks})
 }
 
 func (s *Server) DeleteAcctBankHandler(c *gin.Context) {
@@ -52,7 +58,7 @@ func (s *Server) SaveAcctBankHandler(c *gin.Context) {
 	err := c.ShouldBind(acctBank)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of acctBank",
+			RetMessage: err.Error(),
 		})
 		return
 	}

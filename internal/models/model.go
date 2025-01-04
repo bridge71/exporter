@@ -54,7 +54,7 @@ type Sale struct {
 	OrderNum        string     `gorm:"column:orderNum" form:"OrderNum"`   // 订单编号
 	OrderDate       string     `gorm:"column:orderDate" form:"OrderDate"` // 订单日期
 	AcctId          uint       `form:"AcctId"`
-	MercId          uint       `form:"MercId"`
+	MerchantId      uint       `form:"MerchantId"`
 	QualStd         string     `gorm:"column:QualStd" form:"QualStd"`
 	BillValidity    string     `gorm:"column:BillValidity" form:"BillValidity"` // 账单有效期
 	BussOrderSta    string     `gorm:"column:BussOrderSta" form:"BussOrderSta"`
@@ -194,27 +194,29 @@ type Acct struct { // 会计实体
 	RegDate     string     `gorm:"column:regDate;" form:"RegDate"`
 	Notes       string     `gorm:"column:notes;" form:"Notes"`
 	FileName    string     `gorm:"column:fileName" form:"FileName"`
-	AcctBanks   []AcctBank `gorm:"foreignKey:AcctId" form:"AcctBanks[]"`
+	AcctBanks   []AcctBank `gorm:"foreignKey:AcctId" `
 	FileId      uint       `gorm:"column:fileId" form:"FileId"`
-	AcctId      uint       `gorm:"column:acctId;  primaryKey" form:"AcctId"`
-	Sales       []Sale     `gorm:"foreignKey:AcctId"`
+	// AcctId      uint       `gorm:"column:acctId;  primaryKey" form:"AcctId"`
+	Sales []Sale `gorm:"foreignKey:AcctId"`
+	gorm.Model
 }
 
 type AcctBank struct {
-	AccName    string `gorm:"column:accName; not null" form:"AccName" binding:"required"`
-	AccNum     string `gorm:"column:accNum; not null; unique" form:"AccNum" binding:"required"`
-	Currency   string `gorm:"column:currency" form:"Currency"`
-	BankName   string `gorm:"column:bankName" form:"BankName"`
-	BankNum    string `gorm:"column:bankNum" form:"BankNum"`
-	SwiftCode  string `gorm:"column:swiftCode" form:"SwiftCode"`
-	BankAddr   string `gorm:"column:bankAddr" form:"BankAddr"`
-	Notes      string `gorm:"column:notes" form:"Notes"`
-	AcctName   string `gorm:"column:acctName" form:"AcctName"`
-	FileName   string `gorm:"column:fileName" form:"FileName"`
-	FileId     uint   `gorm:"column:fileId" form:"FileId"`
-	AcctId     uint   `gorm:"column:acctId" form:"AcctId"`
-	AcctBankId uint   `gorm:"column:acctBankId; primaryKey; " form:"AcctBankId"`
-	Sales      []Sale `gorm:"foreignKey:AcctBankId"`
+	AccName   string `gorm:"column:accName; not null" form:"AccName" binding:"required"`
+	AccNum    string `gorm:"column:accNum; not null; unique" form:"AccNum" binding:"required"`
+	Currency  string `gorm:"column:currency" form:"Currency"`
+	BankName  string `gorm:"column:bankName" form:"BankName"`
+	BankNum   string `gorm:"column:bankNum" form:"BankNum"`
+	SwiftCode string `gorm:"column:swiftCode" form:"SwiftCode"`
+	BankAddr  string `gorm:"column:bankAddr" form:"BankAddr"`
+	Notes     string `gorm:"column:notes" form:"Notes"`
+	AcctName  string `gorm:"column:acctName" `
+	FileName  string `gorm:"column:fileName" form:"FileName"`
+	FileId    uint   `gorm:"column:fileId" form:"FileId"`
+	AcctId    uint   `gorm:"column:acctId" form:"AcctId"`
+	// AcctBankId uint   `gorm:"column:acctBankId; primaryKey; " form:"AcctBankId"`
+	Sales []Sale `gorm:"foreignKey:AcctBankId"`
+	gorm.Model
 }
 
 type Merchant struct {
@@ -235,29 +237,30 @@ type Merchant struct {
 	RegCap       string        `gorm:"column:regCap;" form:"RegCap"`
 	Notes        string        `gorm:"column:notes;" form:"Notes"`
 	FileName     string        `gorm:"column:fileName" form:"FileName"`
-	Custs        []Cust        `gorm:"foreignKey:MercId" form:"Custs[]"`        // 一对多关系
-	BankAccounts []BankAccount `gorm:"foreignKey:MercId" form:"BankAccounts[]"` // 一对多关系
-	Sales        []Sale        `gorm:"foreignKey:MercId"`
-	MercId       uint          `gorm:"column:mercId;primaryKey" form:"MercId"`
-	FileId       uint          `gorm:"column:fileId" form:"FileId"`
+	Custs        []Cust        `gorm:"foreignKey:MerchantId" ` // 一对多关系
+	BankAccounts []BankAccount `gorm:"foreignKey:MerchantId" ` // 一对多关系
+	Sales        []Sale        `gorm:"foreignKey:MerchantId"`
+	// MercId       uint          `gorm:"column:mercId;primaryKey" form:"MercId"`
+	FileId uint `gorm:"column:fileId" form:"FileId"`
+	gorm.Model
 }
 
 type Cust struct {
-	Name     string `gorm:"column:name;not null" form:"Name" binding:"required"`
-	Gender   string `gorm:"column:gender;" form:"Gender"`
-	Nation   string `gorm:"column:nation;" form:"Nation"`
-	Addr     string `gorm:"column:addr;" form:"Addr"`
-	Email    string `gorm:"column:email;" form:"Email"`
-	PhoneNum string `gorm:"column:phoneNum;" form:"PhoneNum"`
-	QQ       string `gorm:"column:qq;" form:"QQ"`
-	Wechat   string `gorm:"column:wechat;" form:"Wechat"`
-	Merc     string `gorm:"column:merc;" form:"Merc"`
-	Post     string `gorm:"column:post;" form:"Post"`
-	Notes    string `gorm:"column:notes;" form:"Notes"`
-	FileName string `gorm:"column:fileName" form:"FileName"`
-	CustId   uint   `gorm:"column:custId;primaryKey" form:"CustId"`
-	MercId   uint   `gorm:"column:mercId;" form:"MercId"` // 外键，关联到 Merchant 表的 MercId
-	FileId   uint   `gorm:"column:fileId" form:"FileId"`
+	Name       string `gorm:"column:name;not null" form:"Name" binding:"required"`
+	Gender     string `gorm:"column:gender;" form:"Gender"`
+	Nation     string `gorm:"column:nation;" form:"Nation"`
+	Addr       string `gorm:"column:addr;" form:"Addr"`
+	Email      string `gorm:"column:email;" form:"Email"`
+	PhoneNum   string `gorm:"column:phoneNum;" form:"PhoneNum"`
+	QQ         string `gorm:"column:qq;" form:"QQ"`
+	Wechat     string `gorm:"column:wechat;" form:"Wechat"`
+	Merc       string `gorm:"column:merc;" form:"Merc"`
+	Post       string `gorm:"column:post;" form:"Post"`
+	Notes      string `gorm:"column:notes;" form:"Notes"`
+	FileName   string `gorm:"column:fileName" form:"FileName"`
+	CustId     uint   `gorm:"column:custId;primaryKey" form:"CustId"`
+	MerchantId uint   `gorm:"column:merchantId;" form:"MerchantId"` // 外键，关联到 Merchant 表的 MercId
+	FileId     uint   `gorm:"column:fileId" form:"FileId"`
 }
 
 type BankAccount struct {
@@ -273,7 +276,7 @@ type BankAccount struct {
 	Notes       string `gorm:"column:notes;" form:"Notes"`
 	FileName    string `gorm:"column:fileName" form:"FileName"`
 	FileId      uint   `gorm:"column:fileId" form:"FileId"`
-	MercId      uint   `gorm:"column:mercId;" form:"MercId"`
+	MerchantId  uint   `gorm:"column:merchantId;" form:"MerchantId"`
 	Sales       []Sale `gorm:"foreignKey:BankAccountId"`
 	gorm.Model
 }

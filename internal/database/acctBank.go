@@ -7,7 +7,7 @@ func (s *service) DeleteAcctBank(acctBank *models.AcctBank) error {
 }
 
 func (s *service) SaveAcctBank(acctBank *models.AcctBank) error {
-	return s.gormDB.Save(acctBank).Error
+	return s.gormDB.Omit("Sales").Save(acctBank).Error
 }
 
 func (s *service) FindAcctBank(acctBanks *[]models.AcctBank) {

@@ -19,7 +19,7 @@
         <el-menu-item index="BrandType">品牌类型</el-menu-item>
         <el-menu-item index="EduLevel">学历</el-menu-item>
         <el-menu-item index="Dept">公司部门</el-menu-item>
-        <el-menu-item index="Postion">公司岗位</el-menu-item>
+        <el-menu-item index="Position">公司岗位</el-menu-item>
         <el-menu-item index="QualStd">质量标准</el-menu-item>
         <el-menu-item index="InvLoc">库存地点位置</el-menu-item>
         <el-menu-item index="DocReq">单据要求</el-menu-item>
@@ -84,7 +84,7 @@ export default {
 
     const handleBack = () => {
       window.history.back();
-  };
+    };
     // 获取数据
     const fetchData = async () => {
       let url;
@@ -136,8 +136,8 @@ export default {
       else if (activeMenu.value === 'Dept') {
         url = '/find/dept';
       }
-      else if (activeMenu.value === 'Postion') {
-        url = '/find/postion';
+      else if (activeMenu.value === 'Position') {
+        url = '/find/position';
       }
       else if (activeMenu.value === 'QualStd') {
         url = '/find/qualStd';
@@ -267,10 +267,10 @@ export default {
           id: item.DeptId,
         }));
       }
-      else if (activeMenu.value === 'Postion') {
-        tableData.value = response.data.Postion.map(item => ({
-          type: item.Postion,
-          id: item.PostionId,
+      else if (activeMenu.value === 'Position') {
+        tableData.value = response.data.Position.map(item => ({
+          type: item.Position,
+          id: item.PositionId,
         }));
       }
       else if (activeMenu.value === 'QualStd') {
@@ -408,8 +408,8 @@ export default {
       else if (activeMenu.value === 'Dept') {
         url = '/delete/dept';
       }
-      else if (activeMenu.value === 'Postion') {
-        url = '/delete/postion';
+      else if (activeMenu.value === 'Position') {
+        url = '/delete/position';
       }
       else if (activeMenu.value === 'QualStd') {
         url = '/delete/qualStd';
@@ -491,8 +491,8 @@ export default {
       else if (activeMenu.value === 'Dept') {
         data = { DeptId: row.id }; // 如果是公司部门，传递 DeptId
       }
-      else if (activeMenu.value === 'Postion') {
-        data = { PostionId: row.id }; // 如果是公司岗位，传递 PostionId
+      else if (activeMenu.value === 'Position') {
+        data = { PositionId: row.id }; // 如果是公司岗位，传递 PositionId
       }
       else if (activeMenu.value === 'QualStd') {
         data = { QualStdId: row.id }; // 如果是质量标准，传递 QualStdId
@@ -663,12 +663,12 @@ export default {
             data = { Dept: form.value.type }; // 添加时只传递 Dept
           }
         }
-        else if (activeMenu.value === 'Postion') {
-          url = '/save/postion';
+        else if (activeMenu.value === 'Position') {
+          url = '/save/position';
           if (isEdit.value) {
-            data = { Postion: form.value.type, PostionId: form.value.id }; // 编辑时传递 Postion 和 PostionId
+            data = { Position: form.value.type, PositionId: form.value.id }; // 编辑时传递 Position 和 PositionId
           } else {
-            data = { Postion: form.value.type }; // 添加时只传递 Postion
+            data = { Position: form.value.type }; // 添加时只传递 Position
           }
         }
         else if (activeMenu.value === 'QualStd') {

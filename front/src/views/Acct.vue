@@ -52,8 +52,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.AcctId)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -430,7 +429,7 @@ const resetAcctForm = () => {
     RegDate: '',
     Notes: '',
     License: '',
-    BankAccounts: [] // 关联的银行账户信息
+    // AcctBanks: [],
   };
   file.value = null; // 重置文件数据
   if (uploadRef.value) {
@@ -441,15 +440,17 @@ const resetAcctForm = () => {
 const submitAcctForm = async () => {
   try {
 
-    // acctForm.value.AcctId = parseInt(acctForm.value.AcctId, 10);
+    // acctForm.value.ID = parseInt(acctForm.value.ID, 10);
     // const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
     const formData = new FormData(); // 创建 FormData 对象
+    acctForm.value.AcctBanks = null
 
     // 添加表单数据
     Object.keys(acctForm.value).forEach((key) => {
       formData.append(key, acctForm.value[key]);
     });
 
+    console.log(acctForm.value)
     // 添加文件
     if (file.value) {
       formData.append('file', file.value);
@@ -473,16 +474,16 @@ const submitAcctForm = async () => {
 };
 
 // 删除按钮逻辑
-const handleDelete = (index, AcctId) => {
+const handleDelete = (index, ID) => {
   // console.log('Delete button clicked', index, row); // 添加调试信息
   ElMessageBox.confirm('确定要删除该会计实体信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    console.log('Confirmed delete', AcctId); // 添加调试信息
+    console.log('Confirmed delete', ID); // 添加调试信息
     axios.post('/delete/acct', {
-      "AcctId": AcctId,
+      "ID": ID,
       "AcctAbbr": "ss",
       "AcctCode": "ss",
       "AcctName": "ss",
@@ -575,9 +576,9 @@ var acctForm = ref({
   RegDate: '',
   Notes: '',
   License: '',
-  AcctId: '',
+  ID: '',
   FileName: '', // 添加 FileName 字段
-  BankAccounts: [] // 关联的银行账户信息
+  // AcctBanks: [],
 });
 
 // 会计实体信息表单验证规则

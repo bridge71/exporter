@@ -11,15 +11,15 @@ import (
 func (s *Server) FindMerchantHandler(c *gin.Context) {
 	merchants := []models.Merchant{}
 	s.db.FindMerchant(&merchants)
-	for i := range merchants {
-		custs := []models.Cust{}
-		s.db.FindCustById(&custs, merchants[i].MercId)
-		merchants[i].Custs = append(merchants[i].Custs, custs...)
-
-		bankAccounts := []models.BankAccount{}
-		s.db.FindBankAccountById(&bankAccounts, merchants[i].MercId)
-		merchants[i].BankAccounts = append(merchants[i].BankAccounts, bankAccounts...)
-	}
+	// for i := range merchants {
+	// 	custs := []models.Cust{}
+	// 	s.db.FindCustById(&custs, merchants[i].MercId)
+	// 	merchants[i].Custs = append(merchants[i].Custs, custs...)
+	//
+	// 	bankAccounts := []models.BankAccount{}
+	// 	s.db.FindBankAccountById(&bankAccounts, merchants[i].MercId)
+	// 	merchants[i].BankAccounts = append(merchants[i].BankAccounts, bankAccounts...)
+	// }
 	c.JSON(http.StatusOK, models.Message{
 		Merchant: merchants,
 	})

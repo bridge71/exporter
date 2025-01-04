@@ -7,9 +7,13 @@ func (s *service) DeleteAcct(acct *models.Acct) error {
 }
 
 func (s *service) SaveAcct(acct *models.Acct) error {
-	return s.gormDB.Omit("CreatedAt").Save(acct).Error
+	return s.gormDB.Omit("AcctBanks").Omit("Sales").Save(acct).Error
 }
 
 func (s *service) FindAcct(accts *[]models.Acct) {
 	s.gormDB.Find(accts)
+}
+
+func (s *service) FirstAcct(id uint, Acct *[]models.Acct) {
+	s.gormDB.First(Acct, id)
 }

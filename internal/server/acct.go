@@ -9,11 +9,12 @@ import (
 )
 
 func (s *Server) FindAcctHandler(c *gin.Context) {
-	accts := []models.Acct{}
+	var accts []models.Acct
+	// accts := []models.Acct{}
 	s.db.Find(&accts)
 	for i := range accts {
 		acctBank := []models.AcctBank{}
-		s.db.FindAcctBankById(&acctBank, accts[i].AcctId)
+		s.db.FindAcctBankById(&acctBank, accts[i].ID)
 		accts[i].AcctBanks = append(accts[i].AcctBanks, acctBank...)
 	}
 	c.JSON(http.StatusOK, models.Message{
@@ -26,7 +27,7 @@ func (s *Server) SaveAcctHandler(c *gin.Context) {
 	err := c.ShouldBind(acct)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of acct",
+			RetMessage: err.Error(),
 		})
 		return
 	}
@@ -35,13 +36,13 @@ func (s *Server) SaveAcctHandler(c *gin.Context) {
 	err, acct.FileId, acct.FileName = s.SaveFile(c)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "failed to save file",
+			RetMessage: err.Error(),
 		})
 	}
-	err = s.db.Save(acct)
+	err = s.db.SaveAcct(acct)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "failed to save acct",
+			RetMessage: err.Error(),
 		})
 	} else {
 		c.JSON(http.StatusOK, models.Message{
