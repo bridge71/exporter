@@ -22,6 +22,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.POST("/file", s.Uploader)
 
+	r.GET("/add/dicdata", s.AddDicData)
+
 	r.GET("/find/sale", s.FindSaleHandler)
 	r.POST("/delete/sale", s.DeleteSaleHandler)
 	r.POST("/save/sale", s.SaveSaleHandler)

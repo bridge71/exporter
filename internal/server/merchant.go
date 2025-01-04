@@ -30,7 +30,7 @@ func (s *Server) SaveMerchantHandler(c *gin.Context) {
 	err := c.ShouldBind(merchant)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of merchant",
+			RetMessage: err.Error(),
 		})
 		return
 	}
@@ -45,7 +45,7 @@ func (s *Server) SaveMerchantHandler(c *gin.Context) {
 	err = s.db.SaveMerchant(merchant)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "failed to save merchant",
+			RetMessage: err.Error(),
 		})
 	} else {
 		c.JSON(http.StatusOK, models.Message{

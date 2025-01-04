@@ -62,8 +62,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.MercId)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -189,12 +188,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!merchantForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+              <el-upload v-if="!merchantForm.ID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(merchantForm.FileId, merchantForm.FileName)">下载文件</el-button>
+                @click="downloadFile(merchantForm.ID, merchantForm.FileName)">下载文件</el-button>
             </el-form-item>
 
             <el-form-item label="文件名" prop="FileName">
@@ -341,12 +340,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!merchantForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+              <el-upload v-if="!merchantForm.ID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(merchantForm.FileId, merchantForm.FileName)">下载文件</el-button>
+                @click="downloadFile(merchantForm.ID, merchantForm.FileName)">下载文件</el-button>
             </el-form-item>
 
             <el-form-item label="文件名" prop="FileName">
@@ -412,9 +411,9 @@ const merchantForm = ref({
   RegCap: '',
   Notes: '',
   FileName: '',
-  FileId: '',
-  Custs: [],
-  BankAccounts: [],
+  ID: '',
+  // Custs: [],
+  // BankAccounts: [],
   CustsDisplay: '',
   BankAccountsDisplay: ''
 });
@@ -465,17 +464,17 @@ const handleFileChange = (uploadFile) => {
 };
 
 // 下载文件
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (ID, fileName) => {
   try {
     const response = await axios.post(
       '/file',
-      { FileId: fileId },
+      { ID: ID },
       { responseType: 'blob' }
     );
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || `file_${fileId}`);
+    link.setAttribute('download', fileName || `file_${ID}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -518,9 +517,9 @@ const resetMerchantForm = () => {
     RegCap: '',
     Notes: '',
     FileName: '',
-    FileId: '',
-    Custs: [],
-    BankAccounts: [],
+    ID: '',
+    // Custs: [],
+    // BankAccounts: [],
     CustsDisplay: '',
     BankAccountsDisplay: ''
   };
@@ -558,14 +557,14 @@ const submitMerchantForm = async () => {
 };
 
 // 删除按钮逻辑
-const handleDelete = (index, MercId) => {
+const handleDelete = (index, ID) => {
   ElMessageBox.confirm('确定要删除该商户信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
     axios.post('/delete/merchant', {
-      MercId: MercId,
+      ID: ID,
       MercAbbr: merchantData.value[index].MercAbbr,
       MercCode: merchantData.value[index].MercCode,
       Merc: merchantData.value[index].Merc,

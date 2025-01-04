@@ -444,7 +444,8 @@ const submitAcctForm = async () => {
     // const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
     const formData = new FormData(); // 创建 FormData 对象
     acctForm.value.AcctBanks = null
-
+    acctForm.value.Sales = null
+    acctForm.value.Sends = null
     // 添加表单数据
     Object.keys(acctForm.value).forEach((key) => {
       formData.append(key, acctForm.value[key]);

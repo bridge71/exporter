@@ -9,7 +9,7 @@ func (s *service) DeleteMerchant(merchant *models.Merchant) error {
 
 // SaveMerchant 保存或更新一个 Merchant 记录
 func (s *service) SaveMerchant(merchant *models.Merchant) error {
-	return s.gormDB.Save(merchant).Error
+	return s.gormDB.Omit("Sales", "Custs", "BankAccounts").Save(merchant).Error
 }
 
 // FindMerchant 查询所有 Merchant 记录
