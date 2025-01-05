@@ -64,9 +64,22 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 		}
 
 		id_ := s.Str2Uint(idStr)
-		prdt := models.PrdtInfo{}
-		prdt.ID = id_
-		Sale.PrdtInfos = append(Sale.PrdtInfos, prdt)
+		prdt := []models.PrdtInfo{}
+		s.db.FindById(id_, &prdt)
+		Sale.PrdtInfos = append(Sale.PrdtInfos, prdt[0])
+		i++
+	}
+	i = 0
+	for {
+		idStr := c.PostForm("DocReq[" + strconv.Itoa(i) + "][DocReqId]")
+		if idStr == "" {
+			break // 如果没有更多数据，退出循环
+		}
+
+		id_ := s.Str2Uint(idStr)
+		doc := []models.DocReq{}
+		s.db.FindDocReqById(id_, &doc)
+		Sale.DocReq = append(Sale.DocReq, doc[0])
 		i++
 	}
 	var err error

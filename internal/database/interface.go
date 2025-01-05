@@ -13,7 +13,7 @@ func (s *service) Create(model interface{}) error {
 }
 
 func (s *service) Find(model interface{}) {
-	s.gormDB.Find(model)
+	s.gormDB.Order("id desc").Find(model)
 }
 
 func (s *service) FindById(id uint, model interface{}) {

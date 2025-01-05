@@ -68,10 +68,10 @@ type Sale struct {
 	EndShip         string     `gorm:"column:endShip" form:"EndShip"`                 // 发货截止日期
 	SrcPlace        string     `gorm:"column:srcPlace" form:"SrcPlace"`               // 起运地, 从数据字典里选  /find/SrcPlace 同理
 	Des             string     `gorm:"column:des" form:"Des"`                         // 目的地, 从数据字典里选  /find/SrcPlace 同理
-	DocReq          []DocReq   `gorm:"many2many:saleDocReq" form:"DocReq"`            // 单据要求,多选 从数据字典里选 /find/DocReq
 	PayMentMethodId uint       `gorm:"column:payMentMethodId" form:"PayMentMethodId"` // 付款方式，绑定id，查找接口 /find/PayMentMethod 同理
 	PayMtdName      string     `gorm:"column:payMtdName" form:"PayMtdName"`           // 付款方式名称
 	PrdtInfos       []PrdtInfo `gorm:"many2many:salePrdtInfo" `                       // 产品明细，多表关联，  查找接口 /find/PrdtInfos
+	DocReq          []DocReq   `gorm:"many2many:saleDocReq"`                          // 单据要求,多选 从数据字典里选 /find/DocReq
 	TotAmt          uint       `gorm:"column:totAmt" form:"TotAmt"`                   // 总金额
 	Currency        string     `gorm:"column:currency" form:"Currency"`               // 币种
 	TotNum          uint       `gorm:"column:totNum" form:"TotNum"`                   // 总件数
@@ -86,9 +86,9 @@ type Sale struct {
 	Notes           string     `gorm:"column:notes" form:"Notes"` // 备注
 	FileName        string     `gorm:"column:fileName" form:"FileName"`
 	FileId          uint       `gorm:"column:fileId" form:"FileId"`
-	Sends           []Send     `gorm:"many2many:saleSend" form:"Sends"`         // 销售发货单，多表关联, 查找接口
-	ShouldIns       []ShouldIn `gorm:"many2many:shouldInSale" form:"ShouldIns"` // 应收账款单
-	Ins             []In       `gorm:"many2many:inSale" form:"ins"`             // 收款单
+	// Sends           []Send     `gorm:"many2many:saleSend" form:"Sends"`         // 销售发货单，多表关联, 查找接口
+	// ShouldIns       []ShouldIn `gorm:"many2many:shouldInSale" form:"ShouldIns"` // 应收账款单
+	// Ins             []In       `gorm:"many2many:inSale" form:"ins"`             // 收款单
 	gorm.Model
 }
 

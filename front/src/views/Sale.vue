@@ -46,6 +46,15 @@
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
 
+            <el-table-column label="单据要求" width="200">
+              <template #default="scope">
+                <div v-for="docReqId in scope.row.DocReq" :key="docReqId">
+                  <el-tag type="info">
+                    {{ docReqData.find(d => d.DocReqId === docReqId)?.DocReq || '未知单据要求' }}
+                  </el-tag>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column label="产品明细" width="300">
               <template #default="scope">
                 <div v-for="prdtInfo in scope.row.PrdtInfos" :key="prdtInfo.ID">
@@ -108,7 +117,20 @@
         </el-row>
 
         <el-row :gutter="20">
+          <el-col :span="24">
 
+            <el-form-item label="单据要求" prop="DocReq">
+              <el-select v-model="saleForm.DocReq" multiple placeholder="请选择单据要求" @click="onDocReqChange">
+                <el-option v-for="docReq in docReqData" :key="docReq.DocReqId" :label="docReq.DocReq"
+                  :value="docReq.DocReqId">
+                  {{ docReq.DocReq }}
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="付款方式" prop="PayMentMethodId">
               <el-select v-model="saleForm.PayMentMethodId" @change="onPayMentMethodChange" placeholder="请选择付款方式">
@@ -274,7 +296,7 @@
         </el-row>
 
 
-        <el-select v-model="saleForm.PrdtInfos" multiple placeholder="请选择产品明细">
+        <el-select v-model="saleForm.PrdtInfos" multiple placeholder="请选择产品明细" @click="onPrdtInfoChange">
           <el-option v-for="prdtInfo in prdtInfoData" :key="prdtInfo.ID"
             :label="`${prdtInfo.CatEngName} - ${prdtInfo.BrandEngName} - ${prdtInfo.PackSpec} - ${prdtInfo.Currency} - ${prdtInfo.UnitPrice} - ${prdtInfo.TradeTerm} - ${prdtInfo.DeliveryLoc}`"
             :value="prdtInfo.ID">
@@ -398,6 +420,19 @@
                 <el-option v-for="payMentMethod in payMentMethodData" :key="payMentMethod.ID"
                   :label="payMentMethod.PayMtdName" :value="payMentMethod.ID"></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+
+            <el-form-item label="单据要求">
+              <div v-for="docReqId in saleForm.DocReq" :key="docReqId">
+                <el-tag type="info">
+                  {{ docReqData.find(d => d.DocReqId === docReqId)?.DocReq || '未知单据要求' }}
+                </el-tag>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -533,6 +568,10 @@ const onPrdtInfoChange = (selectedPrdtInfos) => {
   // 直接更新 saleForm.PrdtInfos，不需要额外处理
   saleForm.value.PrdtInfos = selectedPrdtInfos;
 };
+
+const onDocReqChange = (selectedDocReq) => {
+  saleForm.value.DocReq = selectedDocReq;
+};
 const paginatedSaleData = computed(() => {
   let filteredData = saleData.value;
   if (searchQuery.value) {
@@ -566,6 +605,8 @@ const paginatedSaleData = computed(() => {
 });
 
 onMounted(() => {
+
+  fetchDocReqData(); // 获取单据要求数据
   fetchAcctData(); // 获取会计实体信息
   fetchMerchantData(); // 获取购买方信息
   fetchQualStdData(); // 获取质量标准数据
@@ -752,9 +793,22 @@ const saleForm = ref({
   FileId: '', // 新增：文件 ID
   FileName: '', // 新增：文件名
   PrdtInfos: [], // 新增：产品明细
+  DocReq: [], // 新增：单据要求
   Display: '',
 });
 
+const docReqData = ref([]); // 存储单据要求数据
+
+// 获取单据要求数据
+const fetchDocReqData = async () => {
+  try {
+    const response = await axios.get('/find/docReq'); // 调用单据要求接口
+    docReqData.value = response.data.DocReq; // 假设返回的数据结构中有 DocReq 字段
+  } catch (error) {
+    console.error('获取单据要求失败:', error);
+    ElMessage.error('获取单据要求失败，请稍后重试');
+  }
+};
 // 销售订单信息表单验证规则
 const saleRules = {
   OrderNum: [{ required: true, message: '请输入订单编号', trigger: 'blur' }],
@@ -898,20 +952,28 @@ const submitSaleForm = async () => {
 
     // 添加其他字段
     Object.keys(saleForm.value).forEach((key) => {
-      if (key !== 'PrdtInfos') {
+      if (key !== 'PrdtInfos' && key != `DocReq`) {
         formData.append(key, saleForm.value[key]);
       }
     });
 
     // 处理 PrdtInfos
     saleForm.value.PrdtInfos.forEach((prdtInfo, index) => {
-      formData.append(`PrdtInfos[${index}][ID]`, prdtInfo.ID);
+      formData.append(`PrdtInfos[${index}][ID]`, prdtInfo);
+      console.log("sss", prdtInfo)
       // 如果需要提交其他字段，可以继续添加
       // formData.append(`PrdtInfos[${index}][CatEngName]`, prdtInfo.CatEngName);
       // formData.append(`PrdtInfos[${index}][BrandEngName]`, prdtInfo.BrandEngName);
       // ...
     });
 
+    console.log("aa1", saleForm.value.PrdtInfos)
+    console.log("aa", saleForm.value.DocReq)
+    // 处理 DocReq
+    saleForm.value.DocReq.forEach((docReqId, index) => {
+      formData.append(`DocReq[${index}][DocReqId]`, docReqId);
+      console.log("hh", docReqId)
+    });
     // 添加文件
     if (file.value) {
       formData.append('file', file.value);

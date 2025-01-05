@@ -26,6 +26,7 @@ type Service interface {
 	FindUserById(user *models.User, userId uint)
 	FindUserByEmail(user *models.User, email string)
 
+	FindDocReqById(id uint, mercTypes *[]models.DocReq)
 	FindById(id uint, model interface{})
 
 	FindSalePrdtInfo(sale *[]models.Sale)
