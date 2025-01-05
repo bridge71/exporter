@@ -139,10 +139,10 @@
         <!-- 商户信息选择 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="关联商户信息" prop="MercId">
-              <el-select v-model="bankAccountForm.MercId" @change="onMercChange" placeholder="请选择商户信息">
-                <el-option v-for="merc in merchantData" :key="merc.MercId" :label="`${merc.Merc} (${merc.MercCode})`"
-                  :value="merc.MercId"></el-option>
+            <el-form-item label="关联商户信息" prop="MerchantId">
+              <el-select v-model="bankAccountForm.MerchantId" @change="onMercChange" placeholder="请选择商户信息">
+                <el-option v-for="merc in merchantData" :key="merc.ID" :label="`${merc.Merc} (${merc.MercCode})`"
+                  :value="merc.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -246,9 +246,9 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联商户信息">
-              <el-select v-model="bankAccountForm.MercId" @change="onMercChange" placeholder="请选择商户信息">
-                <el-option v-for="merc in merchantData" :key="merc.MercId" :label="`${merc.Merc} (${merc.MercCode})`"
-                  :value="merc.MercId"></el-option>
+              <el-select v-model="bankAccountForm.MerchantId" @change="onMercChange" placeholder="请选择商户信息">
+                <el-option v-for="merc in merchantData" :key="merc.MerchantId"
+                  :label="`${merc.Merc} (${merc.MercCode})`" :value="merc.MerchantId"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -288,7 +288,7 @@ const bankAccountForm = ref({
   Notes: '',
   FileName: '',
   FileId: '',
-  MercId: '',
+  MerchantId: '',
   Merc: ''
 });
 const bankAccountRules = {
@@ -382,7 +382,7 @@ const resetBankAccountForm = () => {
     Notes: '',
     FileName: '',
     FileId: '',
-    MercId: '',
+    MerchantId: '',
     Merc: ''
   };
   bankAccountFile.value = null;
@@ -487,7 +487,7 @@ const fetchMerchantData = async () => {
 
 // 监听商户选择事件
 const onMercChange = (value) => {
-  const selectedMerc = merchantData.value.find(merc => merc.MercId === value);
+  const selectedMerc = merchantData.value.find(merc => merc.MerchantId === value);
   if (selectedMerc) {
     bankAccountForm.value.Merc = selectedMerc.Merc;
   }

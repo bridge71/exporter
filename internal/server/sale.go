@@ -4,6 +4,7 @@ import (
 	"exporter/internal/models"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +12,8 @@ import (
 // FindSaleHandler 查询所有 Sale 记录
 func (s *Server) FindSaleHandler(c *gin.Context) {
 	var Sales []models.Sale
-	s.db.Find(&Sales)
+
+	s.db.FindSalePrdtInfo(&Sales)
 	c.JSON(http.StatusOK, models.Message{Sale: Sales})
 }
 
@@ -52,6 +54,28 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 
 	log.Printf("保存 Sale: %+v\n", Sale)
 
+	// 动态解析 PrdtInfos 数组
+	Sale.PrdtInfos = make([]models.PrdtInfo, 0)
+	i := 0
+	for {
+		idStr := c.PostForm("PrdtInfos[" + strconv.Itoa(i) + "][ID]")
+		if idStr == "" {
+			break // 如果没有更多数据，退出循环
+		}
+
+		id_ := s.Str2Uint(idStr)
+		prdt := models.PrdtInfo{}
+		prdt.ID = id_
+		Sale.PrdtInfos = append(Sale.PrdtInfos, prdt)
+		i++
+	}
+	var err error
+	err, Sale.FileId, Sale.FileName = s.SaveFile(c)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: err.Error(),
+		})
+	}
 	// 保存 Sale 记录
 	if err := s.db.Save(Sale); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{

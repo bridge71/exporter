@@ -117,10 +117,10 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="所属商户" prop="MercId">
-              <el-select v-model="custForm.MercId" @change="onMercChange" placeholder="请选择商户信息">
-                <el-option v-for="merc in merchantData" :key="merc.MercId" :label="`${merc.Merc} (${merc.MercCode})`"
-                  :value="merc.MercId"></el-option>
+            <el-form-item label="所属商户" prop="MerchantId">
+              <el-select v-model="custForm.MerchantId" @change="onMercChange" placeholder="请选择商户信息">
+                <el-option v-for="merc in merchantData" :key="merc.ID" :label="`${merc.Merc} (${merc.MercCode})`"
+                  :value="merc.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -288,7 +288,7 @@ const custForm = ref({
   PhoneNum: '',
   QQ: '',
   Wechat: '',
-  MercId: '',
+  MerchantId: '',
   Merc: '',
   Post: '',
   Notes: '',
@@ -373,7 +373,7 @@ const resetCustForm = () => {
     PhoneNum: '',
     QQ: '',
     Wechat: '',
-    MercId: '',
+    MerchantId: '',
     Merc: '',
     Post: '',
     Notes: '',
@@ -483,7 +483,7 @@ const fetchMerchantData = async () => {
 
 // 监听商户选择事件
 const onMercChange = (value) => {
-  const selectedMerc = merchantData.value.find(merc => merc.MercId === value);
+  const selectedMerc = merchantData.value.find(merc => merc.MerchantId === value);
   if (selectedMerc) {
     custForm.value.Merc = selectedMerc.Merc;
   }

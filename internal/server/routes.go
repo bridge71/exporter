@@ -24,6 +24,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/add/dicdata", s.AddDicData)
 
+	r.GET("/find/spot", s.FindSpotHandler)
+	r.POST("/delete/spot", s.DeleteSpotHandler)
+	r.POST("/save/spot", s.SaveSpotHandler)
+
 	r.GET("/find/sale", s.FindSaleHandler)
 	r.POST("/delete/sale", s.DeleteSaleHandler)
 	r.POST("/save/sale", s.SaveSaleHandler)

@@ -5,6 +5,9 @@ import (
 )
 
 type Message struct {
+	In            []In
+	ShouldIn      []ShouldIn
+	Spot          []Spot
 	Sale          []Sale
 	Send          []Send
 	LoadingInfo   []LoadingInfo
@@ -68,7 +71,7 @@ type Sale struct {
 	DocReq          []DocReq   `gorm:"many2many:saleDocReq" form:"DocReq"`            // 单据要求,多选 从数据字典里选 /find/DocReq
 	PayMentMethodId uint       `gorm:"column:payMentMethodId" form:"PayMentMethodId"` // 付款方式，绑定id，查找接口 /find/PayMentMethod 同理
 	PayMtdName      string     `gorm:"column:payMtdName" form:"PayMtdName"`           // 付款方式名称
-	PrdtInfos       []PrdtInfo `gorm:"many2many:salePrdtInfo" form:"PrdtInfos"`       // 产品明细，多表关联，  查找接口 /find/PrdtInfos
+	PrdtInfos       []PrdtInfo `gorm:"many2many:salePrdtInfo" `                       // 产品明细，多表关联，  查找接口 /find/PrdtInfos
 	TotAmt          uint       `gorm:"column:totAmt" form:"TotAmt"`                   // 总金额
 	Currency        string     `gorm:"column:currency" form:"Currency"`               // 币种
 	TotNum          uint       `gorm:"column:totNum" form:"TotNum"`                   // 总件数
@@ -80,8 +83,9 @@ type Sale struct {
 	AccName         string     `gorm:"column:accName" form:"AccName"`
 	BankAccountId   uint       `gorm:"column:bankAccountId" form:"BankAccountId"` // 对方银行账户 绑定id，查找接口 /find/bankAccount
 	BankAccName     string     `gorm:"column:bankAccName" form:"BankAccName"`
-	Notes           string     `gorm:"column:notes" form:"Notes"`               // 备注
-	Files           []File     `gorm:"many2many:saleFile" form:"Files"`         // 合同扫描件，多表关联
+	Notes           string     `gorm:"column:notes" form:"Notes"` // 备注
+	FileName        string     `gorm:"column:fileName" form:"FileName"`
+	FileId          uint       `gorm:"column:fileId" form:"FileId"`
 	Sends           []Send     `gorm:"many2many:saleSend" form:"Sends"`         // 销售发货单，多表关联, 查找接口
 	ShouldIns       []ShouldIn `gorm:"many2many:shouldInSale" form:"ShouldIns"` // 应收账款单
 	Ins             []In       `gorm:"many2many:inSale" form:"ins"`             // 收款单
@@ -89,14 +93,15 @@ type Sale struct {
 }
 
 type Send struct {
-	SaleInvNum      string        `gorm:"column:SaleInvNum" form:"SaleInvNum"`    // 销售发票号
-	SaleInvDate     string        `gorm:"column:SaleInvDate" form:"SaleInvDate"`  // 销售发票日期
-	Sales           []Sale        `gorm:"many2many:saleSend" form:"Sales"`        // 销售订单 多表关联
-	Merchants       []Merchant    `gorm:"many2many:sendMerchant" form:"Merchant"` // 存储 客户 收货人 通知人
-	AcctId          uint          `gorm:"column:AcctId" form:"AcctId"`            // 发货人  通过id绑定，查找接口 /find/acct
-	AcctName        string        `gorm:"column:acctName" form:"AcctName"`
-	SrcPlace        string        `gorm:"column:SrcPlace" form:"SrcPlace"`     // 起运地, 从数据字典里选  /find/SrcPlace
-	Des             string        `gorm:"column:Des" form:"Des"`               // 目的地, 从数据字典里选  /find/SrcPlace
+	SaleInvNum  string     `gorm:"column:SaleInvNum" form:"SaleInvNum"`    // 销售发票号
+	SaleInvDate string     `gorm:"column:SaleInvDate" form:"SaleInvDate"`  // 销售发票日期
+	Sales       []Sale     `gorm:"many2many:saleSend" form:"Sales"`        // 销售订单 多表关联
+	Merchants   []Merchant `gorm:"many2many:sendMerchant" form:"Merchant"` // 存储 客户 收货人 通知人
+	AcctId      uint       `gorm:"column:AcctId" form:"AcctId"`            // 发货人  通过id绑定，查找接口 /find/acct
+	AcctName    string     `gorm:"column:acctName" form:"AcctName"`
+	Spot        []Spot     `gorm:"many2many:sendSpot"`
+	// SrcPlace        string        `gorm:"column:SrcPlace" form:"SrcPlace"`     // 起运地, 从数据字典里选  /find/SrcPlace
+	// Des             string        `gorm:"column:Des" form:"Des"`               // 目的地, 从数据字典里选  /find/SrcPlace
 	ShipName        string        `gorm:"column:ShipName" form:"ShipName"`     // 船名
 	Voyage          string        `gorm:"column:Voyage" form:"Voyage"`         // 航次
 	TotNum          uint          `gorm:"column:TotNum" form:"TotNum"`         // 总件数
@@ -173,17 +178,17 @@ type In struct {
 type PrdtInfo struct {
 	CatEngName   string `gorm:"column:catEngName" form:"CatEngName"`     // 产品
 	BrandEngName string `gorm:"column:brandEngName" form:"BrandEngName"` // 品牌
-	Factory      string `gorm:"column:factory" form:"Factory"`           // 生产工厂
+	PackSpec     string `gorm:"column:packSpec" form:"PackSpec"`         // 包装规格
 	Currency     string `gorm:"column:currency" form:"currency"`         // 币种
 	UnitPrice    uint   `gorm:"column:unitPrice" form:"UnitPrice"`       // 单价
+	TradeTerm    string `gorm:"column:tradeTerm" form:"TradeTerm"`       // 贸易条款
+	DeliveryLoc  string `gorm:"column:deliveryLoc" form:"DeliveryLoc"`   // 交货地点
+	Factory      string `gorm:"column:factory" form:"Factory"`           // 生产工厂
 	Unit         string `gorm:"column:unit" form:"Unit"`                 // 单位
 	Amount       uint   `gorm:"column:amount" form:"Amount"`             // 金额
 	ItemNum      uint   `gorm:"column:itemNum" form:"ItemNum"`           // 件数
-	PackSpec     string `gorm:"column:packSpec" form:"PackSpec"`         // 包装规格
 	Weight       uint   `gorm:"column:weight" form:"Weight"`             // 重量
 	WeightUnit   string `gorm:"column:weightUnit" form:"WeightUnit"`     // 重量单位
-	TradeTerm    string `gorm:"column:tradeTerm" form:"TradeTerm"`       // 贸易条款
-	DeliveryLoc  string `gorm:"column:deliveryLoc" form:"DeliveryLoc"`   // 交货地点
 	gorm.Model
 }
 type LoadingInfo struct {
@@ -263,11 +268,18 @@ type Acct struct { // 会计实体
 	Website     string     `gorm:"column:website;" form:"Website"`
 	RegDate     string     `gorm:"column:regDate;" form:"RegDate"`
 	Notes       string     `gorm:"column:notes;" form:"Notes"`
-	FileName    string     `gorm:"column:fileName" form:"FileName"`
 	AcctBanks   []AcctBank `gorm:"foreignKey:AcctId" `
+	FileName    string     `gorm:"column:fileName" form:"FileName"`
 	FileId      uint       `gorm:"column:fileId" form:"FileId"`
 	Sales       []Sale     `gorm:"foreignKey:AcctId"`
 	Sends       []Send     `gorm:"foreignKey:AcctId"`
+	gorm.Model
+}
+type Spot struct {
+	InvLocName string `form:"InvLocName"`
+	InvLocAbbr string `form:"InvLocAbbr"`
+	InvAddr    string `form:"InvAddr"`
+	Notes      string `form:"Notes"`
 	gorm.Model
 }
 

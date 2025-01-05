@@ -28,6 +28,8 @@ type Service interface {
 
 	FindById(id uint, model interface{})
 
+	FindSalePrdtInfo(sale *[]models.Sale)
+
 	Delete(model interface{}) error
 	Save(model interface{}) error
 	Create(model interface{}) error
@@ -222,6 +224,7 @@ func New() Service {
 	})
 	// AutoMigrate all models
 	gormDB.AutoMigrate(
+		&models.Spot{},
 		&models.File{},
 		&models.PrdtInfo{},
 		&models.DocReq{},

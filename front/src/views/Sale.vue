@@ -44,7 +44,17 @@
             <el-table-column prop="AccName" label="我方银行账户" width="220%"></el-table-column>
             <el-table-column prop="BankAccName" label="对方银行账户" width="220%"></el-table-column>
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
+            <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
 
+            <el-table-column label="产品明细" width="300">
+              <template #default="scope">
+                <div v-for="prdtInfo in scope.row.PrdtInfos" :key="prdtInfo.ID">
+                  {{ prdtInfo.CatEngName }} - {{ prdtInfo.BrandEngName }} - {{ prdtInfo.PackSpec }} - {{
+                    prdtInfo.Currency }} - {{ prdtInfo.UnitPrice }} - {{ prdtInfo.TradeTerm }} - {{ prdtInfo.DeliveryLoc
+                  }}
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column label="操作" fixed="right" width="200">
               <template #default="scope">
                 <el-row type="flex" justify="space-between">
@@ -98,61 +108,8 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="质量标准" prop="QualStd">
-              <el-select v-model="saleForm.QualStd" placeholder="请选择质量标准">
-                <el-option v-for="qualStd in qualStdData" :key="qualStd" :label="qualStd" :value="qualStd"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="账单有效期" prop="BillValidity">
-              <el-date-picker v-model="saleForm.BillValidity" type="date" placeholder="选择日期"></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
 
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="单据状态" prop="BussOrderSta">
-              <el-select v-model="saleForm.BussOrderSta" placeholder="请选择单据状态">
-                <el-option v-for="bussOrderSta in bussOrderStaData" :key="bussOrderSta" :label="bussOrderSta"
-                  :value="bussOrderSta"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="发货开始日期" prop="StartShip">
-              <el-date-picker v-model="saleForm.StartShip" type="date" placeholder="选择日期"></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="发货截止日期" prop="EndShip">
-              <el-date-picker v-model="saleForm.EndShip" type="date" placeholder="选择日期"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="起运地" prop="SrcPlace">
-              <el-select v-model="saleForm.SrcPlace" placeholder="请选择起运地">
-                <el-option v-for="srcPlace in srcPlaceData" :key="srcPlace" :label="srcPlace"
-                  :value="srcPlace"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="目的地" prop="Des">
-              <el-select v-model="saleForm.Des" placeholder="请选择目的地">
-                <el-option v-for="des in desData" :key="des" :label="des" :value="des"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="付款方式" prop="PayMentMethodId">
               <el-select v-model="saleForm.PayMentMethodId" @change="onPayMentMethodChange" placeholder="请选择付款方式">
                 <el-option v-for="payMentMethod in payMentMethodData" :key="payMentMethod.ID"
@@ -164,13 +121,74 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
+            <el-form-item label="账单有效期" prop="BillValidity">
+              <el-date-picker v-model="saleForm.BillValidity" type="date" placeholder="选择日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="单据状态" prop="BussOrderSta">
+              <el-select v-model="saleForm.BussOrderSta" placeholder="请选择单据状态">
+                <el-option v-for="bussOrderSta in bussOrderStaData" :key="bussOrderSta.BussOrderSta"
+                  :label="bussOrderSta.BussOrderSta" :value="bussOrderSta.BussOrderSta"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+
+          <el-col :span="12">
+            <el-form-item label="发货开始日期" prop="StartShip">
+              <el-date-picker v-model="saleForm.StartShip" type="date" placeholder="选择日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发货截止日期" prop="EndShip">
+              <el-date-picker v-model="saleForm.EndShip" type="date" placeholder="选择日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+
+          <el-col :span="12">
+            <el-form-item label="起运地" prop="SrcPlace">
+              <el-select v-model="saleForm.SrcPlace" placeholder="请选择起运地">
+                <el-option v-for="srcPlace in srcPlaceData" :key="srcPlace" :label="srcPlace"
+                  :value="srcPlace"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="目的地" prop="Des">
+              <el-select v-model="saleForm.Des" placeholder="请选择目的地">
+                <el-option v-for="des in desData" :key="des" :label="des" :value="des"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+
+          <el-col :span="9">
+            <el-form-item label="质量标准" prop="QualStd">
+              <el-select v-model="saleForm.QualStd" placeholder="请选择质量标准">
+                <el-option v-for="qualStd in qualStdData" :key="qualStd.QualStd" :label="qualStd.QualStd"
+                  :value="qualStd.QualStd"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="总金额" prop="TotAmt">
               <el-input v-model="saleForm.TotAmt"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="币种" prop="Currency">
-              <el-input v-model="saleForm.Currency"></el-input>
+          <el-col :span="7">
+            <el-form-item label="币种" prop="CurrencyId">
+              <el-select v-model="saleForm.Currency" @change="onCurrencyChange" placeholder="请选择币种">
+                <el-option v-for="currency in currencyData" :key="currency.Currency" :label="currency.Currency"
+                  :value="currency.Currency"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -200,8 +218,8 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas">
               <el-select v-model="saleForm.UnitMeas" placeholder="请选择单位">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas" :label="unitMeas"
-                  :value="unitMeas"></el-option>
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeas" :label="unitMeas.UnitMeas"
+                  :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -233,6 +251,42 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="文件">
+
+
+              <el-upload v-if="!saleForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+                :auto-upload="false" :show-file-list="true">
+                <el-button type="primary">选择文件</el-button>
+              </el-upload>
+              <el-button v-else type="success" @click="downloadFile(saleForm.FileId, saleForm.FileName)">
+                下载文件
+              </el-button>
+            </el-form-item>
+
+            <el-form-item label="文件名" prop="FileName">
+              <el-input v-model="saleForm.FileName" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+        <el-select v-model="saleForm.PrdtInfos" multiple placeholder="请选择产品明细">
+          <el-option v-for="prdtInfo in prdtInfoData" :key="prdtInfo.ID"
+            :label="`${prdtInfo.CatEngName} - ${prdtInfo.BrandEngName} - ${prdtInfo.PackSpec} - ${prdtInfo.Currency} - ${prdtInfo.UnitPrice} - ${prdtInfo.TradeTerm} - ${prdtInfo.DeliveryLoc}`"
+            :value="prdtInfo.ID">
+            <span>{{ prdtInfo.CatEngName }}</span> -
+            <span>{{ prdtInfo.BrandEngName }}</span> -
+            <span>{{ prdtInfo.PackSpec }}</span> -
+            <span>{{ prdtInfo.Currency }}</span> -
+            <span>{{ prdtInfo.UnitPrice }}</span> -
+            <span>{{ prdtInfo.TradeTerm }}</span> -
+            <span>{{ prdtInfo.DeliveryLoc }}</span>
+          </el-option>
+        </el-select>
 
         <el-row :gutter="20">
           <el-col :span="24" style="text-align: right;">
@@ -424,6 +478,37 @@
         </el-row>
 
         <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="文件">
+              <el-button v-if="saleForm.FileId" type="success"
+                @click="downloadFile(saleForm.FileId, saleForm.FileName)">
+                下载文件
+              </el-button>
+              <span v-else>无文件</span>
+            </el-form-item>
+
+            <el-form-item label="文件名" prop="FileName">
+              <el-input v-model="saleForm.FileName" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="产品明细">
+              <div v-for="prdtInfo in saleForm.PrdtInfos" :key="prdtInfo.ID">
+                <el-tag type="info">
+                  {{ prdtInfo.CatEngName }} - {{ prdtInfo.BrandEngName }} - {{ prdtInfo.PackSpec }} - {{
+                    prdtInfo.Currency
+                  }} - {{ prdtInfo.UnitPrice }} - {{ prdtInfo.TradeTerm }} - {{ prdtInfo.DeliveryLoc }}
+                </el-tag>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
           <el-col :span="24" style="text-align: right;">
             <el-button @click="showshowSaleDialog = false">关闭</el-button>
           </el-col>
@@ -439,10 +524,15 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 
+const file = ref(null);
 const searchQuery = ref(''); // 添加搜索查询字段
 const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
 
+const onPrdtInfoChange = (selectedPrdtInfos) => {
+  // 直接更新 saleForm.PrdtInfos，不需要额外处理
+  saleForm.value.PrdtInfos = selectedPrdtInfos;
+};
 const paginatedSaleData = computed(() => {
   let filteredData = saleData.value;
   if (searchQuery.value) {
@@ -488,8 +578,32 @@ onMounted(() => {
   fetchAcctBankData(); // 获取我方银行账户数据
   fetchBankAccountData(); // 获取对方银行账户数据
   fetchSaleData(); // 获取销售订单信息
+  fetchCurrencyData(); // 新增：获取货币数据
+  fetchPrdtInfoData(); // 新增：获取产品明细数据
 });
 
+const prdtInfoData = ref([]); // 存储产品明细数据
+
+const fetchPrdtInfoData = async () => {
+  try {
+    const response = await axios.get('/find/prdtInfo'); // 调用产品明细接口
+    prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
+  } catch (error) {
+    console.error('获取产品明细失败:', error);
+    ElMessage.error('获取产品明细失败，请稍后重试');
+  }
+};
+const currencyData = ref([]); // 存储货币数据
+
+const fetchCurrencyData = async () => {
+  try {
+    const response = await axios.get('/find/currency'); // 调用货币数据接口
+    currencyData.value = response.data.Currency; // 假设返回的数据结构中有 Currency 字段
+  } catch (error) {
+    console.error('获取货币数据失败:', error);
+    ElMessage.error('获取货币数据失败，请稍后重试');
+  }
+};
 // 定义接口请求函数
 const fetchAcctData = async () => {
   try {
@@ -513,7 +627,7 @@ const fetchMerchantData = async () => {
 
 const fetchQualStdData = async () => {
   try {
-    const response = await axios.get('/find/QualStd'); // 调用质量标准接口
+    const response = await axios.get('/find/qualStd'); // 调用质量标准接口
     qualStdData.value = response.data.QualStd; // 假设返回的数据结构中有 QualStd 字段
   } catch (error) {
     console.error('获取质量标准失败:', error);
@@ -523,7 +637,7 @@ const fetchQualStdData = async () => {
 
 const fetchBussOrderStaData = async () => {
   try {
-    const response = await axios.get('/find/BussOrderSta'); // 调用单据状态接口
+    const response = await axios.get('/find/bussOrderSta'); // 调用单据状态接口
     bussOrderStaData.value = response.data.BussOrderSta; // 假设返回的数据结构中有 BussOrderSta 字段
   } catch (error) {
     console.error('获取单据状态失败:', error);
@@ -531,29 +645,20 @@ const fetchBussOrderStaData = async () => {
   }
 };
 
-const fetchSrcPlaceData = async () => {
-  try {
-    const response = await axios.get('/find/SrcPlace'); // 调用起运地接口
-    srcPlaceData.value = response.data.SrcPlace; // 假设返回的数据结构中有 SrcPlace 字段
-  } catch (error) {
-    console.error('获取起运地失败:', error);
-    ElMessage.error('获取起运地失败，请稍后重试');
-  }
-};
-
 const fetchDesData = async () => {
   try {
-    const response = await axios.get('/find/Des'); // 调用目的地接口
-    desData.value = response.data.Des; // 假设返回的数据结构中有 Des 字段
+    const response = await axios.get('/find/spot'); // 调用目的地接口
+    desData.value = response.data.Spot.map(spot => spot.InvLocName); // 提取 Spot 数组中的 InvLocName 字段
   } catch (error) {
     console.error('获取目的地失败:', error);
     ElMessage.error('获取目的地失败，请稍后重试');
   }
 };
 
+
 const fetchPayMentMethodData = async () => {
   try {
-    const response = await axios.get('/find/PayMentMethod'); // 调用付款方式接口
+    const response = await axios.get('/find/payMentMethod'); // 调用付款方式接口
     payMentMethodData.value = response.data.PayMentMethod; // 假设返回的数据结构中有 PayMentMethod 字段
   } catch (error) {
     console.error('获取付款方式失败:', error);
@@ -563,7 +668,7 @@ const fetchPayMentMethodData = async () => {
 
 const fetchPackSpecData = async () => {
   try {
-    const response = await axios.get('/find/PackSpec'); // 调用包装规格接口
+    const response = await axios.get('/find/packSpec'); // 调用包装规格接口
     packSpecData.value = response.data.PackSpec; // 假设返回的数据结构中有 PackSpec 字段
   } catch (error) {
     console.error('获取包装规格失败:', error);
@@ -573,7 +678,7 @@ const fetchPackSpecData = async () => {
 
 const fetchUnitMeasData = async () => {
   try {
-    const response = await axios.get('/find/UnitMeas'); // 调用单位接口
+    const response = await axios.get('/find/unitMeas'); // 调用单位接口
     unitMeasData.value = response.data.UnitMeas; // 假设返回的数据结构中有 UnitMeas 字段
   } catch (error) {
     console.error('获取单位失败:', error);
@@ -644,6 +749,10 @@ const saleForm = ref({
   BankAccountId: '',
   BankAccName: '',
   Notes: '',
+  FileId: '', // 新增：文件 ID
+  FileName: '', // 新增：文件名
+  PrdtInfos: [], // 新增：产品明细
+  Display: '',
 });
 
 // 销售订单信息表单验证规则
@@ -698,12 +807,17 @@ const handleAdd = () => {
   showSaleDialog.value = true;
 };
 
-// 编辑按钮逻辑
+
 const handleEdit = (index, row) => {
   saleForm.value = { ...row }; // 将当前行的数据赋值给 saleForm
   showSaleDialog.value = true; // 打开销售订单信息对话框
-};
 
+  // 检查是否已上传文件
+  if (row.FileId) {
+    saleForm.value.FileId = row.FileId; // 保存 FileId
+    saleForm.value.FileName = row.FileName; // 保存文件名
+  }
+};
 // 查看按钮逻辑
 const handleView = (index, row) => {
   saleForm.value = { ...row }; // 将当前行的数据赋值给 saleForm
@@ -766,13 +880,50 @@ const resetSaleForm = () => {
     BankAccountId: '',
     BankAccName: '',
     Notes: '',
+    FileId: '', // 重置文件 ID
+    FileName: '', // 重置文件名
+    PrdtInfos: [], // 重置产品明细
   };
+  file.value = null; // 重置文件对象
+  if (uploadRef.value) {
+    uploadRef.value.clearFiles(); // 清空文件列表
+  }
 };
 
-// 提交销售订单信息表单
+const uploadRef = ref(null);
+
 const submitSaleForm = async () => {
   try {
-    const response = await axios.post('/save/sale', saleForm.value); // 调用保存销售订单信息接口
+    const formData = new FormData();
+
+    // 添加其他字段
+    Object.keys(saleForm.value).forEach((key) => {
+      if (key !== 'PrdtInfos') {
+        formData.append(key, saleForm.value[key]);
+      }
+    });
+
+    // 处理 PrdtInfos
+    saleForm.value.PrdtInfos.forEach((prdtInfo, index) => {
+      formData.append(`PrdtInfos[${index}][ID]`, prdtInfo.ID);
+      // 如果需要提交其他字段，可以继续添加
+      // formData.append(`PrdtInfos[${index}][CatEngName]`, prdtInfo.CatEngName);
+      // formData.append(`PrdtInfos[${index}][BrandEngName]`, prdtInfo.BrandEngName);
+      // ...
+    });
+
+    // 添加文件
+    if (file.value) {
+      formData.append('file', file.value);
+    }
+
+    // 提交表单
+    const response = await axios.post('/save/sale', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     if (response.status === 200) {
       ElMessage.success('销售订单信息保存成功');
       showSaleDialog.value = false; // 关闭对话框
@@ -785,12 +936,48 @@ const submitSaleForm = async () => {
     ElMessage.error(error.response.data.RetMessage);
   }
 };
-
 // 监听 change 事件并更新 AcctName
 const onAcctChange = (value) => {
   const selectedAcct = acctData.value.find(acct => acct.ID === value);
   if (selectedAcct) {
     saleForm.value.AcctName = selectedAcct.AcctName;
+  }
+};
+
+const downloadFile = async (fileId, fileName) => {
+  try {
+    const response = await axios.post(
+      '/file',
+      { FileId: fileId },
+      {
+        responseType: 'blob',
+      }
+    );
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName || `file_${fileId}`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('文件下载失败:', error);
+    ElMessage.error('文件下载失败，请稍后重试');
+  }
+};
+const handleFileChange = (uploadFile) => {
+  file.value = uploadFile.raw; // 保存选择的文件
+  saleForm.value.FileName = uploadFile.name; // 更新文件名
+};
+const fetchSrcPlaceData = async () => {
+  try {
+    const response = await axios.get('/find/spot'); // 调用起运地接口
+    srcPlaceData.value = response.data.Spot.map(spot => spot.InvLocName); // 提取 Spot 数组中的 InvLocName 字段
+  } catch (error) {
+    console.error('获取起运地失败:', error);
+    ElMessage.error('获取起运地失败，请稍后重试');
   }
 };
 
