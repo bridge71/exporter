@@ -64,6 +64,9 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 		}
 
 		id_ := s.Str2Uint(idStr)
+		if id_ == 0 {
+			break
+		}
 		prdt := []models.PrdtInfo{}
 		s.db.FindById(id_, &prdt)
 		Sale.PrdtInfos = append(Sale.PrdtInfos, prdt[0])
@@ -77,6 +80,10 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 		}
 
 		id_ := s.Str2Uint(idStr)
+
+		if id_ == 0 {
+			break
+		}
 		doc := []models.DocReq{}
 		s.db.FindDocReqById(id_, &doc)
 		Sale.DocReq = append(Sale.DocReq, doc[0])

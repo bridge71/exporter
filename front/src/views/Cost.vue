@@ -21,6 +21,7 @@
         <el-main>
           <!-- 费用信息表格 -->
           <el-table :data="paginatedCostData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="ExpType" label="费用类型" width="220%"></el-table-column>
             <el-table-column prop="Rates" label="收费标准" width="220%"></el-table-column>
             <el-table-column prop="UnitPrice" label="单价" width="220%"></el-table-column>

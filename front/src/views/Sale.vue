@@ -23,16 +23,17 @@
 
           <!-- 销售订单信息表格 -->
           <el-table :data="paginatedSaleData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="OrderNum" label="订单编号" width="220%"></el-table-column>
-            <el-table-column prop="OrderDate" label="订单日期" width="220%"></el-table-column>
             <el-table-column prop="AcctName" label="销售方" width="220%"></el-table-column>
             <el-table-column prop="Merc" label="购买方" width="220%"></el-table-column>
             <el-table-column prop="QualStd" label="质量标准" width="220%"></el-table-column>
-            <el-table-column prop="BillValidity" label="账单有效期" width="220%"></el-table-column>
+            <el-table-column prop="OrderDate" label="订单日期" width="420%"></el-table-column>
+            <el-table-column prop="BillValidity" label="账单有效期" width="420%"></el-table-column>
             <el-table-column prop="BussOrderSta" label="单据状态" width="220%"></el-table-column>
 
 
-            <el-table-column label="单据要求" width="200">
+            <el-table-column label="单据要求" width="700%">
               <template #default="scope">
                 <div v-if="scope.row.DocReq && scope.row.DocReq.length > 0">
                   <el-tag v-for="(docReq, index) in scope.row.DocReq" :key="index" type="info" style="margin: 2px;">
@@ -42,8 +43,8 @@
                 <span v-else>无单据要求</span>
               </template>
             </el-table-column>
-            <el-table-column prop="StartShip" label="发货开始日期" width="220%"></el-table-column>
-            <el-table-column prop="EndShip" label="发货截止日期" width="220%"></el-table-column>
+            <el-table-column prop="StartShip" label="发货开始日期" width="420%"></el-table-column>
+            <el-table-column prop="EndShip" label="发货截止日期" width="420%"></el-table-column>
             <el-table-column prop="SrcPlace" label="起运地" width="220%"></el-table-column>
             <el-table-column prop="Des" label="目的地" width="220%"></el-table-column>
             <el-table-column prop="PayMtdName" label="付款方式" width="220%"></el-table-column>
@@ -58,15 +59,16 @@
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
 
-            <el-table-column label="产品明细" width="300">
-              <template #default="scope">
-                <div v-for="prdtInfo in scope.row.PrdtInfos" :key="prdtInfo.ID">
-                  {{ prdtInfo.CatEngName }} - {{ prdtInfo.BrandEngName }} - {{ prdtInfo.PackSpec }} - {{
-                    prdtInfo.Currency }} - {{ prdtInfo.UnitPrice }} - {{ prdtInfo.TradeTerm }} - {{ prdtInfo.DeliveryLoc
-                  }}
-                </div>
-              </template>
-            </el-table-column>
+            <!-- <el-table-column label="产品明细" width="300"> -->
+            <!--   <template #default="scope"> -->
+            <!--     <div v-for="prdtInfo in scope.row.PrdtInfos" :key="prdtInfo.ID"> -->
+            <!--       {{ prdtInfo.ID }} - {{ prdtInfo.CatEngName }} - {{ prdtInfo.BrandEngName }} - {{ prdtInfo.PackSpec }} - -->
+            <!--       {{ -->
+            <!--         prdtInfo.Currency }} - {{ prdtInfo.UnitPrice }} - {{ prdtInfo.TradeTerm }} - {{ prdtInfo.DeliveryLoc -->
+            <!--       }} -->
+            <!--     </div> -->
+            <!--   </template> -->
+            <!-- </el-table-column> -->
             <el-table-column label="操作" fixed="right" width="200">
               <template #default="scope">
                 <el-row type="flex" justify="space-between">
@@ -121,7 +123,6 @@
 
         <el-row :gutter="20">
           <el-col :span="24">
-
             <el-form-item label="单据要求" prop="DocReq">
               <el-select v-model="saleForm.DocReq" multiple placeholder="请选择单据要求" @click="onDocReqChange">
                 <el-option v-for="docReq in docReqData" :key="docReq.DocReqId" :label="docReq.DocReq"
@@ -298,20 +299,26 @@
           </el-col>
         </el-row>
 
-
-        <el-select v-model="saleForm.PrdtInfos" multiple placeholder="请选择产品明细" @click="onPrdtInfoChange">
-          <el-option v-for="prdtInfo in prdtInfoData" :key="prdtInfo.ID"
-            :label="`${prdtInfo.CatEngName} - ${prdtInfo.BrandEngName} - ${prdtInfo.PackSpec} - ${prdtInfo.Currency} - ${prdtInfo.UnitPrice} - ${prdtInfo.TradeTerm} - ${prdtInfo.DeliveryLoc}`"
-            :value="prdtInfo.ID">
-            <span>{{ prdtInfo.CatEngName }}</span> -
-            <span>{{ prdtInfo.BrandEngName }}</span> -
-            <span>{{ prdtInfo.PackSpec }}</span> -
-            <span>{{ prdtInfo.Currency }}</span> -
-            <span>{{ prdtInfo.UnitPrice }}</span> -
-            <span>{{ prdtInfo.TradeTerm }}</span> -
-            <span>{{ prdtInfo.DeliveryLoc }}</span>
-          </el-option>
-        </el-select>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="产品明细" prop="PrdtInfos">
+              <el-select v-model="saleForm.PrdtInfos" multiple placeholder="请选择产品明细">
+                <el-option v-for="prdtInfo in prdtInfoData" :key="prdtInfo.ID"
+                  :label="`${prdtInfo.ID} - ${prdtInfo.CatEngName} - ${prdtInfo.BrandEngName} - ${prdtInfo.PackSpec} - ${prdtInfo.Currency} - ${prdtInfo.UnitPrice} - ${prdtInfo.TradeTerm} - ${prdtInfo.DeliveryLoc}`"
+                  :value="prdtInfo.ID">
+                  <span>{{ prdtInfo.ID }}</span> -
+                  <span>{{ prdtInfo.CatEngName }}</span> -
+                  <span>{{ prdtInfo.BrandEngName }}</span> -
+                  <span>{{ prdtInfo.PackSpec }}</span> -
+                  <span>{{ prdtInfo.Currency }}</span> -
+                  <span>{{ prdtInfo.UnitPrice }}</span> -
+                  <span>{{ prdtInfo.TradeTerm }}</span> -
+                  <span>{{ prdtInfo.DeliveryLoc }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-row :gutter="20">
           <el-col :span="24" style="text-align: right;">
@@ -538,18 +545,36 @@
 
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="产品明细">
-              <div v-for="prdtInfo in saleForm.PrdtInfos" :key="prdtInfo.ID">
-                <el-tag type="info">
-                  {{ prdtInfo.CatEngName }} - {{ prdtInfo.BrandEngName }} - {{ prdtInfo.PackSpec }} - {{
-                    prdtInfo.Currency
-                  }} - {{ prdtInfo.UnitPrice }} - {{ prdtInfo.TradeTerm }} - {{ prdtInfo.DeliveryLoc }}
+            <el-form-item label="单据要求" prop="DocReq">
+              <div v-if="saleForm.DocReq && saleForm.DocReq.length > 0">
+                <el-tag v-for="(docReq, index) in saleForm.DocReq" :key="index" type="info" style="margin: 2px;">
+                  {{ docReq.DocReq || '未知单据要求' }}
                 </el-tag>
               </div>
+              <span v-else>无单据要求</span>
             </el-form-item>
           </el-col>
         </el-row>
 
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="产品明细" prop="PrdtInfos">
+              <div v-if="saleForm.PrdtInfos && saleForm.PrdtInfos.length > 0">
+                <el-tag v-for="(prdtInfo, index) in saleForm.PrdtInfos" :key="index" type="info" style="margin: 2px;">
+                  {{ prdtInfo.ID || '未知产品' }} -
+                  {{ prdtInfo.CatEngName || '未知类别' }} -
+                  {{ prdtInfo.BrandEngName || '未知品牌' }} -
+                  {{ prdtInfo.PackSpec || '未知包装规格' }} -
+                  {{ prdtInfo.Currency || '未知货币' }} -
+                  {{ prdtInfo.UnitPrice || '未知单价' }} -
+                  {{ prdtInfo.TradeTerm || '未知贸易条款' }} -
+                  {{ prdtInfo.DeliveryLoc || '未知交货地点' }}
+                </el-tag>
+              </div>
+              <span v-else>无产品明细</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row :gutter="20">
           <el-col :span="24" style="text-align: right;">
             <el-button @click="showshowSaleDialog = false">关闭</el-button>
@@ -868,17 +893,27 @@ const handleAdd = () => {
   showSaleDialog.value = true;
 };
 
-
 const handleEdit = (index, row) => {
-  saleForm.value = { ...row }; // 将当前行的数据赋值给 saleForm
-  showSaleDialog.value = true; // 打开销售订单信息对话框
+  // 将当前行的数据赋值给 saleForm
+  saleForm.value = { ...row };
 
+  // 如果 PrdtInfos 是对象数组，转换为 ID 数组
+  if (row.PrdtInfos && Array.isArray(row.PrdtInfos)) {
+    saleForm.value.PrdtInfos = row.PrdtInfos.map(item => item.ID);
+  }
+
+  if (row.DocReq && Array.isArray(row.DocReq)) {
+    saleForm.value.DocReq = row.DocReq.map(item => item.DocReqId);
+  }
   // 检查是否已上传文件
   if (row.FileId) {
     saleForm.value.FileId = row.FileId; // 保存 FileId
     saleForm.value.FileName = row.FileName; // 保存文件名
   }
+
+  showSaleDialog.value = true; // 打开销售订单信息对话框
 };
+
 // 查看按钮逻辑
 const handleView = (index, row) => {
   saleForm.value = { ...row }; // 将当前行的数据赋值给 saleForm

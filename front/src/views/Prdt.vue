@@ -21,7 +21,7 @@
         <el-main>
           <!-- 产品信息表格 -->
           <el-table :data="paginatedPrdtData" style="width: 100%" max-height="450">
-            <el-table-column prop="ID" label="ID" width="220%"></el-table-column>
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="CatEngName" label="产品" width="220%"></el-table-column>
             <el-table-column prop="BrandEngName" label="品牌" width="220%"></el-table-column>
             <el-table-column prop="Factory" label="生产工厂" width="220%"></el-table-column>

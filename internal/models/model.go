@@ -93,15 +93,14 @@ type Sale struct {
 }
 
 type Send struct {
-	SaleInvNum  string     `gorm:"column:SaleInvNum" form:"SaleInvNum"`    // 销售发票号
-	SaleInvDate string     `gorm:"column:SaleInvDate" form:"SaleInvDate"`  // 销售发票日期
-	Sales       []Sale     `gorm:"many2many:saleSend" form:"Sales"`        // 销售订单 多表关联
-	Merchants   []Merchant `gorm:"many2many:sendMerchant" form:"Merchant"` // 存储 客户 收货人 通知人
-	AcctId      uint       `gorm:"column:AcctId" form:"AcctId"`            // 发货人  通过id绑定，查找接口 /find/acct
-	AcctName    string     `gorm:"column:acctName" form:"AcctName"`
-	Spot        []Spot     `gorm:"many2many:sendSpot"`
-	// SrcPlace        string        `gorm:"column:SrcPlace" form:"SrcPlace"`     // 起运地, 从数据字典里选  /find/SrcPlace
-	// Des             string        `gorm:"column:Des" form:"Des"`               // 目的地, 从数据字典里选  /find/SrcPlace
+	SaleInvNum      string        `gorm:"column:SaleInvNum" form:"SaleInvNum"`    // 销售发票号
+	SaleInvDate     string        `gorm:"column:SaleInvDate" form:"SaleInvDate"`  // 销售发票日期
+	Sales           []Sale        `gorm:"many2many:saleSend" form:"Sales"`        // 销售订单 多表关联
+	Merchants       []Merchant    `gorm:"many2many:sendMerchant" form:"Merchant"` // 存储 客户 收货人 通知人
+	AcctId          uint          `gorm:"column:AcctId" form:"AcctId"`            // 发货人  通过id绑定，查找接口 /find/acct
+	AcctName        string        `gorm:"column:acctName" form:"AcctName"`
+	SrcPlace        string        `gorm:"column:SrcPlace" form:"SrcPlace"`     // 起运地, 从数据字典里选  /find/SrcPlace
+	Des             string        `gorm:"column:Des" form:"Des"`               // 目的地, 从数据字典里选  /find/SrcPlace
 	ShipName        string        `gorm:"column:ShipName" form:"ShipName"`     // 船名
 	Voyage          string        `gorm:"column:Voyage" form:"Voyage"`         // 航次
 	TotNum          uint          `gorm:"column:TotNum" form:"TotNum"`         // 总件数
@@ -124,8 +123,8 @@ type Send struct {
 	PrdtInfos       []PrdtInfo    `gorm:"many2many:sendPrdtInfo" form:"PrdtInfos"`       // 产品明细，多表关联，  查找接口 /find/PrdtInfos
 	LoadingInfos    []LoadingInfo `gorm:"many2many:sendLoadingInfo" form:"LoadingInfos"` // 装货明细，多表关联，查找接口 /find/LoadingInfos
 	Files           []File        `gorm:"many2many:sendFile" form:"Files"`               // 合同扫描件，多表关联
-	ShouldIns       []ShouldIn    `gorm:"many2many:shouldInSend" form:"ShouldIns"`       // 应收账款单
-	Ins             []In          `gorm:"many2many:inSend" form:"Ins"`                   // 收款单
+	// ShouldIns       []ShouldIn    `gorm:"many2many:shouldInSend" form:"ShouldIns"`       // 应收账款单
+	// Ins             []In          `gorm:"many2many:inSend" form:"Ins"`                   // 收款单
 	gorm.Model
 }
 type ShouldIn struct {

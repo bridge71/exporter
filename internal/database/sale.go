@@ -7,5 +7,5 @@ func (s *service) FindSalePrdtInfo(sale *[]models.Sale) {
 }
 
 func (s *service) SaveSale(sale *models.Sale) error {
-	return s.gormDB.Omit("PrdtInfos").Save(sale).Error
+	return s.gormDB.Save(sale).Error
 }
