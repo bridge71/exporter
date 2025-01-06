@@ -94,6 +94,24 @@ func (s *Server) AddDicData(c *gin.Context) {
 
 	BussOrderSta := models.BussOrderSta{BussOrderSta: "OrderStatus1"}
 	_ = s.db.SaveBussOrderSta(&BussOrderSta)
+
+	Acct := models.Acct{AcctCode: "nihao", AcctAbbr: "hao", EtyAbbr: "room", AcctName: "hh"}
+	_ = s.db.SaveAcct(&Acct)
+
+	AcctBank := models.AcctBank{AcctId: 1, AccName: "sss", AccNum: "3424"}
+	_ = s.db.Save(&AcctBank)
+
+	Merchant := models.Merchant{MercCode: "ldaf", MercAbbr: "weq", ShortMerc: "erer"}
+	_ = s.db.SaveMerchant(&Merchant)
+
+	BankAccount := models.BankAccount{BankAccName: "sss", CompName: "dfds", AcctNum: "dfa", BankName: "fff", MerchantId: 1}
+	_ = s.db.Save(&BankAccount)
+
+	PayMent := models.PayMentMethod{PayMtdName: "dfads"}
+	_ = s.db.Save(&PayMent)
+
+	PackSpec := models.PackSpec{SpecName: "fsd"}
+	_ = s.db.Save(&PackSpec)
 }
 
 func (s *Server) Uploader(c *gin.Context) {

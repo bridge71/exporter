@@ -71,11 +71,12 @@ type Sale struct {
 	PayMentMethodId uint       `gorm:"column:payMentMethodId" form:"PayMentMethodId"` // 付款方式，绑定id，查找接口 /find/PayMentMethod 同理
 	PayMtdName      string     `gorm:"column:payMtdName" form:"PayMtdName"`           // 付款方式名称
 	PrdtInfos       []PrdtInfo `gorm:"many2many:salePrdtInfo" `                       // 产品明细，多表关联，  查找接口 /find/PrdtInfos
-	DocReq          []DocReq   `gorm:"many2many:saleDocReq"`                          // 单据要求,多选 从数据字典里选 /find/DocReq
-	TotAmt          uint       `gorm:"column:totAmt" form:"TotAmt"`                   // 总金额
-	Currency        string     `gorm:"column:currency" form:"Currency"`               // 币种
-	TotNum          uint       `gorm:"column:totNum" form:"TotNum"`                   // 总件数
-	PackSpecId      uint       `gorm:"column:packSpecId" form:"PackSpecId"`           // 包装规格 从数据字典里选 /find/PackSpec 同理
+	PrdtInfoId      uint       `form:"PrdtInfoId"`
+	DocReq          []DocReq   `gorm:"many2many:saleDocReq"`                // 单据要求,多选 从数据字典里选 /find/DocReq
+	TotAmt          uint       `gorm:"column:totAmt" form:"TotAmt"`         // 总金额
+	Currency        string     `gorm:"column:currency" form:"Currency"`     // 币种
+	TotNum          uint       `gorm:"column:totNum" form:"TotNum"`         // 总件数
+	PackSpecId      uint       `gorm:"column:packSpecId" form:"PackSpecId"` // 包装规格 从数据字典里选 /find/PackSpec 同理
 	SpecName        string     `gorm:"column:specName;" form:"SpecName"`
 	TotalNetWeight  string     `gorm:"column:totalNetWeight" form:"TotalNetWeight"` // 总净重
 	UnitMeas        string     `gorm:"column:unitMeas" form:"UnitMeas"`             // 单位 从数据字典里选  /find/UnitMeas
@@ -120,7 +121,8 @@ type Send struct {
 	PayMtdName      string        `gorm:"column:payMtdName" form:"PayMtdName"`           // 付款方式名称
 	AcctBankId      uint          `gorm:"column:acctBankId" form:"AcctBankId"`           // 收款银行  绑定id，查找接口 /find/acctBank
 	AccName         string        `gorm:"column:accName" form:"AccName"`
-	PrdtInfos       []PrdtInfo    `gorm:"many2many:sendPrdtInfo" form:"PrdtInfos"`       // 产品明细，多表关联，  查找接口 /find/PrdtInfos
+	PrdtInfos       []PrdtInfo    `gorm:"many2many:sendPrdtInfo" form:"PrdtInfos"` // 产品明细，多表关联，  查找接口 /find/PrdtInfos
+	PrdtInfoId      uint          `form:"PrdtInfoId"`
 	LoadingInfos    []LoadingInfo `gorm:"many2many:sendLoadingInfo" form:"LoadingInfos"` // 装货明细，多表关联，查找接口 /find/LoadingInfos
 	Files           []File        `gorm:"many2many:sendFile" form:"Files"`               // 合同扫描件，多表关联
 	// ShouldIns       []ShouldIn    `gorm:"many2many:shouldInSend" form:"ShouldIns"`       // 应收账款单

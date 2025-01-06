@@ -31,8 +31,6 @@
             <el-table-column prop="OrderDate" label="订单日期" width="420%"></el-table-column>
             <el-table-column prop="BillValidity" label="账单有效期" width="420%"></el-table-column>
             <el-table-column prop="BussOrderSta" label="单据状态" width="220%"></el-table-column>
-
-
             <el-table-column label="单据要求" width="700%">
               <template #default="scope">
                 <div v-if="scope.row.DocReq && scope.row.DocReq.length > 0">
@@ -59,22 +57,13 @@
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
 
-            <!-- <el-table-column label="产品明细" width="300"> -->
-            <!--   <template #default="scope"> -->
-            <!--     <div v-for="prdtInfo in scope.row.PrdtInfos" :key="prdtInfo.ID"> -->
-            <!--       {{ prdtInfo.ID }} - {{ prdtInfo.CatEngName }} - {{ prdtInfo.BrandEngName }} - {{ prdtInfo.PackSpec }} - -->
-            <!--       {{ -->
-            <!--         prdtInfo.Currency }} - {{ prdtInfo.UnitPrice }} - {{ prdtInfo.TradeTerm }} - {{ prdtInfo.DeliveryLoc -->
-            <!--       }} -->
-            <!--     </div> -->
-            <!--   </template> -->
-            <!-- </el-table-column> -->
-            <el-table-column label="操作" fixed="right" width="200">
+            <el-table-column label="操作" fixed="right" width="420%">
               <template #default="scope">
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
+                  <el-button @click="fetchPrdtInfoData(scope.row.ID)" type="text" size="small">产品明细</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -86,6 +75,46 @@
       </el-container>
     </el-container>
 
+    <!-- 弹出表单 -->
+    <el-dialog v-model="prdtInfoVisible" title="产品明细" width="80%">
+      <!-- 添加按钮和输入框 -->
+      <div style="text-align: right; margin-bottom: 20px;">
+        <el-input v-model="prdtInfoId" placeholder="请输入产品ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addPrdtInfo(nowId)">添加</el-button>
+      </div>
+
+      <!-- 产品明细表格 -->
+      <el-table :data="prdtInfoData" height="400" style="width: 100%">
+        <el-table-column prop="ID" label="ID" width="60%" />
+        <el-table-column prop="CatEngName" label="产品" width="150%" />
+        <el-table-column prop="BrandEngName" label="品牌" width="150%" />
+        <el-table-column prop="PackSpec" label="包装规格" width="150%" />
+        <el-table-column prop="Currency" label="币种" width="100%" />
+        <el-table-column prop="UnitPrice" label="单价" width="70%" />
+        <el-table-column prop="TradeTerm" label="贸易条款" width="100%" />
+        <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" />
+        <el-table-column label="操作" width="150">
+          <template #default="scope">
+            <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
+            <el-button type="text" size="small"
+              @click="DeletePrdtInfo(scope.$index, nowId, scope.row.ID)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!-- 添加订单的弹窗 -->
+    <el-dialog v-model="addOrderDialogVisible" title="添加订单" width="30%">
+      <el-form :model="addOrderForm" label-width="100px">
+        <el-form-item label="订单ID">
+          <el-input v-model="addOrderForm.orderId" placeholder="请输入订单ID" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="addOrderDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmAddOrder">确认</el-button>
+      </template>
+    </el-dialog>
 
     <!-- 添加销售订单信息的对话框 -->
     <el-dialog v-model="showSaleDialog" title="销售订单信息" width="80%" @close="resetSaleForm">
@@ -124,7 +153,7 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="单据要求" prop="DocReq">
-              <el-select v-model="saleForm.DocReq" multiple placeholder="请选择单据要求" @click="onDocReqChange">
+              <el-select v-model="saleForm.DocReq" multiple placeholder="请选择单据要求">
                 <el-option v-for="docReq in docReqData" :key="docReq.DocReqId" :label="docReq.DocReq"
                   :value="docReq.DocReqId">
                   {{ docReq.DocReq }}
@@ -299,26 +328,6 @@
           </el-col>
         </el-row>
 
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="产品明细" prop="PrdtInfos">
-              <el-select v-model="saleForm.PrdtInfos" multiple placeholder="请选择产品明细">
-                <el-option v-for="prdtInfo in prdtInfoData" :key="prdtInfo.ID"
-                  :label="`${prdtInfo.ID} - ${prdtInfo.CatEngName} - ${prdtInfo.BrandEngName} - ${prdtInfo.PackSpec} - ${prdtInfo.Currency} - ${prdtInfo.UnitPrice} - ${prdtInfo.TradeTerm} - ${prdtInfo.DeliveryLoc}`"
-                  :value="prdtInfo.ID">
-                  <span>{{ prdtInfo.ID }}</span> -
-                  <span>{{ prdtInfo.CatEngName }}</span> -
-                  <span>{{ prdtInfo.BrandEngName }}</span> -
-                  <span>{{ prdtInfo.PackSpec }}</span> -
-                  <span>{{ prdtInfo.Currency }}</span> -
-                  <span>{{ prdtInfo.UnitPrice }}</span> -
-                  <span>{{ prdtInfo.TradeTerm }}</span> -
-                  <span>{{ prdtInfo.DeliveryLoc }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
 
         <el-row :gutter="20">
           <el-col :span="24" style="text-align: right;">
@@ -543,38 +552,7 @@
           </el-col>
         </el-row>
 
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="单据要求" prop="DocReq">
-              <div v-if="saleForm.DocReq && saleForm.DocReq.length > 0">
-                <el-tag v-for="(docReq, index) in saleForm.DocReq" :key="index" type="info" style="margin: 2px;">
-                  {{ docReq.DocReq || '未知单据要求' }}
-                </el-tag>
-              </div>
-              <span v-else>无单据要求</span>
-            </el-form-item>
-          </el-col>
-        </el-row>
 
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="产品明细" prop="PrdtInfos">
-              <div v-if="saleForm.PrdtInfos && saleForm.PrdtInfos.length > 0">
-                <el-tag v-for="(prdtInfo, index) in saleForm.PrdtInfos" :key="index" type="info" style="margin: 2px;">
-                  {{ prdtInfo.ID || '未知产品' }} -
-                  {{ prdtInfo.CatEngName || '未知类别' }} -
-                  {{ prdtInfo.BrandEngName || '未知品牌' }} -
-                  {{ prdtInfo.PackSpec || '未知包装规格' }} -
-                  {{ prdtInfo.Currency || '未知货币' }} -
-                  {{ prdtInfo.UnitPrice || '未知单价' }} -
-                  {{ prdtInfo.TradeTerm || '未知贸易条款' }} -
-                  {{ prdtInfo.DeliveryLoc || '未知交货地点' }}
-                </el-tag>
-              </div>
-              <span v-else>无产品明细</span>
-            </el-form-item>
-          </el-col>
-        </el-row>
         <el-row :gutter="20">
           <el-col :span="24" style="text-align: right;">
             <el-button @click="showshowSaleDialog = false">关闭</el-button>
@@ -590,20 +568,34 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
+// 控制主弹窗显示
+const prdtInfoVisible = ref(false);
+const nowId = ref(null);
 
+const prdtInfoId = ref(null);
+const addPrdtInfo = async (ID) => {
+
+  console.log(nowId.value)
+  // acctForm.value.ID = parseInt(acctForm.value.ID, 10);
+  try {
+    const response = await axios.post('/add/sale/prdtInfo', {
+      "ID": ID,
+      "PrdtInfoId": parseInt(prdtInfoId.value, 10)
+    }); // 调用产品明细接口
+
+    ElMessage.success("添加成功");
+    fetchPrdtInfoData(nowId.value)
+  } catch (error) {
+    console.error('添加产品明细失败:', error);
+    ElMessage.error(error.response.data.RetMessage);
+  }
+};
 const file = ref(null);
 const searchQuery = ref(''); // 添加搜索查询字段
 const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
 
-const onPrdtInfoChange = (selectedPrdtInfos) => {
-  // 直接更新 saleForm.PrdtInfos，不需要额外处理
-  saleForm.value.PrdtInfos = selectedPrdtInfos;
-};
 
-const onDocReqChange = (selectedDocReq) => {
-  saleForm.value.DocReq = selectedDocReq;
-};
 const paginatedSaleData = computed(() => {
   let filteredData = saleData.value;
   if (searchQuery.value) {
@@ -635,7 +627,6 @@ const paginatedSaleData = computed(() => {
   const end = start + pageSize;
   return filteredData.slice(start, end);
 });
-
 onMounted(() => {
 
   fetchDocReqData(); // 获取单据要求数据
@@ -652,18 +643,24 @@ onMounted(() => {
   fetchBankAccountData(); // 获取对方银行账户数据
   fetchSaleData(); // 获取销售订单信息
   fetchCurrencyData(); // 新增：获取货币数据
-  fetchPrdtInfoData(); // 新增：获取产品明细数据
+
+  // fetchPrdtInfoData(); // 新增：获取产品明细数据
 });
 
 const prdtInfoData = ref([]); // 存储产品明细数据
 
-const fetchPrdtInfoData = async () => {
+const fetchPrdtInfoData = async (ID) => {
   try {
-    const response = await axios.get('/find/prdtInfo'); // 调用产品明细接口
+    const response = await axios.get('/find/sale/prdtInfo', {
+      "ID": ID,
+    }); // 调用产品明细接口
     prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
+    prdtInfoVisible.value = true;
+    nowId.value = ID
+    console.log("nowid", nowId.value)
   } catch (error) {
     console.error('获取产品明细失败:', error);
-    ElMessage.error('获取产品明细失败，请稍后重试');
+    ElMessage.error('获取产品明细失败');
   }
 };
 const currencyData = ref([]); // 存储货币数据
@@ -674,7 +671,7 @@ const fetchCurrencyData = async () => {
     currencyData.value = response.data.Currency; // 假设返回的数据结构中有 Currency 字段
   } catch (error) {
     console.error('获取货币数据失败:', error);
-    ElMessage.error('获取货币数据失败，请稍后重试');
+    ElMessage.error('获取货币数据失败');
   }
 };
 // 定义接口请求函数
@@ -684,7 +681,7 @@ const fetchAcctData = async () => {
     acctData.value = response.data.Acct; // 假设返回的数据结构中有 Acct 字段
   } catch (error) {
     console.error('获取会计实体信息失败:', error);
-    ElMessage.error('获取会计实体信息失败，请稍后重试');
+    ElMessage.error('获取会计实体信息失败');
   }
 };
 
@@ -694,7 +691,7 @@ const fetchMerchantData = async () => {
     merchantData.value = response.data.Merchant; // 假设返回的数据结构中有 Merchant 字段
   } catch (error) {
     console.error('获取购买方信息失败:', error);
-    ElMessage.error('获取购买方信息失败，请稍后重试');
+    ElMessage.error('获取购买方信息失败');
   }
 };
 
@@ -704,7 +701,7 @@ const fetchQualStdData = async () => {
     qualStdData.value = response.data.QualStd; // 假设返回的数据结构中有 QualStd 字段
   } catch (error) {
     console.error('获取质量标准失败:', error);
-    ElMessage.error('获取质量标准失败，请稍后重试');
+    ElMessage.error('获取质量标准失败');
   }
 };
 
@@ -714,7 +711,7 @@ const fetchBussOrderStaData = async () => {
     bussOrderStaData.value = response.data.BussOrderSta; // 假设返回的数据结构中有 BussOrderSta 字段
   } catch (error) {
     console.error('获取单据状态失败:', error);
-    ElMessage.error('获取单据状态失败，请稍后重试');
+    ElMessage.error('获取单据状态失败');
   }
 };
 
@@ -724,7 +721,7 @@ const fetchDesData = async () => {
     desData.value = response.data.Spot.map(spot => spot.InvLocName); // 提取 Spot 数组中的 InvLocName 字段
   } catch (error) {
     console.error('获取目的地失败:', error);
-    ElMessage.error('获取目的地失败，请稍后重试');
+    ElMessage.error('获取目的地失败');
   }
 };
 
@@ -735,7 +732,7 @@ const fetchPayMentMethodData = async () => {
     payMentMethodData.value = response.data.PayMentMethod; // 假设返回的数据结构中有 PayMentMethod 字段
   } catch (error) {
     console.error('获取付款方式失败:', error);
-    ElMessage.error('获取付款方式失败，请稍后重试');
+    ElMessage.error('获取付款方式失败');
   }
 };
 
@@ -745,7 +742,7 @@ const fetchPackSpecData = async () => {
     packSpecData.value = response.data.PackSpec; // 假设返回的数据结构中有 PackSpec 字段
   } catch (error) {
     console.error('获取包装规格失败:', error);
-    ElMessage.error('获取包装规格失败，请稍后重试');
+    ElMessage.error('获取包装规格失败');
   }
 };
 
@@ -755,7 +752,7 @@ const fetchUnitMeasData = async () => {
     unitMeasData.value = response.data.UnitMeas; // 假设返回的数据结构中有 UnitMeas 字段
   } catch (error) {
     console.error('获取单位失败:', error);
-    ElMessage.error('获取单位失败，请稍后重试');
+    ElMessage.error('获取单位失败');
   }
 };
 
@@ -765,7 +762,7 @@ const fetchAcctBankData = async () => {
     acctBankData.value = response.data.AcctBank; // 假设返回的数据结构中有 AcctBank 字段
   } catch (error) {
     console.error('获取我方银行账户失败:', error);
-    ElMessage.error('获取我方银行账户失败，请稍后重试');
+    ElMessage.error('获取我方银行账户失败');
   }
 };
 
@@ -775,7 +772,7 @@ const fetchBankAccountData = async () => {
     bankAccountData.value = response.data.BankAccount; // 假设返回的数据结构中有 BankAccount 字段
   } catch (error) {
     console.error('获取对方银行账户失败:', error);
-    ElMessage.error('获取对方银行账户失败，请稍后重试');
+    ElMessage.error('获取对方银行账户失败');
   }
 };
 
@@ -785,7 +782,7 @@ const fetchSaleData = async () => {
     saleData.value = response.data.Sale; // 假设返回的数据结构中有 Sale 字段
   } catch (error) {
     console.error('获取销售订单信息失败:', error);
-    ElMessage.error('获取销售订单信息失败，请稍后重试');
+    ElMessage.error('获取销售订单信息失败');
   }
 };
 
@@ -824,7 +821,7 @@ const saleForm = ref({
   Notes: '',
   FileId: '', // 新增：文件 ID
   FileName: '', // 新增：文件名
-  PrdtInfos: [], // 新增：产品明细
+  // PrdtInfos: [], // 新增：产品明细
   DocReq: [], // 新增：单据要求
   Display: '',
 });
@@ -838,7 +835,7 @@ const fetchDocReqData = async () => {
     docReqData.value = response.data.DocReq; // 假设返回的数据结构中有 DocReq 字段
   } catch (error) {
     console.error('获取单据要求失败:', error);
-    ElMessage.error('获取单据要求失败，请稍后重试');
+    ElMessage.error('获取单据要求失败');
   }
 };
 // 销售订单信息表单验证规则
@@ -978,7 +975,7 @@ const resetSaleForm = () => {
     Notes: '',
     FileId: '', // 重置文件 ID
     FileName: '', // 重置文件名
-    PrdtInfos: [], // 重置产品明细
+    // PrdtInfos: [], // 重置产品明细
   };
   file.value = null; // 重置文件对象
   if (uploadRef.value) {
@@ -986,6 +983,34 @@ const resetSaleForm = () => {
   }
 };
 
+// 删除按钮逻辑
+const DeletePrdtInfo = (index, ID, PrdtInfoId) => {
+  // console.log('Delete button clicked', index, row); // 添加调试信息
+  ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    console.log('Confirmed delete', ID); // 添加调试信息
+    axios.post('/delete/sale/prdtInfo', {
+      "ID": ID,
+      "PrdtInfoId": PrdtInfoId
+    })
+      .then(response => {
+        if (response.status === 200) {
+          ElMessage.success('删除成功');
+          fetchPrdtInfoData(nowId.value); // 重新获取会计实体信息数据
+        } else {
+          ElMessage.error(response.data.RetMessage || '删除失败');
+        }
+      })
+      .catch(error => {
+        ElMessage.error(error.response.data.RetMessage);
+      });
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
+};
 const uploadRef = ref(null);
 
 const submitSaleForm = async () => {
@@ -1068,7 +1093,7 @@ const downloadFile = async (fileId, fileName) => {
     window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error('文件下载失败:', error);
-    ElMessage.error('文件下载失败，请稍后重试');
+    ElMessage.error('文件下载失败');
   }
 };
 const handleFileChange = (uploadFile) => {
@@ -1081,7 +1106,7 @@ const fetchSrcPlaceData = async () => {
     srcPlaceData.value = response.data.Spot.map(spot => spot.InvLocName); // 提取 Spot 数组中的 InvLocName 字段
   } catch (error) {
     console.error('获取起运地失败:', error);
-    ElMessage.error('获取起运地失败，请稍后重试');
+    ElMessage.error('获取起运地失败');
   }
 };
 

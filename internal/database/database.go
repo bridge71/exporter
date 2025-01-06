@@ -26,10 +26,13 @@ type Service interface {
 	FindUserById(user *models.User, userId uint)
 	FindUserByEmail(user *models.User, email string)
 
+	DeleteSaleDocReq(sale *models.Sale, DocReq *[]models.DocReq) error
 	FindDocReqById(id uint, mercTypes *[]models.DocReq)
 	FindById(id uint, model interface{})
 
-	FindSalePrdtInfo(sale *[]models.Sale)
+	FindSalePrdtInfo(sale *models.Sale)
+	FindSalesPrdtInfo(sale *[]models.Sale)
+	DeleteSalePrdtInfo(sale *models.Sale, prdtInfo *models.PrdtInfo) error
 
 	Delete(model interface{}) error
 	Save(model interface{}) error
