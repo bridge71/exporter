@@ -30,6 +30,18 @@
             <el-table-column prop="QualStd" label="质量标准" width="220%"></el-table-column>
             <el-table-column prop="BillValidity" label="账单有效期" width="220%"></el-table-column>
             <el-table-column prop="BussOrderSta" label="单据状态" width="220%"></el-table-column>
+
+
+            <el-table-column label="单据要求" width="200">
+              <template #default="scope">
+                <div v-if="scope.row.DocReq && scope.row.DocReq.length > 0">
+                  <el-tag v-for="(docReq, index) in scope.row.DocReq" :key="index" type="info" style="margin: 2px;">
+                    {{ docReq.DocReq || '未知单据要求' }}
+                  </el-tag>
+                </div>
+                <span v-else>无单据要求</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="StartShip" label="发货开始日期" width="220%"></el-table-column>
             <el-table-column prop="EndShip" label="发货截止日期" width="220%"></el-table-column>
             <el-table-column prop="SrcPlace" label="起运地" width="220%"></el-table-column>
@@ -46,15 +58,6 @@
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
 
-            <el-table-column label="单据要求" width="200">
-              <template #default="scope">
-                <div v-for="docReqId in scope.row.DocReq" :key="docReqId">
-                  <el-tag type="info">
-                    {{ docReqData.find(d => d.DocReqId === docReqId)?.DocReq || '未知单据要求' }}
-                  </el-tag>
-                </div>
-              </template>
-            </el-table-column>
             <el-table-column label="产品明细" width="300">
               <template #default="scope">
                 <div v-for="prdtInfo in scope.row.PrdtInfos" :key="prdtInfo.ID">
@@ -321,6 +324,7 @@
 
 
     <!-- 查看销售订单信息的对话框 -->
+
     <el-dialog v-model="showshowSaleDialog" title="销售订单信息" width="80%" @close="resetSaleForm">
       <el-form :model="saleForm" label-width="150px" :rules="saleRules" ref="saleFormRef">
         <el-row :gutter="20">
@@ -356,64 +360,20 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="质量标准" prop="QualStd">
-              <el-select v-model="saleForm.QualStd" placeholder="请选择质量标准" :disabled="true">
-                <el-option v-for="qualStd in qualStdData" :key="qualStd" :label="qualStd" :value="qualStd"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="账单有效期" prop="BillValidity">
-              <el-date-picker v-model="saleForm.BillValidity" type="date" placeholder="选择日期"
-                :readonly="true"></el-date-picker>
+          <el-col :span="24">
+            <el-form-item label="单据要求" prop="DocReq">
+              <div v-if="saleForm.DocReq && saleForm.DocReq.length > 0">
+                <el-tag v-for="(docReq, index) in saleForm.DocReq" :key="index" type="info" style="margin: 2px;">
+                  {{ docReq.DocReq || '未知单据要求' }}
+                </el-tag>
+              </div>
+              <span v-else>无单据要求</span>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="单据状态" prop="BussOrderSta">
-              <el-select v-model="saleForm.BussOrderSta" placeholder="请选择单据状态" :disabled="true">
-                <el-option v-for="bussOrderSta in bussOrderStaData" :key="bussOrderSta" :label="bussOrderSta"
-                  :value="bussOrderSta"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="发货开始日期" prop="StartShip">
-              <el-date-picker v-model="saleForm.StartShip" type="date" placeholder="选择日期"
-                :readonly="true"></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="发货截止日期" prop="EndShip">
-              <el-date-picker v-model="saleForm.EndShip" type="date" placeholder="选择日期"
-                :readonly="true"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="起运地" prop="SrcPlace">
-              <el-select v-model="saleForm.SrcPlace" placeholder="请选择起运地" :disabled="true">
-                <el-option v-for="srcPlace in srcPlaceData" :key="srcPlace" :label="srcPlace"
-                  :value="srcPlace"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="目的地" prop="Des">
-              <el-select v-model="saleForm.Des" placeholder="请选择目的地" :disabled="true">
-                <el-option v-for="des in desData" :key="des" :label="des" :value="des"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="付款方式" prop="PayMentMethodId">
               <el-select v-model="saleForm.PayMentMethodId" @change="onPayMentMethodChange" placeholder="请选择付款方式"
                 :disabled="true">
@@ -425,27 +385,75 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="24">
-
-            <el-form-item label="单据要求">
-              <div v-for="docReqId in saleForm.DocReq" :key="docReqId">
-                <el-tag type="info">
-                  {{ docReqData.find(d => d.DocReqId === docReqId)?.DocReq || '未知单据要求' }}
-                </el-tag>
-              </div>
+          <el-col :span="12">
+            <el-form-item label="账单有效期" prop="BillValidity">
+              <el-date-picker v-model="saleForm.BillValidity" type="date" placeholder="选择日期"
+                :readonly="true"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="单据状态" prop="BussOrderSta">
+              <el-select v-model="saleForm.BussOrderSta" placeholder="请选择单据状态" :disabled="true">
+                <el-option v-for="bussOrderSta in bussOrderStaData" :key="bussOrderSta.BussOrderSta"
+                  :label="bussOrderSta.BussOrderSta" :value="bussOrderSta.BussOrderSta"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="12">
+            <el-form-item label="发货开始日期" prop="StartShip">
+              <el-date-picker v-model="saleForm.StartShip" type="date" placeholder="选择日期"
+                :readonly="true"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发货截止日期" prop="EndShip">
+              <el-date-picker v-model="saleForm.EndShip" type="date" placeholder="选择日期"
+                :readonly="true"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="起运地" prop="SrcPlace">
+              <el-select v-model="saleForm.SrcPlace" placeholder="请选择起运地" :disabled="true">
+                <el-option v-for="srcPlace in srcPlaceData" :key="srcPlace" :label="srcPlace"
+                  :value="srcPlace"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="目的地" prop="Des">
+              <el-select v-model="saleForm.Des" placeholder="请选择目的地" :disabled="true">
+                <el-option v-for="des in desData" :key="des" :label="des" :value="des"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="9">
+            <el-form-item label="质量标准" prop="QualStd">
+              <el-select v-model="saleForm.QualStd" placeholder="请选择质量标准" :disabled="true">
+                <el-option v-for="qualStd in qualStdData" :key="qualStd.QualStd" :label="qualStd.QualStd"
+                  :value="qualStd.QualStd"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="总金额" prop="TotAmt">
               <el-input v-model="saleForm.TotAmt" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="币种" prop="Currency">
-              <el-input v-model="saleForm.Currency" :readonly="true"></el-input>
+          <el-col :span="7">
+            <el-form-item label="币种" prop="CurrencyId">
+              <el-select v-model="saleForm.Currency" @change="onCurrencyChange" placeholder="请选择币种" :disabled="true">
+                <el-option v-for="currency in currencyData" :key="currency.Currency" :label="currency.Currency"
+                  :value="currency.Currency"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -476,8 +484,8 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas">
               <el-select v-model="saleForm.UnitMeas" placeholder="请选择单位" :disabled="true">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas" :label="unitMeas"
-                  :value="unitMeas"></el-option>
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeas" :label="unitMeas.UnitMeas"
+                  :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -527,7 +535,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-
 
         <el-row :gutter="20">
           <el-col :span="24">
