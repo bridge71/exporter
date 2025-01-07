@@ -88,7 +88,7 @@ type Sale struct {
 	FileName        string     `gorm:"column:fileName" form:"FileName"`
 	FileId          uint       `gorm:"column:fileId" form:"FileId"`
 	Sends           []Send     `gorm:"many2many:saleSend" form:"Sends"` // 销售发货单，多表关联, 查找接口
-	SendId          uint       `form:"SendId"`
+	// SendId          uint       `form:"SendId"`
 	// ShouldIns       []ShouldIn `gorm:"many2many:shouldInSale" form:"ShouldIns"` // 应收账款单
 	// Ins             []In       `gorm:"many2many:inSale" form:"ins"`             // 收款单
 	gorm.Model
@@ -139,12 +139,12 @@ type Send struct {
 	gorm.Model
 }
 type ShouldIn struct {
-	BillReceNum   string `gorm:"column:bill_rece_num" form:"BillReceNum"`     // 应收账款单号
-	DocDate       string `gorm:"column:doc_date" form:"DocDate"`              // 单据日期
-	ExpReceDate   string `gorm:"column:exp_rece_date" form:"ExpReceDate"`     // 预计收款日期
-	FinaDocType   string `gorm:"column:fina_doc_type" form:"FinaDocType"`     // 财务单据类型
-	FinaDocStatus string `gorm:"column:fina_doc_status" form:"FinaDocStatus"` // 财务单据状态
-	MerchantId    uint   `gorm:"column:merchantId" form:"MerchantId"`         //  付款方,绑定id 查找接口 /find/merchant
+	BillReceNum   string `gorm:"column:bill_rece_num" form:"BillReceNum" binding:"required"` // 应收账款单号
+	DocDate       string `gorm:"column:doc_date" form:"DocDate"`                             // 单据日期
+	ExpReceDate   string `gorm:"column:exp_rece_date" form:"ExpReceDate"`                    // 预计收款日期
+	FinaDocType   string `gorm:"column:fina_doc_type" form:"FinaDocType"`                    // 财务单据类型
+	FinaDocStatus string `gorm:"column:fina_doc_status" form:"FinaDocStatus"`                // 财务单据状态
+	MerchantId    uint   `gorm:"column:merchantId" form:"MerchantId"`                        //  付款方,绑定id 查找接口 /find/merchant
 	Merc          string `gorm:"column:merc" form:"Merc"`
 	AcctId        uint   `gorm:"column:acctId" form:"AcctId"` // 收款方,绑定id 查找接口 /find/acct
 	AcctName      string `gorm:"column:acctName" form:"AcctName"`
@@ -152,10 +152,11 @@ type ShouldIn struct {
 	BankAccName   string `gorm:"column:bankAccName" form:"BankAccName"`
 	AcctBankId    uint   `gorm:"column:acctBankId" form:"AcctBankId"` // 收款银行账户 绑定id，查找接口 /find/acctBank
 	AccName       string `gorm:"column:accName" form:"AccName"`
-	TotAmt        uint   `form:"TotAmt"`                              // 总金额
-	Currency      string `form:"CuCurrency"`                          // 币种
-	Notes         string `form:"Notes"`                               // 描述
-	Files         []File `gorm:"many2many:shouldInFile" form:"Files"` // 合同扫描件，多表关联
+	TotAmt        uint   `form:"TotAmt"`     // 总金额
+	Currency      string `form:"CuCurrency"` // 币种
+	Notes         string `form:"Notes"`      // 描述
+	FileId        uint   `form:"FileId"`
+	FileName      string `form:"File1Name"`
 	Sends         []Send `gorm:"many2many:shouldInSend" form:"Sends"` // 销售发货单，多表关联, 查找接口
 	Sales         []Sale `gorm:"many2many:shouldInSale" form:"Sales"` // 销售订单，多表关联, 查找接口
 	Ins           []In   `gorm:"many2many:inShouldIn" form:"Ins"`     // 收款单
@@ -286,7 +287,7 @@ type Acct struct { // 会计实体
 	gorm.Model
 }
 type Spot struct {
-	InvLocName string `form:"InvLocName"`
+	InvLocName string `form:"InvLocName" binding:"required"`
 	InvLocAbbr string `form:"InvLocAbbr"`
 	InvAddr    string `form:"InvAddr"`
 	Notes      string `form:"Notes"`
@@ -313,7 +314,7 @@ type AcctBank struct {
 
 type Merchant struct {
 	MercCode     string        `gorm:"column:mercCode;not null;" form:"MercCode" binding:"required"`
-	MercAbbr     string        `gorm:"column:mercAbbr;not null" form:"MercAbbr" binding:"required"`
+	MercAbbr     string        `gorm:"column:mercAbbr;not null" form:"MercAbbr" `
 	ShortMerc    string        `gorm:"column:shortMerc;not null" form:"ShortMerc" binding:"required"`
 	Merc         string        `gorm:"column:merc;not null" form:"Merc" `
 	EngName      string        `gorm:"column:engName;" form:"EngName"`
@@ -374,7 +375,7 @@ type BankAccount struct {
 }
 
 type PayMentMethod struct {
-	PayMtdName string `gorm:"column:PayMtdName;" form:"PayMtdName"`
+	PayMtdName string `gorm:"column:PayMtdName;" form:"PayMtdName" binding:"required"`
 	Notes      string `gorm:"column:notes;" form:"Notes"`
 	PayMth     string `gorm:"column:payMth;" form:"PayMth"`
 	PayLimit   string `gorm:"column:payLimit;" form:"PayLimit"`
@@ -385,7 +386,7 @@ type PayMentMethod struct {
 }
 
 type PackSpec struct {
-	SpecName    string `gorm:"column:specName; " form:"SpecName"`
+	SpecName    string `gorm:"column:specName; " form:"SpecName" binding:"required"`
 	SpecEngName string `gorm:"column:specEngName" form:"SpecEngName"`
 	UnitMeas    string `gorm:"column:unitMeas" form:"UnitMeas"`
 	PackType    string `gorm:"column:packType" form:"PackType"`

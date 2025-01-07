@@ -257,23 +257,66 @@ func (s *Server) AddDicData(c *gin.Context) {
 	BussOrderSta3 := models.BussOrderSta{BussOrderSta: "已发货未收款"}
 	_ = s.db.SaveBussOrderSta(&BussOrderSta3)
 
-	Acct := models.Acct{AcctCode: "nihao", AcctAbbr: "hao", EtyAbbr: "room", AcctName: "hh"}
+	Acct := models.Acct{AcctCode: "ASDFG", AcctAbbr: "AS", EtyAbbr: "简称1", AcctName: "实体1"}
 	_ = s.db.SaveAcct(&Acct)
 
-	AcctBank := models.AcctBank{AcctId: 1, AccName: "sss", AccNum: "3424"}
+	Acct1 := models.Acct{AcctCode: "DFG", AcctAbbr: "DG", EtyAbbr: "简称2", AcctName: "实体2"}
+	_ = s.db.SaveAcct(&Acct1)
+
+	Acct2 := models.Acct{AcctCode: "FG", AcctAbbr: "G", EtyAbbr: "简称3", AcctName: "实体3"}
+	_ = s.db.SaveAcct(&Acct2)
+
+	AcctBank := models.AcctBank{AcctId: 1, AccName: "11", AccNum: "3424"}
 	_ = s.db.Save(&AcctBank)
 
-	Merchant := models.Merchant{MercCode: "ldaf", MercAbbr: "weq", ShortMerc: "erer"}
+	AcctBank1 := models.AcctBank{AcctId: 2, AccName: "22", AccNum: "343424"}
+	_ = s.db.Save(&AcctBank1)
+
+	AcctBank2 := models.AcctBank{AcctId: 3, AccName: "33", AccNum: "354424"}
+	_ = s.db.Save(&AcctBank2)
+
+	AcctBank3 := models.AcctBank{AcctId: 1, AccName: "44", AccNum: "3490824"}
+	_ = s.db.Save(&AcctBank3)
+
+	AcctBank4 := models.AcctBank{AcctId: 1, AccName: "55", AccNum: "3321332"}
+	_ = s.db.Save(&AcctBank4)
+
+	AcctBank5 := models.AcctBank{AcctId: 3, AccName: "66", AccNum: "7983424"}
+	_ = s.db.Save(&AcctBank5)
+
+	Merchant := models.Merchant{MercCode: "ldaf", ShortMerc: "erer"}
 	_ = s.db.SaveMerchant(&Merchant)
 
-	BankAccount := models.BankAccount{BankAccName: "sss", CompName: "dfds", AcctNum: "dfa", BankName: "fff", MerchantId: 1}
+	Merchant1 := models.Merchant{MercCode: "dfsde", ShortMerc: "dfs"}
+	_ = s.db.SaveMerchant(&Merchant1)
+
+	BankAccount := models.BankAccount{BankAccName: "yourAccount", CompName: "sof", AcctNum: "7896", BankName: "sf", MerchantId: 1}
 	_ = s.db.Save(&BankAccount)
 
-	PayMent := models.PayMentMethod{PayMtdName: "dfads"}
+	BankAccount1 := models.BankAccount{BankAccName: "myAccount", CompName: "ersf", AcctNum: "j77896", BankName: "s9ujf", MerchantId: 1}
+	_ = s.db.Save(&BankAccount1)
+
+	BankAccount2 := models.BankAccount{BankAccName: "ourAccount", CompName: "hhersf", AcctNum: "92386", BankName: "jdjd", MerchantId: 2}
+	_ = s.db.Save(&BankAccount2)
+
+	Spot := models.Spot{InvLocName: "QINGDAO"}
+	_ = s.db.Save(&Spot)
+	Spot1 := models.Spot{InvLocName: "DALIAN"}
+	_ = s.db.Save(&Spot1)
+	Spot2 := models.Spot{InvLocName: "SHENZHEN"}
+	_ = s.db.Save(&Spot2)
+
+	PayMent := models.PayMentMethod{PayMtdName: "10T7O"}
 	_ = s.db.Save(&PayMent)
 
-	PackSpec := models.PackSpec{SpecName: "fsd"}
+	PayMent1 := models.PayMentMethod{PayMtdName: "30S5O"}
+	_ = s.db.Save(&PayMent1)
+
+	PackSpec := models.PackSpec{SpecName: "nokoa"}
 	_ = s.db.Save(&PackSpec)
+
+	PackSpec1 := models.PackSpec{SpecName: "tfska"}
+	_ = s.db.Save(&PackSpec1)
 }
 
 func (s *Server) Uploader(c *gin.Context) {

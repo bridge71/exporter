@@ -14,5 +14,5 @@ func (s *service) SaveMerchant(merchant *models.Merchant) error {
 
 // FindMerchant 查询所有 Merchant 记录
 func (s *service) FindMerchant(merchants *[]models.Merchant) {
-	s.gormDB.Find(merchants)
+	s.gormDB.Preload("BankAccounts").Preload("Custs").Find(merchants)
 }

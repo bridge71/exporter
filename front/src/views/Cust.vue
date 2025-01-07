@@ -19,9 +19,9 @@
           </div>
         </el-header>
         <el-main>
-          <!-- 客户信息表格 -->
+          <!-- 联系人信息表格 -->
           <el-table :data="paginatedCustData" style="width: 100%" max-height="450">
-            <el-table-column prop="Name" label="客户姓名" width="220%"></el-table-column>
+            <el-table-column prop="Name" label="联系人姓名" width="220%"></el-table-column>
             <el-table-column prop="Gender" label="性别" width="220%"></el-table-column>
             <el-table-column prop="Nation" label="国家" width="220%"></el-table-column>
             <el-table-column prop="Addr" label="地址" width="220%"></el-table-column>
@@ -57,13 +57,13 @@
       </el-container>
     </el-container>
 
-    <!-- 添加客户信息的对话框 -->
-    <el-dialog v-model="showCustDialog" title="客户信息" width="80%" @close="resetCustForm">
+    <!-- 添加联系人信息的对话框 -->
+    <el-dialog v-model="showCustDialog" title="联系人信息" width="80%" @close="resetCustForm">
       <el-form :model="custForm" label-width="150px" :rules="custRules" ref="custFormRef">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="客户姓名" prop="Name" :required="true">
-              <el-input v-model="custForm.Name" placeholder="请输入客户姓名"></el-input>
+            <el-form-item label="联系人姓名" prop="Name" :required="true">
+              <el-input v-model="custForm.Name" placeholder="请输入联系人姓名"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -165,12 +165,12 @@
       </el-form>
     </el-dialog>
 
-    <!-- 查看客户信息的对话框 -->
-    <el-dialog v-model="showViewCustDialog" title="客户信息" width="80%" @close="resetCustForm">
+    <!-- 查看联系人信息的对话框 -->
+    <el-dialog v-model="showViewCustDialog" title="联系人信息" width="80%" @close="resetCustForm">
       <el-form :model="custForm" label-width="150px" :rules="custRules" ref="custFormRef">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="客户姓名" prop="Name">
+            <el-form-item label="联系人姓名" prop="Name">
               <el-input v-model="custForm.Name" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
@@ -296,7 +296,7 @@ const custForm = ref({
   FileId: ''
 });
 const custRules = {
-  Name: [{ required: true, message: '请输入客户姓名', trigger: 'blur' }],
+  Name: [{ required: true, message: '请输入联系人姓名', trigger: 'blur' }],
   Gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
   Nation: [{ required: true, message: '请输入国家', trigger: 'blur' }]
 };
@@ -402,7 +402,7 @@ const submitCustForm = async () => {
       },
     });
     if (response.status === 200) {
-      ElMessage.success('客户信息保存成功');
+      ElMessage.success('联系人信息保存成功');
       showCustDialog.value = false;
       fetchCustData();
     } else {
@@ -415,7 +415,7 @@ const submitCustForm = async () => {
 
 // 删除按钮逻辑
 const handleDelete = (index, CustId) => {
-  ElMessageBox.confirm('确定要删除该客户信息吗?', '提示', {
+  ElMessageBox.confirm('确定要删除该联系人信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -430,7 +430,7 @@ const handleDelete = (index, CustId) => {
         if (response.status === 200) {
 
           ElMessage.success('删除成功');
-          fetchCustData(); // 重新获取客户信息数据
+          fetchCustData(); // 重新获取联系人信息数据
         } else {
           ElMessage.error(response.data.RetMessage || '删除失败');
         }
@@ -459,14 +459,14 @@ const handleEdit = (index, row) => {
   showCustDialog.value = true;
 };
 
-// 获取客户数据
+// 获取联系人数据
 const fetchCustData = async () => {
   try {
     const response = await axios.get('/find/cust');
     custData.value = response.data.Cust;
   } catch (error) {
-    console.error('获取客户信息失败:', error);
-    ElMessage.error('获取客户信息失败，请稍后重试');
+    console.error('获取联系人信息失败:', error);
+    ElMessage.error('获取联系人信息失败，请稍后重试');
   }
 };
 
@@ -495,11 +495,11 @@ onMounted(() => {
 });
 
 const headerTitle = computed(() => {
-  return '客户信息';
+  return '联系人信息';
 });
 
 const addButtonText = computed(() => {
-  return '添加客户信息';
+  return '添加联系人信息';
 });
 </script>
 

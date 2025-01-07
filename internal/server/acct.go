@@ -11,12 +11,12 @@ import (
 func (s *Server) FindAcctHandler(c *gin.Context) {
 	var accts []models.Acct
 	// accts := []models.Acct{}
-	s.db.Find(&accts)
-	for i := range accts {
-		acctBank := []models.AcctBank{}
-		s.db.FindAcctBankById(&acctBank, accts[i].ID)
-		accts[i].AcctBanks = append(accts[i].AcctBanks, acctBank...)
-	}
+	s.db.FindAcct(&accts)
+	// for i := range accts {
+	// 	acctBank := []models.AcctBank{}
+	// 	s.db.FindAcctBankById(&acctBank, accts[i].ID)
+	// 	accts[i].AcctBanks = append(accts[i].AcctBanks, acctBank...)
+	// }
 	c.JSON(http.StatusOK, models.Message{
 		Acct: accts,
 	})

@@ -141,7 +141,13 @@ func (s *Server) AddSalePrdtInfo(c *gin.Context) {
 	}
 	s.db.FindById(PrdtInfo.ID, &PrdtInfo)
 	s.db.FindById(Sale.ID, &Sale)
-	log.Printf("%d\n", PrdtInfo.ID)
+	if PrdtInfo.CatEngName == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
 	Sale.PrdtInfos = append(Sale.PrdtInfos, PrdtInfo)
 
 	// 保存 Sale 记录
@@ -174,6 +180,13 @@ func (s *Server) AddSaleSend(c *gin.Context) {
 	s.db.FindById(Sale.ID, &Sale)
 	Sale.Sends = append(Sale.Sends, Send)
 
+	if Send.SaleInvNum == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
 	// 保存 Sale 记录
 	if err := s.db.Save(Sale); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{

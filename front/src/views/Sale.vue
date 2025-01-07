@@ -102,41 +102,15 @@
           <template #default="scope">
             <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
 
-            <el-button type="text" size="small" @click="CheckPrdtInfo(scope.row.ID)">查看</el-button>
-            <el-button type="text" size="small"
-              @click="DeletePrdtInfo(scope.$index, nowId, scope.row.ID)">删除</el-button>
+            <el-button type="text" size="small" @click="CheckPrdtInfo(scope.row.ID)">跳转</el-button>
+            <!-- <el-button type="text" size="small" -->
+            <!--   @click="DeletePrdtInfo(scope.$index, nowId, scope.row.ID)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
     </el-dialog>
 
 
-    <el-dialog v-model="LoadingInfoVisible" title="装货明细" width="80%">
-      <!-- 添加按钮和输入框 -->
-      <div style="text-align: right; margin-bottom: 20px;">
-        <el-input v-model="prdtInfoId" placeholder="请输入装货明细ID" style="width: 200px; margin-right: 10px;" />
-        <el-button type="primary" @click="addLoadingInfo(nowId)">添加</el-button>
-      </div>
-
-      <!-- 产品明细表格 -->
-      <el-table :data="loadingInfoData" height="400" style="width: 100%">
-        <el-table-column prop="ID" label="ID" width="60%" />
-        <el-table-column prop="Product" label="产品" width="150%" />
-        <el-table-column prop="Brand" label="品牌" width="150%" />
-        <el-table-column prop="PrdtPlant" label="生产工厂" width="150%" />
-        <el-table-column prop="Currency" label="币种" width="100%" />
-        <el-table-column prop="UnitPrice" label="单价" width="70%" />
-        <el-table-column prop="TradeTerm" label="贸易条款" width="100%" />
-        <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" />
-        <el-table-column label="操作" fixed="right" width="150">
-          <template #default="scope">
-            <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
-            <el-button type="text" size="small"
-              @click="DeletePrdtInfo(scope.$index, nowId, scope.row.ID)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
     <el-dialog v-model="sendVisible" title="销售发货单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
@@ -155,6 +129,8 @@
           <template #default="scope">
             <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
             <el-button type="text" size="small" @click="DeleteSend(scope.$index, nowId, scope.row.ID)">删除</el-button>
+
+            <el-button type="text" size="small" @click="CheckSend(scope.row.ID)">跳转</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -614,8 +590,9 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 import { useRouter } from 'vue-router';
-
+const router = useRouter();
 import { useRoute } from 'vue-router';
+const route = useRoute();
 // 匹配模式（默认是模糊匹配）
 const isExactMatch = ref(true);
 const onlyId = ref(true);
@@ -626,13 +603,29 @@ const toggleMatchMode = () => {
 const toggleIdMode = () => {
   onlyId.value = !onlyId.value;
 };
-const router = useRouter();
 // 控制主弹窗显示
 const sendVisible = ref(false);
 
 const sendData = ref([]);
 const sendId = ref(null);
 
+const CheckSend = (ID) => {
+  try {
+    // 确保 ID 是字符串
+    const searchQuery = String(ID);
+
+    // 使用路由的 resolve 方法生成完整路径
+    const route = router.resolve({
+      name: 'Send', // 路由名称
+      query: { searchQuery }, // 传递的查询参数（对象形式）
+    });
+
+    // 在新标签页打开
+    window.open(route.href, '_blank');
+  } catch (error) {
+    ElMessage.error("查看失败");
+  }
+};
 const CheckPrdtInfo = (ID) => {
   try {
     // 确保 ID 是字符串
@@ -918,6 +911,7 @@ onMounted(() => {
   fetchSaleData(); // 获取销售订单信息
   fetchCurrencyData(); // 新增：获取货币数据
 
+  searchQuery.value = route.query.searchQuery || '';
   // fetchPrdtInfoData(); // 新增：获取产品明细数据
 });
 

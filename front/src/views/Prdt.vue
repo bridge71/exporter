@@ -310,6 +310,7 @@ import SideMenu from '@/components/SideMenu.vue';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import { useRoute } from 'vue-router';
+const route = useRoute();
 // 匹配模式（默认是模糊匹配）
 const isExactMatch = ref(true);
 const onlyId = ref(true);
@@ -546,7 +547,6 @@ const fetchPrdtData = async () => {
   }
 };
 
-const route = useRoute();
 onMounted(() => {
 
   console.log('Search Query:', searchQuery.value); // 应该输出 "32"

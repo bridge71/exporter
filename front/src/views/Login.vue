@@ -58,6 +58,8 @@ const loading = ref(false);
 // 登录逻辑
 const handleLogin = () => {
   loading.value = true; // 开始加载
+
+  router.push({ name: 'Acct' }); // 跳转到菜单页面
   axios
     .post('/auth', {
       Email: loginForm.value.email,
@@ -66,6 +68,7 @@ const handleLogin = () => {
     .then((response) => {
       if (response.status === 200) {
         ElMessage.success('登录成功');
+        sessionStorage.setItem('userToken', response.data.User.UserId);
         router.push({ name: 'Acct' }); // 跳转到菜单页面
       }
     })

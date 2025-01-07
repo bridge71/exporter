@@ -256,6 +256,8 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
 
+import { useRoute } from 'vue-router';
+const route = useRoute();
 const isExactMatch = ref(true);
 const onlyId = ref(true);
 const toggleMatchMode = () => {
@@ -301,21 +303,49 @@ const handlePageChange = (page) => {
 const paginatedLoadingData = computed(() => {
   let filteredData = loadingData.value;
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.Product.includes(searchQuery.value) ||
-      item.Brand.includes(searchQuery.value) ||
-      item.PrdtPlant.includes(searchQuery.value) ||
-      item.BatNum.includes(searchQuery.value) ||
-      item.ItemNum.toString().includes(searchQuery.value) ||
-      item.PackSpec.includes(searchQuery.value) ||
-      item.NetWeight.toString().includes(searchQuery.value) ||
-      item.PackSpec.includes(searchQuery.value) ||
-      item.ID.toString().includes(searchQuery.value) ||
-      item.Unit.includes(searchQuery.value) ||
-      item.CnrNum.includes(searchQuery.value) ||
-      item.SealNum.includes(searchQuery.value) ||
-      item.VehNum.includes(searchQuery.value)
-    );
+    if (isExactMatch.value === false) {
+      if (onlyId.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.Product.includes(searchQuery.value) ||
+          item.Brand.includes(searchQuery.value) ||
+          item.PrdtPlant.includes(searchQuery.value) ||
+          item.BatNum.includes(searchQuery.value) ||
+          item.ItemNum.toString().includes(searchQuery.value) ||
+          item.PackSpec.includes(searchQuery.value) ||
+          item.NetWeight.toString().includes(searchQuery.value) ||
+          item.ID.toString().includes(searchQuery.value) ||
+          item.Unit.includes(searchQuery.value) ||
+          item.CnrNum.includes(searchQuery.value) ||
+          item.SealNum.includes(searchQuery.value) ||
+          item.VehNum.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyId.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.Product === searchQuery.value ||
+          item.Brand === searchQuery.value ||
+          item.PrdtPlant === searchQuery.value ||
+          item.BatNum === searchQuery.value ||
+          item.ItemNum.toString() === searchQuery.value ||
+          item.PackSpec === searchQuery.value ||
+          item.NetWeight.toString() === searchQuery.value ||
+          item.ID.toString() === searchQuery.value ||
+          item.Unit === searchQuery.value ||
+          item.CnrNum === searchQuery.value ||
+          item.SealNum === searchQuery.value ||
+          item.VehNum === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
@@ -443,6 +473,7 @@ const fetchLoadingData = async () => {
 onMounted(() => {
   fetchLoadingData();
   fetchDictionaryData();
+  searchQuery.value = route.query.searchQuery || '';
 });
 
 const headerTitle = computed(() => '装货信息');

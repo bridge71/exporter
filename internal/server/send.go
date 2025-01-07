@@ -30,6 +30,21 @@ func (s *Server) FindSendPrdtInfoHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, models.Message{PrdtInfo: PrdtInfos})
 }
 
+func (s *Server) FindSendLoadingInfoHandler(c *gin.Context) {
+	Send := models.Send{}
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	if Send.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindSendLoadingInfo(&Send)
+	LoadingInfo := Send.LoadingInfos
+	c.JSON(http.StatusOK, models.Message{LoadingInfo: LoadingInfo})
+}
+
 func (s *Server) FindSendSaleHandler(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
@@ -115,6 +130,45 @@ func (s *Server) DeleteSendSale(c *gin.Context) {
 	})
 }
 
+func (s *Server) AddSendLoadingInfo(c *gin.Context) {
+	Send := models.Send{}
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	var LoadingInfo models.LoadingInfo
+	LoadingInfo.ID = s.Str2Uint(c.PostForm("LoadingInfoId"))
+
+	if Send.ID == 0 || LoadingInfo.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindById(LoadingInfo.ID, &LoadingInfo)
+
+	if LoadingInfo.PackSpec == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindById(Send.ID, &Send)
+	log.Printf("%d\n", LoadingInfo.ID)
+	Send.LoadingInfos = append(Send.LoadingInfos, LoadingInfo)
+
+	// 保存 Send 记录
+	if err := s.db.Save(Send); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "保存失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "保存成功",
+	})
+}
+
 func (s *Server) AddSendPrdtInfo(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
@@ -129,6 +183,14 @@ func (s *Server) AddSendPrdtInfo(c *gin.Context) {
 		return
 	}
 	s.db.FindById(PrdtInfo.ID, &PrdtInfo)
+
+	if PrdtInfo.CatEngName == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
 	s.db.FindById(Send.ID, &Send)
 	log.Printf("%d\n", PrdtInfo.ID)
 	Send.PrdtInfos = append(Send.PrdtInfos, PrdtInfo)
@@ -150,9 +212,9 @@ func (s *Server) AddSendSale(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var Sale models.Sale
-	Sale.ID = s.Str2Uint(c.PostForm("SendId"))
+	Sale.ID = s.Str2Uint(c.PostForm("SaleId"))
 
-	if Send.ID == 0 || Send.ID == 0 {
+	if Send.ID == 0 || Sale.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非数字",
 			// RetMessage: "绑定数据失败",
@@ -160,7 +222,15 @@ func (s *Server) AddSendSale(c *gin.Context) {
 		return
 	}
 	s.db.FindById(Send.ID, &Send)
-	s.db.FindById(Send.ID, &Send)
+	s.db.FindById(Sale.ID, &Sale)
+
+	if Sale.AcctName == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
 	Send.Sales = append(Send.Sales, Sale)
 
 	// 保存 Send 记录

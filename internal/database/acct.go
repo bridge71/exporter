@@ -11,7 +11,7 @@ func (s *service) SaveAcct(acct *models.Acct) error {
 }
 
 func (s *service) FindAcct(accts *[]models.Acct) {
-	s.gormDB.Find(accts)
+	s.gormDB.Preload("AcctBanks").Find(accts)
 }
 
 func (s *service) FirstAcct(id uint, Acct *[]models.Acct) {

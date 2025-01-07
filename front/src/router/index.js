@@ -126,7 +126,7 @@ const router = createRouter({
       component: () => import('@/views/Out.vue'),
     },
     {
-      path: '/login',  // 显示登录页面
+      path: '/',  // 显示登录页面
       name: 'Login',
       component: Login,
     },

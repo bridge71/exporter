@@ -514,6 +514,12 @@ const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
 // 计算当前页显示的会计实体信息数据
 
+const checkLoginStatus = () => {
+  const token = sessionStorage.getItem('userToken');
+  if (token == null) {
+    router.push({ name: 'login' });
+  }
+};
 const paginatedAcctData = computed(() => {
   let filteredData = acctData.value;
   if (searchQuery.value) {
