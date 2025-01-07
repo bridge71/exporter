@@ -33,7 +33,7 @@ func (s *Server) SaveAcctHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", acct)
 
-	err, acct.FileId, acct.FileName = s.SaveFile(c)
+	err, acct.FileId, acct.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: err.Error(),

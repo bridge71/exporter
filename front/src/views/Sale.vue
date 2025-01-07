@@ -821,7 +821,6 @@ const saleForm = ref({
   Notes: '',
   FileId: '', // 新增：文件 ID
   FileName: '', // 新增：文件名
-  // PrdtInfos: [], // 新增：产品明细
   DocReq: [], // 新增：单据要求
   Display: '',
 });
@@ -1019,22 +1018,12 @@ const submitSaleForm = async () => {
 
     // 添加其他字段
     Object.keys(saleForm.value).forEach((key) => {
-      if (key !== 'PrdtInfos' && key != `DocReq`) {
+      if (key != `DocReq`) {
         formData.append(key, saleForm.value[key]);
       }
     });
 
-    // 处理 PrdtInfos
-    saleForm.value.PrdtInfos.forEach((prdtInfo, index) => {
-      formData.append(`PrdtInfos[${index}][ID]`, prdtInfo);
-      console.log("sss", prdtInfo)
-      // 如果需要提交其他字段，可以继续添加
-      // formData.append(`PrdtInfos[${index}][CatEngName]`, prdtInfo.CatEngName);
-      // formData.append(`PrdtInfos[${index}][BrandEngName]`, prdtInfo.BrandEngName);
-      // ...
-    });
 
-    console.log("aa1", saleForm.value.PrdtInfos)
     console.log("aa", saleForm.value.DocReq)
     // 处理 DocReq
     saleForm.value.DocReq.forEach((docReqId, index) => {

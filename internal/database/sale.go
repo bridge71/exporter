@@ -2,8 +2,8 @@ package database
 
 import "exporter/internal/models"
 
-func (s *service) FindSalesPrdtInfo(sale *[]models.Sale) {
-	s.gormDB.Preload("PrdtInfos").Preload("DocReq").Find(sale)
+func (s *service) FindSales(sale *[]models.Sale) {
+	s.gormDB.Preload("DocReq").Find(sale)
 }
 
 func (s *service) FindSalePrdtInfo(sale *models.Sale) {

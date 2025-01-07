@@ -133,8 +133,8 @@ func (s *Server) Uploader(c *gin.Context) {
 	})
 }
 
-func (s *Server) SaveFile(c *gin.Context) (error, uint, string) {
-	file, err := c.FormFile("file")
+func (s *Server) SaveFile(c *gin.Context, name string) (error, uint, string) {
+	file, err := c.FormFile(name)
 	if err == nil {
 		src, err := file.Open()
 		if err != nil {

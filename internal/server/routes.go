@@ -22,6 +22,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.POST("/file", s.Uploader)
 
+	r.GET("/find/send/prdtInfo", s.FindSendPrdtInfoHandler)
+	r.GET("/find/send", s.FindSendHandler)
+	r.POST("/save/send", s.SaveSendHandler)
+	r.POST("/delete/send", s.DeleteSendHandler)
+	r.POST("/add/send/prdtInfo", s.AddSendPrdtInfo)
+	// r.POST("/delete/send/prdtInfo", s.DeleteSalePrdtInfo)
+
 	r.GET("/add/dicdata", s.AddDicData)
 	r.POST("/add/sale/prdtInfo", s.AddSalePrdtInfo)
 	r.POST("/delete/sale/prdtInfo", s.DeleteSalePrdtInfo)

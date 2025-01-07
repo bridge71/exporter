@@ -29,7 +29,7 @@ func (s *Server) SaveEmplHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", Empl)
 
-	err, Empl.FileId, Empl.FileName = s.SaveFile(c)
+	err, Empl.FileId, Empl.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save file",

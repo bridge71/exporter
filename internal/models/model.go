@@ -94,37 +94,45 @@ type Sale struct {
 }
 
 type Send struct {
-	SaleInvNum      string        `gorm:"column:SaleInvNum" form:"SaleInvNum"`    // 销售发票号
-	SaleInvDate     string        `gorm:"column:SaleInvDate" form:"SaleInvDate"`  // 销售发票日期
-	Sales           []Sale        `gorm:"many2many:saleSend" form:"Sales"`        // 销售订单 多表关联
-	Merchants       []Merchant    `gorm:"many2many:sendMerchant" form:"Merchant"` // 存储 客户 收货人 通知人
-	AcctId          uint          `gorm:"column:AcctId" form:"AcctId"`            // 发货人  通过id绑定，查找接口 /find/acct
-	AcctName        string        `gorm:"column:acctName" form:"AcctName"`
-	SrcPlace        string        `gorm:"column:SrcPlace" form:"SrcPlace"`     // 起运地, 从数据字典里选  /find/SrcPlace
-	Des             string        `gorm:"column:Des" form:"Des"`               // 目的地, 从数据字典里选  /find/SrcPlace
-	ShipName        string        `gorm:"column:ShipName" form:"ShipName"`     // 船名
-	Voyage          string        `gorm:"column:Voyage" form:"Voyage"`         // 航次
-	TotNum          uint          `gorm:"column:TotNum" form:"TotNum"`         // 总件数
-	PackSpecId      uint          `gorm:"column:packSpecId" form:"PackSpecId"` // 包装规格 从数据字典里选 /find/PackSpec
-	SpecName        string        `gorm:"column:specName;" form:"SpecName"`
-	TotalNetWeight  uint          `gorm:"column:TotalNetWeight" form:"TotalNetWeight"`   // 总净重
-	UnitMeas1       string        `gorm:"column:UnitMeas1" form:"UnitMeas1"`             // 单位 从数据字典里选  /find/UnitMeas
-	GrossWt         uint          `gorm:"column:GrossWt" form:"GrossWt"`                 // 总毛重
-	UnitMeas2       string        `gorm:"column:UnitMeas2" form:"UnitMeas2"`             // 单位 从数据字典里选  /find/UnitMeas
-	TotVol          string        `gorm:"column:TotVol" form:"TotVol"`                   // 总体积
-	UnitMeas3       string        `gorm:"column:Size" form:"UnitMeas3"`                  // 尺码
-	BillLadNum      string        `gorm:"column:BillLadNum" form:"BillLadNum"`           // 提单号
-	DateOfShip      string        `gorm:"column:DateOfShip" form:"DateOfShip"`           // 发货（开船）日期
-	Note1           string        `gorm:"column:note1" form:"Note1"`                     // 提单货物描述
-	Note2           string        `gorm:"column:note2" form:"Note2"`                     // 箱单货物描述
-	PayMentMethodId uint          `gorm:"column:payMentMethodId" form:"PayMentMethodId"` // 付款方式，绑定id，查找接口 /find/PayMentMethod
-	PayMtdName      string        `gorm:"column:payMtdName" form:"PayMtdName"`           // 付款方式名称
-	AcctBankId      uint          `gorm:"column:acctBankId" form:"AcctBankId"`           // 收款银行  绑定id，查找接口 /find/acctBank
-	AccName         string        `gorm:"column:accName" form:"AccName"`
-	PrdtInfos       []PrdtInfo    `gorm:"many2many:sendPrdtInfo" form:"PrdtInfos"` // 产品明细，多表关联，  查找接口 /find/PrdtInfos
-	PrdtInfoId      uint          `form:"PrdtInfoId"`
-	LoadingInfos    []LoadingInfo `gorm:"many2many:sendLoadingInfo" form:"LoadingInfos"` // 装货明细，多表关联，查找接口 /find/LoadingInfos
-	Files           []File        `gorm:"many2many:sendFile" form:"Files"`               // 合同扫描件，多表关联
+	SaleInvNum  string `gorm:"column:SaleInvNum" form:"SaleInvNum"`   // 销售发票号
+	SaleInvDate string `gorm:"column:SaleInvDate" form:"SaleInvDate"` // 销售发票日期
+	// Sales           []Sale        `gorm:"many2many:saleSend" form:"Sales"`       // 销售订单 多表关联
+	Merchant1Id     uint       `form:"Merchant1Id"`
+	Merchant2Id     uint       `form:"Merchant2Id"`
+	Merchant3Id     uint       `form:"Merchant3Id"`
+	Merchant1Name   string     `form:"Merchant1Name"`
+	Merchant2Name   string     `form:"Merchant2Name"`
+	Merchant3Name   string     `form:"Merchant3Name"`
+	AcctId          uint       `gorm:"column:AcctId" form:"AcctId"` // 发货人  通过id绑定，查找接口 /find/acct
+	AcctName        string     `gorm:"column:acctName" form:"AcctName"`
+	SrcPlace        string     `gorm:"column:SrcPlace" form:"SrcPlace"`     // 起运地, 从数据字典里选  /find/SrcPlace
+	Des             string     `gorm:"column:Des" form:"Des"`               // 目的地, 从数据字典里选  /find/SrcPlace
+	ShipName        string     `gorm:"column:ShipName" form:"ShipName"`     // 船名
+	Voyage          string     `gorm:"column:Voyage" form:"Voyage"`         // 航次
+	TotNum          uint       `gorm:"column:TotNum" form:"TotNum"`         // 总件数
+	PackSpecId      uint       `gorm:"column:packSpecId" form:"PackSpecId"` // 包装规格 从数据字典里选 /find/PackSpec
+	SpecName        string     `gorm:"column:specName;" form:"SpecName"`
+	TotalNetWeight  uint       `gorm:"column:TotalNetWeight" form:"TotalNetWeight"`   // 总净重
+	UnitMeas1       string     `gorm:"column:UnitMeas1" form:"UnitMeas1"`             // 单位 从数据字典里选  /find/UnitMeas
+	GrossWt         uint       `gorm:"column:GrossWt" form:"GrossWt"`                 // 总毛重
+	UnitMeas2       string     `gorm:"column:UnitMeas2" form:"UnitMeas2"`             // 单位 从数据字典里选  /find/UnitMeas
+	TotVol          string     `gorm:"column:TotVol" form:"TotVol"`                   // 总体积
+	UnitMeas3       string     `gorm:"column:Size" form:"UnitMeas3"`                  // 尺码
+	BillLadNum      string     `gorm:"column:BillLadNum" form:"BillLadNum"`           // 提单号
+	DateOfShip      string     `gorm:"column:DateOfShip" form:"DateOfShip"`           // 发货（开船）日期
+	Note1           string     `gorm:"column:note1" form:"Note1"`                     // 提单货物描述
+	Note2           string     `gorm:"column:note2" form:"Note2"`                     // 箱单货物描述
+	PayMentMethodId uint       `gorm:"column:payMentMethodId" form:"PayMentMethodId"` // 付款方式，绑定id，查找接口 /find/PayMentMethod
+	PayMtdName      string     `gorm:"column:payMtdName" form:"PayMtdName"`           // 付款方式名称
+	AcctBankId      uint       `gorm:"column:acctBankId" form:"AcctBankId"`           // 收款银行  绑定id，查找接口 /find/acctBank
+	AccName         string     `gorm:"column:accName" form:"AccName"`
+	PrdtInfos       []PrdtInfo `gorm:"many2many:sendPrdtInfo" form:"PrdtInfos"` // 产品明细，多表关联，  查找接口 /find/PrdtInfos
+	PrdtInfoId      uint       `form:"PrdtInfoId"`
+	// LoadingInfos    []LoadingInfo `gorm:"many2many:sendLoadingInfo" form:"LoadingInfos"` // 装货明细，多表关联，查找接口 /find/LoadingInfos
+	File1Id   uint   `form:"File1Id"`
+	File2Id   uint   `form:"File2Id"`
+	File1Name string `form:"File1Name"`
+	File2Name string `form:"File2Name"`
 	// ShouldIns       []ShouldIn    `gorm:"many2many:shouldInSend" form:"ShouldIns"`       // 应收账款单
 	// Ins             []In          `gorm:"many2many:inSend" form:"Ins"`                   // 收款单
 	gorm.Model

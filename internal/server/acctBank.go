@@ -64,7 +64,7 @@ func (s *Server) SaveAcctBankHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", acctBank)
 
-	err, acctBank.FileId, acctBank.FileName = s.SaveFile(c)
+	err, acctBank.FileId, acctBank.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save file",

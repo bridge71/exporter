@@ -36,7 +36,7 @@ func (s *Server) SaveMerchantHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", merchant)
 
-	err, merchant.FileId, merchant.FileName = s.SaveFile(c)
+	err, merchant.FileId, merchant.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save file",

@@ -13,7 +13,7 @@ import (
 func (s *Server) FindSaleHandler(c *gin.Context) {
 	var Sales []models.Sale
 
-	s.db.FindSalesPrdtInfo(&Sales)
+	s.db.FindSales(&Sales)
 	c.JSON(http.StatusOK, models.Message{Sale: Sales})
 }
 
@@ -117,7 +117,7 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 	log.Printf("保存 Sale: %+v\n", Sale)
 
 	var Sales []models.Sale
-	s.db.FindSalesPrdtInfo(&Sales)
+	s.db.FindSales(&Sales)
 	l := len(Sales)
 	idExitSlice := make([]uint, 0)
 	if Sale.ID > 0 {
@@ -188,7 +188,7 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 	}
 	s.db.DeleteSaleDocReq(Sale, &shouldDelDocReq)
 	var err error
-	err, Sale.FileId, Sale.FileName = s.SaveFile(c)
+	err, Sale.FileId, Sale.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: err.Error(),

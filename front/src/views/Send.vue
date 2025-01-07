@@ -24,11 +24,11 @@
           <!-- 销售订单信息表格 -->
           <el-table :data="paginatedSendData" style="width: 100%" max-height="450">
             <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
-            <el-table-column prop="SendInvNum" label="销售发票号" width="220%"></el-table-column>
-            <el-table-column prop="SendInvDate" label="销售发票日期" width="420%"></el-table-column>
-            <el-table-column prop="Merchant1" label="客户" width="220%"></el-table-column>
-            <el-table-column prop="Merchant2" label="收货人" width="220%"></el-table-column>
-            <el-table-column prop="Merchant3" label="通知人" width="220%"></el-table-column>
+            <el-table-column prop="SaleInvNum" label="销售发票号" width="220%"></el-table-column>
+            <el-table-column prop="SaleInvDate" label="销售发票日期" width="420%"></el-table-column>
+            <el-table-column prop="Merchant1Name" label="客户" width="220%"></el-table-column>
+            <el-table-column prop="Merchant2Name" label="收货人" width="220%"></el-table-column>
+            <el-table-column prop="Merchant3Name" label="通知人" width="220%"></el-table-column>
             <el-table-column prop="AcctName" label="发货人" width="420%"></el-table-column>
             <el-table-column prop="SrcPlace" label="起运地" width="220%"></el-table-column>
             <el-table-column prop="Des" label="目的地" width="220%"></el-table-column>
@@ -83,7 +83,17 @@
           </el-col>
         </el-row>
 
+
         <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="客户" prop="Merchants">
+              <el-select v-model="sendForm.Merchant1Id" @change="onAcctChange" placeholder="请选择客户">
+                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
+                  :value="merchant.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
           <el-col :span="12">
             <el-form-item label="发货人" prop="AcctId">
               <el-select v-model="sendForm.AcctId" @change="onAcctChange" placeholder="请选择发货人">
@@ -91,9 +101,21 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
+
           <el-col :span="12">
-            <el-form-item label="客户" prop="Merchants">
-              <el-select v-model="sendForm.Merchants" multiple placeholder="请选择客户">
+            <el-form-item label="收货人" prop="Merchants">
+              <el-select v-model="sendForm.Merchant2Id" @change="onAcctChange" placeholder="请选择收货人">
+                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
+                  :value="merchant.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="通知人" prop="Merchants">
+              <el-select v-model="sendForm.Merchant3Id" @change="onAcctChange" placeholder="请选择通知人">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -157,8 +179,8 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas1">
               <el-select v-model="sendForm.UnitMeas1" placeholder="请选择单位">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas" :label="unitMeas"
-                  :value="unitMeas"></el-option>
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                  :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -170,11 +192,12 @@
               <el-input v-model="sendForm.GrossWt"></el-input>
             </el-form-item>
           </el-col>
+
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas2">
               <el-select v-model="sendForm.UnitMeas2" placeholder="请选择单位">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas" :label="unitMeas"
-                  :value="unitMeas"></el-option>
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                  :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -186,11 +209,12 @@
               <el-input v-model="sendForm.TotVol"></el-input>
             </el-form-item>
           </el-col>
+
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas3">
               <el-select v-model="sendForm.UnitMeas3" placeholder="请选择单位">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas" :label="unitMeas"
-                  :value="unitMeas"></el-option>
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                  :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -210,14 +234,17 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="提单货物描述" prop="Note1">
-              <el-input v-model="sendForm.Note1"></el-input>
+              <el-input v-model="sendForm.Note1" type="textarea" :rows="4"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
             <el-form-item label="箱单货物描述" prop="Note2">
-              <el-input v-model="sendForm.Note2"></el-input>
+              <el-input v-model="sendForm.Note2" type="textarea" :rows="4"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -243,51 +270,34 @@
 
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="产品明细" prop="PrdtInfos">
-              <el-select v-model="sendForm.PrdtInfos" multiple placeholder="请选择产品明细">
-                <el-option v-for="prdtInfo in prdtInfoData" :key="prdtInfo.ID"
-                  :label="`${prdtInfo.ID} - ${prdtInfo.CatEngName} - ${prdtInfo.BrandEngName} - ${prdtInfo.PackSpec} - ${prdtInfo.Currency} - ${prdtInfo.UnitPrice} - ${prdtInfo.TradeTerm} - ${prdtInfo.DeliveryLoc}`"
-                  :value="prdtInfo.ID">
-                  <span>{{ prdtInfo.ID }}</span> -
-                  <span>{{ prdtInfo.CatEngName }}</span> -
-                  <span>{{ prdtInfo.BrandEngName }}</span> -
-                  <span>{{ prdtInfo.PackSpec }}</span> -
-                  <span>{{ prdtInfo.Currency }}</span> -
-                  <span>{{ prdtInfo.UnitPrice }}</span> -
-                  <span>{{ prdtInfo.TradeTerm }}</span> -
-                  <span>{{ prdtInfo.DeliveryLoc }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="装货明细" prop="LoadingInfos">
-              <el-select v-model="sendForm.LoadingInfos" multiple placeholder="请选择装货明细">
-                <el-option v-for="loadingInfo in loadingInfoData" :key="loadingInfo.ID"
-                  :label="`${loadingInfo.ID} - ${loadingInfo.LoadingDate} - ${loadingInfo.LoadingPort}`"
-                  :value="loadingInfo.ID">
-                  <span>{{ loadingInfo.ID }}</span> -
-                  <span>{{ loadingInfo.LoadingDate }}</span> -
-                  <span>{{ loadingInfo.LoadingPort }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="合同扫描件" prop="Files">
-              <el-upload v-if="!sendForm.Files.length" ref="uploadRef" action="" :limit="1"
-                :on-change="handleFileChange" :auto-upload="false" :show-file-list="true">
+            <el-form-item label="提单">
+              <el-upload v-if="!sendForm.File1Id" ref="upload1Ref" action="" :limit="1" :on-change="handleFile1Change"
+                :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
-              <el-button v-else type="success" @click="downloadFile(sendForm.Files[0].ID, sendForm.Files[0].FileName)">
+              <el-button v-else type="success" @click="downloadFile(sendForm.File1Id, sendForm.File1Name)">
                 下载文件
               </el-button>
+            </el-form-item>
+            <el-form-item label="文件名" prop="File1Name">
+              <el-input v-model="sendForm.File1Name" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="其他单据">
+              <el-upload v-if="!sendForm.File2Id" ref="upload2Ref" action="" :limit="1" :on-change="handleFile2Change"
+                :auto-upload="false" :show-file-list="true">
+                <el-button type="primary">选择文件</el-button>
+              </el-upload>
+              <el-button v-else type="success" @click="downloadFile(sendForm.File2Id, sendForm.File2Name)">
+                下载文件
+              </el-button>
+            </el-form-item>
+            <el-form-item label="文件名" prop="File2Name">
+              <el-input v-model="sendForm.File2Name" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -308,7 +318,8 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
-const file = ref(null);
+const file1 = ref(null);
+const file2 = ref(null);
 const searchQuery = ref(''); // 添加搜索查询字段
 const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
@@ -319,8 +330,8 @@ const paginatedSendData = computed(() => {
   // 如果有搜索条件，过滤数据
   if (searchQuery.value) {
     filteredData = filteredData.filter(item =>
-      item.SendInvNum.includes(searchQuery.value) ||
-      item.SendInvDate.includes(searchQuery.value) ||
+      item.SaleInvNum.includes(searchQuery.value) ||
+      item.SaleInvDate.includes(searchQuery.value) ||
       item.Merchant1.includes(searchQuery.value) ||
       item.Merchant2.includes(searchQuery.value) ||
       item.Merchant3.includes(searchQuery.value) ||
@@ -347,8 +358,8 @@ const paginatedSendData = computed(() => {
   }
 
   // 计算分页的起始和结束位置
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
 
   // 返回分页后的数据
   return filteredData.slice(start, end);
@@ -513,20 +524,19 @@ const showshowSendDialog = ref(false);
 const sendForm = ref({
   SaleInvNum: '', // 销售发票号
   SaleInvDate: '', // 销售发票日期
-  Sales: [], // 销售订单，多表关联
-  Merchants: [], // 存储客户、收货人、通知人
-  AcctId: null, // 发货人 ID
+  // Sales: [], // 销售订单，多表关联
+  AcctId: '', // 发货人 ID
   AcctName: '', // 发货人名称
   SrcPlace: '', // 起运地
   Des: '', // 目的地
   ShipName: '', // 船名
   Voyage: '', // 航次
-  TotNum: null, // 总件数
-  PackSpecId: null, // 包装规格 ID
+  TotNum: '', // 总件数
+  PackSpecId: '', // 包装规格 ID
   SpecName: '', // 包装规格名称
-  TotalNetWeight: null, // 总净重
+  TotalNetWeight: '', // 总净重
   UnitMeas1: '', // 单位 1
-  GrossWt: null, // 总毛重
+  GrossWt: '', // 总毛重
   UnitMeas2: '', // 单位 2
   TotVol: '', // 总体积
   UnitMeas3: '', // 尺码
@@ -534,14 +544,23 @@ const sendForm = ref({
   DateOfShip: '', // 发货（开船）日期
   Note1: '', // 提单货物描述
   Note2: '', // 箱单货物描述
-  PayMentMethodId: null, // 付款方式 ID
+  PayMentMethodId: '', // 付款方式 ID
   PayMtdName: '', // 付款方式名称
-  AcctBankId: null, // 收款银行 ID
+  AcctBankId: '', // 收款银行 ID
   AccName: '', // 收款银行名称
-  PrdtInfos: [], // 产品明细，多表关联
-  PrdtInfoId: null, // 产品明细 ID
-  LoadingInfos: [], // 装货明细，多表关联
-  Files: [], // 合同扫描件，多表关联
+  // PrdtInfos: [], // 产品明细，多表关联
+  // LoadingInfos: [], // 装货明细，多表关联
+  File1Name: '',
+  File1Id: '',
+  File2Name: '',
+  File2Id: '',
+  Merchant1Id: '',
+  Merchant2Id: '',
+  Merchant3Id: '',
+  Merchant1Name: '',
+  Merchant2Name: '',
+  Merchant3Name: '',
+
   // ShouldIns: [], // 应收账款单
   // Ins: [], // 收款单
 });
@@ -598,11 +617,11 @@ const sendData = ref([]); // 销售订单信息
 
 // 根据当前选中的菜单项动态更改标题和按钮文本
 const headerTitle = computed(() => {
-  return '销售订单信息';
+  return '销售发货单信息';
 });
 
 const addButtonText = computed(() => {
-  return '添加销售订单信息';
+  return '添加销售发货单信息';
 });
 
 // 添加按钮点击事件
@@ -622,11 +641,11 @@ const handleEdit = (index, row) => {
   if (row.DocReq && Array.isArray(row.DocReq)) {
     sendForm.value.DocReq = row.DocReq.map(item => item.DocReqId);
   }
-  // 检查是否已上传文件
-  if (row.FileId) {
-    sendForm.value.FileId = row.FileId; // 保存 FileId
-    sendForm.value.FileName = row.FileName; // 保存文件名
-  }
+  // // 检查是否已上传文件
+  // if (row.FileId) {
+  //   sendForm.value.FileId = row.FileId; // 保存 FileId
+  //   sendForm.value.FileName = row.FileName; // 保存文件名
+  // }
 
   showSendDialog.value = true; // 打开销售订单信息对话框
 };
@@ -696,14 +715,27 @@ const resetSendForm = () => {
     FileId: '', // 重置文件 ID
     FileName: '', // 重置文件名
     PrdtInfos: [], // 重置产品明细
+    File1Name: '',
+    File1Id: '',
+    File2Name: '',
+    File2Id: '',
+    Merchant1Id: '',
+    Merchant2Id: '',
+    Merchant3Id: '',
+    Merchant1Name: '',
+    Merchant2Name: '',
+    Merchant3Name: '',
   };
-  file.value = null; // 重置文件对象
-  if (uploadRef.value) {
-    uploadRef.value.clearFiles(); // 清空文件列表
+  if (upload1Ref.value) {
+    upload1Ref.value.clearFiles(); // 清空文件列表
+  }
+  if (upload2Ref.value) {
+    upload2Ref.value.clearFiles(); // 清空文件列表
   }
 };
 
-const uploadRef = ref(null);
+const upload1Ref = ref(null);
+const upload2Ref = ref(null);
 
 const submitSendForm = async () => {
   try {
@@ -711,33 +743,17 @@ const submitSendForm = async () => {
 
     // 添加其他字段
     Object.keys(sendForm.value).forEach((key) => {
-      if (key !== 'PrdtInfos' && key != `DocReq`) {
-        formData.append(key, sendForm.value[key]);
-      }
+      formData.append(key, sendForm.value[key]);
     });
 
-    // 处理 PrdtInfos
-    sendForm.value.PrdtInfos.forEach((prdtInfo, index) => {
-      formData.append(`PrdtInfos[${index}][ID]`, prdtInfo);
-      console.log("sss", prdtInfo)
-      // 如果需要提交其他字段，可以继续添加
-      // formData.append(`PrdtInfos[${index}][CatEngName]`, prdtInfo.CatEngName);
-      // formData.append(`PrdtInfos[${index}][BrandEngName]`, prdtInfo.BrandEngName);
-      // ...
-    });
-
-    console.log("aa1", sendForm.value.PrdtInfos)
-    console.log("aa", sendForm.value.DocReq)
-    // 处理 DocReq
-    sendForm.value.DocReq.forEach((docReqId, index) => {
-      formData.append(`DocReq[${index}][DocReqId]`, docReqId);
-      console.log("hh", docReqId)
-    });
     // 添加文件
-    if (file.value) {
-      formData.append('file', file.value);
+    if (file1.value) {
+      formData.append('file1', file1.value);
     }
 
+    if (file2.value) {
+      formData.append('file2', file2.value);
+    }
     // 提交表单
     const response = await axios.post('/save/send', formData, {
       headers: {
@@ -788,9 +804,14 @@ const downloadFile = async (fileId, fileName) => {
     ElMessage.error('文件下载失败，请稍后重试');
   }
 };
-const handleFileChange = (uploadFile) => {
-  file.value = uploadFile.raw; // 保存选择的文件
-  sendForm.value.FileName = uploadFile.name; // 更新文件名
+
+const handleFile1Change = (up) => {
+  file1.value = up.raw; // 保存选择的文件
+  sendForm.value.File1Name = up.name; // 更新文件名
+};
+const handleFile2Change = (up) => {
+  file2.value = up.raw; // 保存选择的文件
+  sendForm.value.File2Name = up.name; // 更新文件名
 };
 const fetchSrcPlaceData = async () => {
   try {

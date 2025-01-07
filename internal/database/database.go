@@ -30,8 +30,16 @@ type Service interface {
 	FindDocReqById(id uint, mercTypes *[]models.DocReq)
 	FindById(id uint, model interface{})
 
+	FindSends(Send *[]models.Send)
+	FindSendPrdtInfo(Send *models.Send)
+	FindSendLoadingInfo(Send *models.Send)
+	SaveSend(Send *models.Send) error
+	DeleteSendMerchant(Send *models.Send, Merchant *[]models.Merchant) error
+	DeleteSendPrdtInfo(Send *models.Send, prdtInfo *models.PrdtInfo) error
+	DeleteSendLoadingInfo(Send *models.Send, LoadingInfo *models.LoadingInfo) error
+
 	FindSalePrdtInfo(sale *models.Sale)
-	FindSalesPrdtInfo(sale *[]models.Sale)
+	FindSales(sale *[]models.Sale)
 	DeleteSalePrdtInfo(sale *models.Sale, prdtInfo *models.PrdtInfo) error
 
 	Delete(model interface{}) error

@@ -76,7 +76,7 @@ func (s *Server) SaveCatHandler(c *gin.Context) {
 	log.Printf("保存 Cat: %+v\n", cat)
 
 	// 处理文件上传
-	err, fileId, fileName := s.SaveFile(c)
+	err, fileId, fileName := s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "文件上传失败",
