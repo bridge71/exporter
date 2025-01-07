@@ -14,86 +14,248 @@ import (
 )
 
 func (s *Server) AddDicData(c *gin.Context) {
-	MercType := models.MercType{MercType: "6"}
-	_ = s.db.SaveMercType(&MercType)
+	MercType1 := models.MercType{MercType: "国外终端"}
+	_ = s.db.SaveMercType(&MercType1)
 
-	SuprType := models.SuprType{SuprType: "SupplierType1"}
-	_ = s.db.SaveSuprType(&SuprType)
+	MercType2 := models.MercType{MercType: "国外贸易商"}
+	_ = s.db.SaveMercType(&MercType2)
 
-	PrdtType := models.PrdtType{PrdtType: "ProductType1"}
-	_ = s.db.SavePrdtType(&PrdtType)
+	MercType3 := models.MercType{MercType: "国内贸易商"}
+	_ = s.db.SaveMercType(&MercType3)
 
-	FoodAddType := models.FoodAddType{FoodAddType: "FoodAdditiveType1"}
-	_ = s.db.SaveFoodAddType(&FoodAddType)
+	SuprType1 := models.SuprType{SuprType: "国内生产工厂"}
+	_ = s.db.SaveSuprType(&SuprType1)
 
-	FeedAddType := models.FeedAddType{FeedAddType: "FeedAdditiveType1"}
-	_ = s.db.SaveFeedAddType(&FeedAddType)
+	SuprType2 := models.SuprType{SuprType: "国内生产工厂销售公司"}
+	_ = s.db.SaveSuprType(&SuprType2)
 
-	UnitMeas := models.UnitMeas{UnitMeas: "Unit1"}
-	_ = s.db.SaveUnitMeas(&UnitMeas)
+	SuprType3 := models.SuprType{SuprType: "国内贸易商"}
+	_ = s.db.SaveSuprType(&SuprType3)
 
-	PackType := models.PackType{PackType: "PackType1"}
-	_ = s.db.SavePackType(&PackType)
+	PrdtType1 := models.PrdtType{PrdtType: "食品添加剂"}
+	_ = s.db.SavePrdtType(&PrdtType1)
 
-	ConType := models.ConType{ConType: "ContainerType1"}
-	_ = s.db.SaveConType(&ConType)
+	PrdtType2 := models.PrdtType{PrdtType: "饲料添加剂"}
+	_ = s.db.SavePrdtType(&PrdtType2)
 
-	Currency := models.Currency{Currency: "USD"}
-	_ = s.db.SaveCurrency(&Currency)
+	PrdtType3 := models.PrdtType{PrdtType: "油田化学品"}
+	_ = s.db.SavePrdtType(&PrdtType3)
 
-	TradeTerm := models.TradeTerm{TradeTerm: "FOB"}
-	_ = s.db.SaveTradeTerm(&TradeTerm)
+	FoodAddType1 := models.FoodAddType{FoodAddType: "甜味剂"}
+	_ = s.db.SaveFoodAddType(&FoodAddType1)
 
-	Nation := models.Nation{Nation: "China"}
-	_ = s.db.SaveNation(&Nation)
+	FoodAddType2 := models.FoodAddType{FoodAddType: "酸味剂"}
+	_ = s.db.SaveFoodAddType(&FoodAddType2)
 
-	Port := models.Port{Port: "Port1"}
-	_ = s.db.SavePort(&Port)
+	FoodAddType3 := models.FoodAddType{FoodAddType: "防腐剂"}
+	_ = s.db.SaveFoodAddType(&FoodAddType3)
 
-	TaxType := models.TaxType{TaxType: "TaxType1"}
-	_ = s.db.SaveTaxType(&TaxType)
+	FeedAddType1 := models.FeedAddType{FeedAddType: "氨基酸"}
+	_ = s.db.SaveFeedAddType(&FeedAddType1)
 
-	BrandType := models.BrandType{BrandType: "BrandType1"}
-	_ = s.db.SaveBrandType(&BrandType)
+	FeedAddType2 := models.FeedAddType{FeedAddType: "维生素"}
+	_ = s.db.SaveFeedAddType(&FeedAddType2)
 
-	EduLevel := models.EduLevel{EduLevel: "Bachelor"}
-	_ = s.db.SaveEduLevel(&EduLevel)
+	FeedAddType3 := models.FeedAddType{FeedAddType: "兽药类 "}
+	_ = s.db.SaveFeedAddType(&FeedAddType3)
 
-	Dept := models.Dept{Dept: "Department1"}
-	_ = s.db.SaveDept(&Dept)
+	UnitMeas1 := models.UnitMeas{UnitMeas: "KGS"}
+	_ = s.db.SaveUnitMeas(&UnitMeas1)
 
-	Position := models.Position{Position: "Position1"}
-	_ = s.db.SavePosition(&Position)
+	UnitMeas2 := models.UnitMeas{UnitMeas: "MT"}
+	_ = s.db.SaveUnitMeas(&UnitMeas2)
 
-	QualStd := models.QualStd{QualStd: "Standard1"}
-	_ = s.db.SaveQualStd(&QualStd)
+	UnitMeas3 := models.UnitMeas{UnitMeas: "GRAMS"}
+	_ = s.db.SaveUnitMeas(&UnitMeas3)
 
-	InvLoc := models.InvLoc{InvLoc: "Location1"}
-	_ = s.db.SaveInvLoc(&InvLoc)
+	PackType1 := models.PackType{PackType: "塑编袋"}
+	_ = s.db.SavePackType(&PackType1)
 
-	DocReq := models.DocReq{DocReq: "Document1"}
-	_ = s.db.SaveDocReq(&DocReq)
+	PackType2 := models.PackType{PackType: "牛皮纸袋"}
+	_ = s.db.SavePackType(&PackType2)
 
-	PayMth := models.PayMth{PayMth: "Method1"}
-	_ = s.db.SavePayMth(&PayMth)
+	PackType3 := models.PackType{PackType: "铝箔袋"}
+	_ = s.db.SavePackType(&PackType3)
 
-	PayLimit := models.PayLimit{PayLimit: "Limit1"}
-	_ = s.db.SavePayLimit(&PayLimit)
+	ConType1 := models.ConType{ConType: "20GP-20尺普柜"}
+	_ = s.db.SaveConType(&ConType1)
 
-	FinaDocStatus := models.FinaDocStatus{FinaDocStatus: "Status1"}
-	_ = s.db.SaveFinaDocStatus(&FinaDocStatus)
+	ConType2 := models.ConType{ConType: "40HQ-40尺高柜"}
+	_ = s.db.SaveConType(&ConType2)
 
-	FinaDocType := models.FinaDocType{FinaDocType: "Type1"}
-	_ = s.db.SaveFinaDocType(&FinaDocType)
+	ConType3 := models.ConType{ConType: "40GP-40尺普柜"}
+	_ = s.db.SaveConType(&ConType3)
 
-	ExpType := models.ExpType{ExpType: "ExpenseType1"}
-	_ = s.db.SaveExpType(&ExpType)
+	Currency1 := models.Currency{Currency: "USD"}
+	_ = s.db.SaveCurrency(&Currency1)
 
-	Rates := models.Rates{Rates: "Rate1"}
-	_ = s.db.SaveRates(&Rates)
+	Currency2 := models.Currency{Currency: "CNY"}
+	_ = s.db.SaveCurrency(&Currency2)
 
-	BussOrderSta := models.BussOrderSta{BussOrderSta: "OrderStatus1"}
-	_ = s.db.SaveBussOrderSta(&BussOrderSta)
+	Currency3 := models.Currency{Currency: "EURO"}
+	_ = s.db.SaveCurrency(&Currency3)
+
+	TradeTerm1 := models.TradeTerm{TradeTerm: "FOB"}
+	_ = s.db.SaveTradeTerm(&TradeTerm1)
+
+	TradeTerm2 := models.TradeTerm{TradeTerm: "CIF"}
+	_ = s.db.SaveTradeTerm(&TradeTerm2)
+
+	TradeTerm3 := models.TradeTerm{TradeTerm: "CNF"}
+	_ = s.db.SaveTradeTerm(&TradeTerm3)
+
+	Nation1 := models.Nation{Nation: "CHINA-中国"}
+	_ = s.db.SaveNation(&Nation1)
+
+	Nation2 := models.Nation{Nation: "SOUTH KOREA-韩国"}
+	_ = s.db.SaveNation(&Nation2)
+
+	Nation3 := models.Nation{Nation: "VIETNAM-越南"}
+	_ = s.db.SaveNation(&Nation3)
+
+	Port1 := models.Port{Port: "DALIAN, CHINA"}
+	_ = s.db.SavePort(&Port1)
+
+	Port2 := models.Port{Port: "LIANYUNGANG, CHINA"}
+	_ = s.db.SavePort(&Port2)
+
+	Port3 := models.Port{Port: "QINZHOU, CHINA"}
+	_ = s.db.SavePort(&Port3)
+
+	TaxType1 := models.TaxType{TaxType: "USCI"}
+	_ = s.db.SaveTaxType(&TaxType1)
+
+	TaxType2 := models.TaxType{TaxType: "ORGANIZATION CODE"}
+	_ = s.db.SaveTaxType(&TaxType2)
+
+	TaxType3 := models.TaxType{TaxType: "TRADE REGISTER NUMBER"}
+	_ = s.db.SaveTaxType(&TaxType3)
+
+	BrandType1 := models.BrandType{BrandType: "境内自主品牌"}
+	_ = s.db.SaveBrandType(&BrandType1)
+
+	BrandType2 := models.BrandType{BrandType: "境外品牌"}
+	_ = s.db.SaveBrandType(&BrandType2)
+
+	BrandType3 := models.BrandType{BrandType: "无品牌"}
+	_ = s.db.SaveBrandType(&BrandType3)
+
+	EduLevel1 := models.EduLevel{EduLevel: "中专/高中"}
+	_ = s.db.SaveEduLevel(&EduLevel1)
+
+	EduLevel2 := models.EduLevel{EduLevel: "专科"}
+	_ = s.db.SaveEduLevel(&EduLevel2)
+
+	EduLevel3 := models.EduLevel{EduLevel: "本科"}
+	_ = s.db.SaveEduLevel(&EduLevel3)
+
+	Dept1 := models.Dept{Dept: "销售部"}
+	_ = s.db.SaveDept(&Dept1)
+
+	Dept2 := models.Dept{Dept: "采购部"}
+	_ = s.db.SaveDept(&Dept2)
+
+	Dept3 := models.Dept{Dept: "运营部"}
+	_ = s.db.SaveDept(&Dept3)
+
+	Position1 := models.Position{Position: "总经理"}
+	_ = s.db.SavePosition(&Position1)
+
+	Position2 := models.Position{Position: "销售经理"}
+	_ = s.db.SavePosition(&Position2)
+
+	Position3 := models.Position{Position: "销售总监"}
+	_ = s.db.SavePosition(&Position3)
+
+	QualStd1 := models.QualStd{QualStd: "国标 GB Standard"}
+	_ = s.db.SaveQualStd(&QualStd1)
+
+	QualStd2 := models.QualStd{QualStd: "企标 Corporate Standards"}
+	_ = s.db.SaveQualStd(&QualStd2)
+
+	QualStd3 := models.QualStd{QualStd: "无 None"}
+	_ = s.db.SaveQualStd(&QualStd3)
+
+	InvLoc1 := models.InvLoc{InvLoc: "FACTORY-工厂"}
+	_ = s.db.SaveInvLoc(&InvLoc1)
+
+	InvLoc2 := models.InvLoc{InvLoc: "QINGDAO, CHINA-中国青岛港"}
+	_ = s.db.SaveInvLoc(&InvLoc2)
+
+	InvLoc3 := models.InvLoc{InvLoc: "DALIAN, CHINA-中国大连港"}
+	_ = s.db.SaveInvLoc(&InvLoc3)
+
+	DocReq1 := models.DocReq{DocReq: "Bill of Lading"}
+	_ = s.db.SaveDocReq(&DocReq1)
+
+	DocReq2 := models.DocReq{DocReq: "Commercial Invoice"}
+	_ = s.db.SaveDocReq(&DocReq2)
+
+	DocReq3 := models.DocReq{DocReq: "Packing List"}
+	_ = s.db.SaveDocReq(&DocReq3)
+
+	PayMth1 := models.PayMth{PayMth: "T/T"}
+	_ = s.db.SavePayMth(&PayMth1)
+
+	PayMth2 := models.PayMth{PayMth: "D/P"}
+	_ = s.db.SavePayMth(&PayMth2)
+
+	PayMth3 := models.PayMth{PayMth: "L/C"}
+	_ = s.db.SavePayMth(&PayMth3)
+
+	PayLimit1 := models.PayLimit{PayLimit: "7 Days Upon B/L Date"}
+	_ = s.db.SavePayLimit(&PayLimit1)
+
+	PayLimit2 := models.PayLimit{PayLimit: "10 Days Upon B/L Date"}
+	_ = s.db.SavePayLimit(&PayLimit2)
+
+	PayLimit3 := models.PayLimit{PayLimit: "20 Days Upon B/L Date"}
+	_ = s.db.SavePayLimit(&PayLimit3)
+
+	FinaDocStatus1 := models.FinaDocStatus{FinaDocStatus: "未支付"}
+	_ = s.db.SaveFinaDocStatus(&FinaDocStatus1)
+
+	FinaDocStatus2 := models.FinaDocStatus{FinaDocStatus: "已部分支付"}
+	_ = s.db.SaveFinaDocStatus(&FinaDocStatus2)
+
+	FinaDocStatus3 := models.FinaDocStatus{FinaDocStatus: "已全部支付"}
+	_ = s.db.SaveFinaDocStatus(&FinaDocStatus3)
+
+	FinaDocType1 := models.FinaDocType{FinaDocType: "应收货款"}
+	_ = s.db.SaveFinaDocType(&FinaDocType1)
+
+	FinaDocType2 := models.FinaDocType{FinaDocType: "应收佣金"}
+	_ = s.db.SaveFinaDocType(&FinaDocType2)
+
+	FinaDocType3 := models.FinaDocType{FinaDocType: "应收费用"}
+	_ = s.db.SaveFinaDocType(&FinaDocType3)
+
+	ExpType1 := models.ExpType{ExpType: "海运费"}
+	_ = s.db.SaveExpType(&ExpType1)
+
+	ExpType2 := models.ExpType{ExpType: "ENS/ICS2费用"}
+	_ = s.db.SaveExpType(&ExpType2)
+
+	ExpType3 := models.ExpType{ExpType: "CargoX费用"}
+	_ = s.db.SaveExpType(&ExpType3)
+
+	Rates1 := models.Rates{Rates: "/20GP-per 20GP"}
+	_ = s.db.SaveRates(&Rates1)
+
+	Rates2 := models.Rates{Rates: "/40HC-per 40HC"}
+	_ = s.db.SaveRates(&Rates2)
+
+	Rates3 := models.Rates{Rates: "/票-per Bill"}
+	_ = s.db.SaveRates(&Rates3)
+
+	BussOrderSta1 := models.BussOrderSta{BussOrderSta: "已确认"}
+	_ = s.db.SaveBussOrderSta(&BussOrderSta1)
+
+	BussOrderSta2 := models.BussOrderSta{BussOrderSta: "已收款未发货"}
+	_ = s.db.SaveBussOrderSta(&BussOrderSta2)
+
+	BussOrderSta3 := models.BussOrderSta{BussOrderSta: "已发货未收款"}
+	_ = s.db.SaveBussOrderSta(&BussOrderSta3)
 
 	Acct := models.Acct{AcctCode: "nihao", AcctAbbr: "hao", EtyAbbr: "room", AcctName: "hh"}
 	_ = s.db.SaveAcct(&Acct)

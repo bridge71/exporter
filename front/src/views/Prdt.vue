@@ -10,14 +10,27 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <!-- 使用 HeaderComponent -->
+
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIdMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
+
+        <!-- <el-header style="display: flex; justify-content: space-between; align-items: center;"> -->
+        <!--   <h2>{{ headerTitle }}</h2> -->
+        <!--   <div> -->
+        <!--     搜索： -->
+        <!--     <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" /> -->
+        <!--     <el-button type="primary" @click="toggleMatchMode"> -->
+        <!--       {{ isExactMatch ? '完全匹配' : '模糊匹配' }} -->
+        <!--     </el-button> -->
+        <!--     <el-button type="primary" @click="toggleIdMode"> -->
+        <!--       {{ onlyId ? '只匹配ID' : '全部匹配' }} -->
+        <!--     </el-button> -->
+        <!--     <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button> -->
+        <!--   </div> -->
+        <!-- </el-header> -->
         <el-main>
           <!-- 产品信息表格 -->
           <el-table :data="paginatedPrdtData" style="width: 100%" max-height="450">
@@ -295,6 +308,18 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
 
+import HeaderComponent from '@/components/HeaderComponent.vue';
+import { useRoute } from 'vue-router';
+// 匹配模式（默认是模糊匹配）
+const isExactMatch = ref(true);
+const onlyId = ref(true);
+const toggleMatchMode = () => {
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIdMode = () => {
+  onlyId.value = !onlyId.value;
+};
 const searchQuery = ref('');
 const currentPage = ref(1);
 const pageSize = 8;
@@ -336,22 +361,55 @@ const handlePageChange = (page) => {
 const paginatedPrdtData = computed(() => {
   let filteredData = prdtData.value;
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.CatEngName.includes(searchQuery.value) ||
-      item.BrandEngName.includes(searchQuery.value) ||
-      item.Factory.includes(searchQuery.value) ||
-      item.Currency.includes(searchQuery.value) ||
-      item.UnitPrice.toString().includes(searchQuery.value) ||
-      item.Unit.includes(searchQuery.value) ||
-      item.Amount.toString().includes(searchQuery.value) ||
-      item.ItemNum.toString().includes(searchQuery.value) ||
-      item.PackSpec.includes(searchQuery.value) ||
-      item.ID.toString().includes(searchQuery.value) ||
-      item.Weight.toString().includes(searchQuery.value) ||
-      item.WeightUnit.includes(searchQuery.value) ||
-      item.TradeTerm.includes(searchQuery.value) ||
-      item.DeliveryLoc.includes(searchQuery.value)
-    );
+    if (isExactMatch.value === false) {
+      if (onlyId.value === false) {
+        console.log("sss", onlyId.value)
+        filteredData = filteredData.filter(item =>
+          item.CatEngName.includes(searchQuery.value) ||
+          item.BrandEngName.includes(searchQuery.value) ||
+          item.Factory.includes(searchQuery.value) ||
+          item.Currency.includes(searchQuery.value) ||
+          item.UnitPrice.toString().includes(searchQuery.value) ||
+          item.Unit.includes(searchQuery.value) ||
+          item.Amount.toString().includes(searchQuery.value) ||
+          item.ItemNum.toString().includes(searchQuery.value) ||
+          item.PackSpec.includes(searchQuery.value) ||
+          item.ID.toString().includes(searchQuery.value) ||
+          item.Weight.toString().includes(searchQuery.value) ||
+          item.WeightUnit.includes(searchQuery.value) ||
+          item.TradeTerm.includes(searchQuery.value) ||
+          item.DeliveryLoc.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+
+      if (onlyId.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.CatEngName === searchQuery.value ||
+          item.BrandEngName === searchQuery.value ||
+          item.Factory === searchQuery.value ||
+          item.Currency === searchQuery.value ||
+          item.UnitPrice.toString() === searchQuery.value ||
+          item.Unit === searchQuery.value ||
+          item.Amount.toString() === searchQuery.value ||
+          item.ItemNum.toString() === searchQuery.value ||
+          item.PackSpec === searchQuery.value ||
+          item.ID.toString() === searchQuery.value ||
+          item.Weight.toString() === searchQuery.value ||
+          item.WeightUnit === searchQuery.value ||
+          item.TradeTerm === searchQuery.value ||
+          item.DeliveryLoc === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
@@ -488,9 +546,14 @@ const fetchPrdtData = async () => {
   }
 };
 
+const route = useRoute();
 onMounted(() => {
+
+  console.log('Search Query:', searchQuery.value); // 应该输出 "32"
   fetchPrdtData();
   fetchDictionaryData();
+  searchQuery.value = route.query.searchQuery || '';
+  console.log("query ", route.query.searchQuery)
 });
 
 const headerTitle = computed(() => '产品信息');

@@ -10,14 +10,12 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIdMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
+
         <el-main>
           <!-- 装货信息表格 -->
           <el-table :data="paginatedLoadingData" style="width: 100%" max-height="450">
@@ -252,10 +250,21 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+
+import HeaderComponent from '@/components/HeaderComponent.vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
 
+const isExactMatch = ref(true);
+const onlyId = ref(true);
+const toggleMatchMode = () => {
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIdMode = () => {
+  onlyId.value = !onlyId.value;
+};
 const searchQuery = ref('');
 const currentPage = ref(1);
 const pageSize = 8;
@@ -300,6 +309,8 @@ const paginatedLoadingData = computed(() => {
       item.ItemNum.toString().includes(searchQuery.value) ||
       item.PackSpec.includes(searchQuery.value) ||
       item.NetWeight.toString().includes(searchQuery.value) ||
+      item.PackSpec.includes(searchQuery.value) ||
+      item.ID.toString().includes(searchQuery.value) ||
       item.Unit.includes(searchQuery.value) ||
       item.CnrNum.includes(searchQuery.value) ||
       item.SealNum.includes(searchQuery.value) ||
@@ -377,7 +388,8 @@ const submitLoadingForm = async () => {
     const response = await axios.post('/save/loadingInfo', loadingForm.value);
     if (response.status === 200) {
       ElMessage.success('装货信息保存成功');
-      showLoadingDialog.value = fetchLoadingData();
+      showLoadingDialog.value = false
+      fetchLoadingData();
     } else {
       ElMessage.error(response.data.RetMessage || '保存失败');
     }

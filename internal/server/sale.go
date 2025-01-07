@@ -19,6 +19,13 @@ func (s *Server) FindSaleHandler(c *gin.Context) {
 func (s *Server) FindSalePrdtInfoHandler(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	if Sale.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
 	s.db.FindSalePrdtInfo(&Sale)
 	PrdtInfos := Sale.PrdtInfos
 	c.JSON(http.StatusOK, models.Message{PrdtInfo: PrdtInfos})
@@ -57,10 +64,27 @@ func (s *Server) DeleteSaleHandler(c *gin.Context) {
 }
 
 func (s *Server) DeleteSalePrdtInfo(c *gin.Context) {
+	// Sale := models.Sale{}
+	// if err := c.ShouldBind(&Sale); err != nil {
+	// 	c.JSON(http.StatusBadRequest, models.Message{
+	// 		RetMessage: err.Error(),
+	// 		// RetMessage: "绑定数据失败",
+	// 	})
+	// 	return
+	// }
+	// PrdtInfo := models.PrdtInfo{}
+	// PrdtInfo.ID = Sale.PrdtInfoId
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
 	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	if Sale.ID == 0 || PrdtInfo.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
 	Sale.PrdtInfos = append(Sale.PrdtInfos, PrdtInfo)
 
 	if err := s.db.DeleteSalePrdtInfo(&Sale, &PrdtInfo); err != nil {
@@ -82,6 +106,13 @@ func (s *Server) DeleteSaleSend(c *gin.Context) {
 	send.ID = s.Str2Uint(c.PostForm("SendId"))
 	Sale.Sends = append(Sale.Sends, send)
 
+	if Sale.ID == 0 || send.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
 	// 保存 Sale 记录
 	if err := s.db.DeleteSaleSend(&Sale, &send); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
@@ -98,11 +129,17 @@ func (s *Server) DeleteSaleSend(c *gin.Context) {
 func (s *Server) AddSalePrdtInfo(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
-	Sale.PrdtInfoId = s.Str2Uint(c.PostForm("PrdtInfoId"))
 	var PrdtInfo models.PrdtInfo
 	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
 
-	s.db.FindById(Sale.SendId, &PrdtInfo)
+	if Sale.ID == 0 || PrdtInfo.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindById(PrdtInfo.ID, &PrdtInfo)
 	s.db.FindById(Sale.ID, &Sale)
 	log.Printf("%d\n", PrdtInfo.ID)
 	Sale.PrdtInfos = append(Sale.PrdtInfos, PrdtInfo)
@@ -125,6 +162,14 @@ func (s *Server) AddSaleSend(c *gin.Context) {
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var Send models.Send
 	Send.ID = s.Str2Uint(c.PostForm("SendId"))
+
+	if Sale.ID == 0 || Send.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
 	s.db.FindById(Send.ID, &Send)
 	s.db.FindById(Sale.ID, &Sale)
 	Sale.Sends = append(Sale.Sends, Send)

@@ -11,14 +11,11 @@
       <!-- 主体内容 -->
       <el-container>
 
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIdMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
+
         <el-main>
 
           <!-- 销售订单信息表格 -->
@@ -94,9 +91,18 @@
         <el-table-column prop="UnitPrice" label="单价" width="70%" />
         <el-table-column prop="TradeTerm" label="贸易条款" width="100%" />
         <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" />
-        <el-table-column label="操作" width="150">
+
+        <el-table-column prop="Factory" label="生产工厂" width="150%" />
+        <el-table-column prop="Unit" label="单位" width="150%" />
+        <el-table-column prop="Amount" label="金额" width="100%" />
+        <el-table-column prop="ItemNum" label="件数" width="70%" />
+        <el-table-column prop="Weight" label="重量" width="100%" />
+        <el-table-column prop="WeightUnit" label="重量单位" width="100%" />
+        <el-table-column label="操作" fixed="right" width="150">
           <template #default="scope">
             <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
+
+            <el-button type="text" size="small" @click="CheckPrdtInfo(scope.row.ID)">查看</el-button>
             <el-button type="text" size="small"
               @click="DeletePrdtInfo(scope.$index, nowId, scope.row.ID)">删除</el-button>
           </template>
@@ -105,6 +111,32 @@
     </el-dialog>
 
 
+    <el-dialog v-model="LoadingInfoVisible" title="装货明细" width="80%">
+      <!-- 添加按钮和输入框 -->
+      <div style="text-align: right; margin-bottom: 20px;">
+        <el-input v-model="prdtInfoId" placeholder="请输入装货明细ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addLoadingInfo(nowId)">添加</el-button>
+      </div>
+
+      <!-- 产品明细表格 -->
+      <el-table :data="loadingInfoData" height="400" style="width: 100%">
+        <el-table-column prop="ID" label="ID" width="60%" />
+        <el-table-column prop="Product" label="产品" width="150%" />
+        <el-table-column prop="Brand" label="品牌" width="150%" />
+        <el-table-column prop="PrdtPlant" label="生产工厂" width="150%" />
+        <el-table-column prop="Currency" label="币种" width="100%" />
+        <el-table-column prop="UnitPrice" label="单价" width="70%" />
+        <el-table-column prop="TradeTerm" label="贸易条款" width="100%" />
+        <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" />
+        <el-table-column label="操作" fixed="right" width="150">
+          <template #default="scope">
+            <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
+            <el-button type="text" size="small"
+              @click="DeletePrdtInfo(scope.$index, nowId, scope.row.ID)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <el-dialog v-model="sendVisible" title="销售发货单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
@@ -118,13 +150,13 @@
         <el-table-column prop="SaleInvNum" label="销售发票号" width="150%" />
         <el-table-column prop="AcctName" label="发货人" width="150%" />
         <el-table-column prop="Note1" label="提单货物描述" width="360%" />
-        <el-table-column label="操作" width="150">
+        <el-table-column prop="SaleInvDate" label="销售发票日期" width="420%" />
+        <el-table-column label="操作" fixed="right" width="150">
           <template #default="scope">
             <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
             <el-button type="text" size="small" @click="DeleteSend(scope.$index, nowId, scope.row.ID)">删除</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="SaleInvDate" label="销售发票日期" width="420%" />
       </el-table>
     </el-dialog>
 
@@ -577,16 +609,47 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
+import { useRouter } from 'vue-router';
 
+import { useRoute } from 'vue-router';
+// 匹配模式（默认是模糊匹配）
+const isExactMatch = ref(true);
+const onlyId = ref(true);
+const toggleMatchMode = () => {
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIdMode = () => {
+  onlyId.value = !onlyId.value;
+};
+const router = useRouter();
 // 控制主弹窗显示
 const sendVisible = ref(false);
 
 const sendData = ref([]);
 const sendId = ref(null);
 
+const CheckPrdtInfo = (ID) => {
+  try {
+    // 确保 ID 是字符串
+    const searchQuery = String(ID);
+
+    // 使用路由的 resolve 方法生成完整路径
+    const route = router.resolve({
+      name: 'Prdt', // 路由名称
+      query: { searchQuery }, // 传递的查询参数（对象形式）
+    });
+
+    // 在新标签页打开
+    window.open(route.href, '_blank');
+  } catch (error) {
+    ElMessage.error("查看失败");
+  }
+};
 // 删除按钮逻辑
 const DeleteSend = (index, ID, SendId) => {
   // console.log('Delete button clicked', index, row); // 添加调试信息
@@ -638,6 +701,7 @@ const addSend = async (ID) => {
     })
     ElMessage.success("添加成功");
     fetchSendData(nowId.value)
+    sendId.value = ''
   } catch (error) {
     console.error('添加产品明细失败:', error);
     ElMessage.error(error.response.data.RetMessage);
@@ -691,6 +755,11 @@ const DeletePrdtInfo = (index, ID, PrdtInfoId) => {
         'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
       },
     })
+
+      // axios.post('/delete/sale/prdtInfo', {
+      //   "ID": ID,
+      //   "PrdtInfoId": PrdtInfoId.value
+      // })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -745,6 +814,7 @@ const addPrdtInfo = async (ID) => {
     })
     ElMessage.success("添加成功");
     fetchPrdtInfoData(nowId.value)
+    prdtInfoId.value = ''
   } catch (error) {
     console.error('添加产品明细失败:', error);
     ElMessage.error(error.response.data.RetMessage);
@@ -759,29 +829,73 @@ const pageSize = 8; // 每页显示的行数
 const paginatedSaleData = computed(() => {
   let filteredData = saleData.value;
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.OrderNum.includes(searchQuery.value) ||
-      item.OrderDate.includes(searchQuery.value) ||
-      item.AcctName.includes(searchQuery.value) ||
-      item.Merc.includes(searchQuery.value) ||
-      item.QualStd.includes(searchQuery.value) ||
-      item.BillValidity.includes(searchQuery.value) ||
-      item.BussOrderSta.includes(searchQuery.value) ||
-      item.StartShip.includes(searchQuery.value) ||
-      item.EndShip.includes(searchQuery.value) ||
-      item.SrcPlace.includes(searchQuery.value) ||
-      item.Des.includes(searchQuery.value) ||
-      item.PayMtdName.includes(searchQuery.value) ||
-      item.TotAmt.toString().includes(searchQuery.value) ||
-      item.Currency.includes(searchQuery.value) ||
-      item.TotNum.toString().includes(searchQuery.value) ||
-      item.SpecName.includes(searchQuery.value) ||
-      item.TotalNetWeight.includes(searchQuery.value) ||
-      item.UnitMeas.includes(searchQuery.value) ||
-      item.AccName.includes(searchQuery.value) ||
-      item.BankAccName.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value)
-    );
+
+    if (isExactMatch === false) {
+      if (onlyId === false) {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value) ||
+          item.OrderNum.includes(searchQuery.value) ||
+          item.OrderDate.includes(searchQuery.value) ||
+          item.AcctName.includes(searchQuery.value) ||
+          item.Merc.includes(searchQuery.value) ||
+          item.QualStd.includes(searchQuery.value) ||
+          item.BillValidity.includes(searchQuery.value) ||
+          item.BussOrderSta.includes(searchQuery.value) ||
+          item.StartShip.includes(searchQuery.value) ||
+          item.EndShip.includes(searchQuery.value) ||
+          item.SrcPlace.includes(searchQuery.value) ||
+          item.Des.includes(searchQuery.value) ||
+          item.PayMtdName.includes(searchQuery.value) ||
+          item.TotAmt.toString().includes(searchQuery.value) ||
+          item.Currency.includes(searchQuery.value) ||
+          item.TotNum.toString().includes(searchQuery.value) ||
+          item.SpecName.includes(searchQuery.value) ||
+          item.TotalNetWeight.includes(searchQuery.value) ||
+          item.UnitMeas.includes(searchQuery.value) ||
+          item.AccName.includes(searchQuery.value) ||
+          item.BankAccName.includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+
+      }
+    } else {
+      if (onlyId === false) {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value ||
+          item.OrderNum === searchQuery.value ||
+          item.OrderDate === searchQuery.value ||
+          item.AcctName === searchQuery.value ||
+          item.Merc === searchQuery.value ||
+          item.QualStd === searchQuery.value ||
+          item.BillValidity === searchQuery.value ||
+          item.BussOrderSta === searchQuery.value ||
+          item.StartShip === searchQuery.value ||
+          item.EndShip === searchQuery.value ||
+          item.SrcPlace === searchQuery.value ||
+          item.Des === searchQuery.value ||
+          item.PayMtdName === searchQuery.value ||
+          item.TotAmt.toString() === searchQuery.value ||
+          item.Currency === searchQuery.value ||
+          item.TotNum.toString() === searchQuery.value ||
+          item.SpecName === searchQuery.value ||
+          item.TotalNetWeight === searchQuery.value ||
+          item.UnitMeas === searchQuery.value ||
+          item.AccName === searchQuery.value ||
+          item.BankAccName === searchQuery.value ||
+          item.Notes === searchQuery.value
+        );
+      } else {
+
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
+
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;

@@ -11,11 +11,23 @@
       <!-- 主体内容 -->
       <el-container>
 
+
+        <!-- <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery" -->
+        <!--   @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIdMode" @add="handleAdd" /> -->
+        <!-- <el-header height="1px"> -->
+        <!-- </el-header> -->
+
         <el-header style="display: flex; justify-content: space-between; align-items: center;">
           <h2>{{ headerTitle }}</h2>
           <div>
             搜索：
             <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
+            <el-button type="primary" @click="toggleMatchMode">
+              {{ isExactMatch ? '完全匹配' : '模糊匹配' }}
+            </el-button>
+            <el-button type="primary" @click="toggleIdMode">
+              {{ onlyId ? '只匹配ID' : '全部匹配' }}
+            </el-button>
             <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
           </div>
         </el-header>
@@ -84,7 +96,15 @@
         <el-table-column prop="UnitPrice" label="单价" width="70%" />
         <el-table-column prop="TradeTerm" label="贸易条款" width="100%" />
         <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" />
-        <el-table-column label="操作" width="150">
+
+
+        <el-table-column prop="Factory" label="生产工厂" width="150%" />
+        <el-table-column prop="Unit" label="单位" width="150%" />
+        <el-table-column prop="Amount" label="金额" width="100%" />
+        <el-table-column prop="ItemNum" label="件数" width="70%" />
+        <el-table-column prop="Weight" label="重量" width="100%" />
+        <el-table-column prop="WeightUnit" label="重量单位" width="100%" />
+        <el-table-column label="操作" fixed="right" width="150">
           <template #default="scope">
             <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
             <el-button type="text" size="small"
@@ -583,19 +603,83 @@
 </template>
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 
+const isExactMatch = ref(false);
+const onlyId = ref(false);
+const toggleMatchMode = () => {
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIdMode = () => {
+  onlyId.value = !onlyId.value;
+};
+// 控制主弹窗显示
+const prdtInfoVisible = ref(false);
+const nowId = ref(null);
+
+const prdtInfoId = ref(null);
+
 const prdtInfoData = ref([]); // 存储产品明细数据
 
+// 删除按钮逻辑
+const DeletePrdtInfo = (index, ID, PrdtInfoId) => {
+  // console.log('Delete button clicked', index, row); // 添加调试信息
+  ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    console.log('Confirmed delete', ID); // 添加调试信息
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("PrdtInfoId", PrdtInfoId)
+
+    axios.post('/delete/send/prdtInfo', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+
+      // axios.post('/delete/sale/prdtInfo', {
+      //   "ID": ID,
+      //   "PrdtInfoId": PrdtInfoId.value
+      // })
+      .then(response => {
+        if (response.status === 200) {
+          ElMessage.success('删除成功');
+          fetchPrdtInfoData(nowId.value); // 重新获取会计实体信息数据
+        } else {
+          ElMessage.error(response.data.RetMessage || '删除失败');
+        }
+      })
+      .catch(error => {
+        ElMessage.error(error.response.data.RetMessage);
+      });
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
+};
 const fetchPrdtInfoData = async (ID) => {
+  console.log("id ? ", ID)
+
   try {
-    const response = await axios.get('/find/send/prdtInfo', {
-      "ID": ID,
-    }); // 调用产品明细接口
-    prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+
+    const response = await axios.post('/find/send/prdtInfo', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    });
     prdtInfoVisible.value = true;
+    // prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
+
+    prdtInfoData.value = Object.assign([], response.data.PrdtInfo); // 强制更新
     nowId.value = ID
     console.log("nowid", nowId.value)
   } catch (error) {
@@ -603,22 +687,23 @@ const fetchPrdtInfoData = async (ID) => {
     ElMessage.error('获取产品明细失败');
   }
 };
-const prdtInfoVisible = ref(false);
-const nowId = ref(null);
-
-const prdtInfoId = ref(null);
 const addPrdtInfo = async (ID) => {
 
   console.log(nowId.value)
-  // acctForm.value.ID = parseInt(acctForm.value.ID, 10);
   try {
-    const response = await axios.post('/add/send/prdtInfo', {
-      "ID": ID,
-      "PrdtInfoId": parseInt(prdtInfoId.value, 10)
-    }); // 调用产品明细接口
 
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("PrdtInfoId", prdtInfoId.value)
+
+    const response = await axios.post('/add/send/prdtInfo', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
     ElMessage.success("添加成功");
     fetchPrdtInfoData(nowId.value)
+    prdtInfoId.value = ''
   } catch (error) {
     console.error('添加产品明细失败:', error);
     ElMessage.error(error.response.data.RetMessage);
@@ -630,47 +715,87 @@ const searchQuery = ref(''); // 添加搜索查询字段
 const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
 
+
 const paginatedSendData = computed(() => {
   let filteredData = sendData.value;
 
-  // 如果有搜索条件，过滤数据
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.SaleInvNum.includes(searchQuery.value) ||
-      item.SaleInvDate.includes(searchQuery.value) ||
-      // item.Merchant1.includes(searchQuery.value) ||
-      // item.Merchant2.includes(searchQuery.value) ||
-      // item.Merchant3.includes(searchQuery.value) ||
-      item.AcctName.includes(searchQuery.value) ||
-      item.SrcPlace.includes(searchQuery.value) ||
-      item.Des.includes(searchQuery.value) ||
-      item.ShipName.includes(searchQuery.value) ||
-      item.Voyage.includes(searchQuery.value) ||
-      item.TotNum.toString().includes(searchQuery.value) ||
-      item.SpecName.includes(searchQuery.value) ||
-      item.TotalNetWeight.includes(searchQuery.value) ||
-      item.UnitMeas1.includes(searchQuery.value) ||
-      item.GrossWt.includes(searchQuery.value) ||
-      item.UnitMeas2.includes(searchQuery.value) ||
-      item.TotVol.includes(searchQuery.value) ||
-      item.UnitMeas3.includes(searchQuery.value) ||
-      item.BillLadNum.includes(searchQuery.value) ||
-      item.DateOfShip.includes(searchQuery.value) ||
-      item.Note1.includes(searchQuery.value) ||
-      item.Note2.includes(searchQuery.value) ||
-      item.PayMtdName.includes(searchQuery.value) ||
-      item.AccName.includes(searchQuery.value)
-    );
+    console.log(sendData.value)
+    if (isExactMatch === false) {
+      if (onlyId === false) {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value) ||
+          item.SaleInvNum.toString().includes(searchQuery.value) ||
+          item.Merchant1Name.includes(searchQuery.value) ||
+          item.Merchant2Name.includes(searchQuery.value) ||
+          item.Merchant3Name.includes(searchQuery.value) ||
+          // item.AcctName.includes(searchQuery.value) ||
+          // item.SrcPlace.includes(searchQuery.value) ||
+          // item.Des.includes(searchQuery.value) ||
+          // item.SaleInvDate.includes(searchQuery.value) ||
+          // item.ShipName.includes(searchQuery.value) ||
+          // item.Voyage.includes(searchQuery.value) ||
+          // item.TotNum.toString().includes(searchQuery.value) ||
+          // item.SpecName.includes(searchQuery.value) ||
+          // item.TotalNetWeight.includes(searchQuery.value) ||
+          // item.UnitMeas1.includes(searchQuery.value) ||
+          // item.GrossWt.includes(searchQuery.value) ||
+          // item.UnitMeas2.includes(searchQuery.value) ||
+          // item.TotVol.includes(searchQuery.value) ||
+          // item.UnitMeas3.includes(searchQuery.value) ||
+          // item.BillLadNum.includes(searchQuery.value) ||
+          // item.DateOfShip.includes(searchQuery.value) ||
+          // item.Note1.includes(searchQuery.value) ||
+          // item.Note2.includes(searchQuery.value) ||
+          // item.PayMtdName.includes(searchQuery.value) ||
+          item.AccName.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyId === false) {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value ||
+          item.SaleInvNum === searchQuery.value ||
+          item.Merchant1Name === searchQuery.value ||
+          item.Merchant2Name === searchQuery.value ||
+          item.Merchant3Name === searchQuery.value ||
+          item.AcctName === searchQuery.value ||
+          item.SrcPlace === searchQuery.value ||
+          item.Des === searchQuery.value ||
+          item.SaleInvDate === searchQuery.value ||
+          item.ShipName === searchQuery.value ||
+          item.Voyage === searchQuery.value ||
+          item.TotNum.toString() === searchQuery.value ||
+          item.SpecName === searchQuery.value ||
+          item.TotalNetWeight === searchQuery.value ||
+          item.UnitMeas1 === searchQuery.value ||
+          item.GrossWt === searchQuery.value ||
+          item.UnitMeas2 === searchQuery.value ||
+          item.TotVol === searchQuery.value ||
+          item.UnitMeas3 === searchQuery.value ||
+          item.BillLadNum === searchQuery.value ||
+          item.DateOfShip === searchQuery.value ||
+          item.Note1 === searchQuery.value ||
+          item.Note2 === searchQuery.value ||
+          item.PayMtdName === searchQuery.value ||
+          item.AccName === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
 
-  // 计算分页的起始和结束位置
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
-
-  // 返回分页后的数据
   return filteredData.slice(start, end);
 });
-
 onMounted(() => {
 
   fetchDocReqData(); // 获取单据要求数据
@@ -687,6 +812,8 @@ onMounted(() => {
   fetchBankAccountData(); // 获取对方银行账户数据
   fetchSendData(); // 获取销售订单信息
   fetchCurrencyData(); // 新增：获取货币数据
+
+  // searchQuery.value = ''
 });
 
 const currencyData = ref([]); // 存储货币数据
@@ -806,6 +933,8 @@ const fetchSendData = async () => {
   try {
     const response = await axios.get('/find/send'); // 调用销售订单信息接口
     sendData.value = response.data.Send; // 假设返回的数据结构中有 Send 字段
+    console.log("test")
+    console.log(sendData.value)
   } catch (error) {
     console.error('获取销售订单信息失败:', error);
     ElMessage.error('获取销售订单信息失败，请稍后重试');
