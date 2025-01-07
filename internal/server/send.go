@@ -8,26 +8,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (s *Server) GetMerchants(send *models.Send, c *gin.Context) {
+	var merc models.Merchant
+	merc.ID = 0
+	if send.Merchant1Id != 0 {
+		s.db.FindById(send.Merchant1Id, &merc)
+		send.Merchant1Name = merc.Merc
+	}
+
+	merc.ID = 0
+	if send.Merchant2Id != 0 {
+		s.db.FindById(send.Merchant2Id, &merc)
+		send.Merchant2Name = merc.Merc
+	}
+
+	merc.ID = 0
+	if send.Merchant3Id != 0 {
+		s.db.FindById(send.Merchant3Id, &merc)
+		send.Merchant3Name = merc.Merc
+	}
+}
+
 // FindSendHandler 查询所有 Send 记录
 func (s *Server) FindSendHandler(c *gin.Context) {
 	var Sends []models.Send
 
 	s.db.FindSends(&Sends)
 	l := len(Sends)
-	var merc models.Merchant
 	for i := 0; i < l; i++ {
-		if Sends[i].Merchant1Id != 0 {
-			s.db.FindById(Sends[i].Merchant1Id, &merc)
-			Sends[i].Merchant1Name = merc.Merc
-		}
-		if Sends[i].Merchant2Id != 0 {
-			s.db.FindById(Sends[i].Merchant2Id, &merc)
-			Sends[i].Merchant2Name = merc.Merc
-		}
-		if Sends[i].Merchant3Id != 0 {
-			s.db.FindById(Sends[i].Merchant3Id, &merc)
-			Sends[i].Merchant3Name = merc.Merc
-		}
+		s.GetMerchants(&Sends[i], c)
 	}
 	c.JSON(http.StatusOK, models.Message{Send: Sends})
 }

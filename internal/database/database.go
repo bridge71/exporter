@@ -32,12 +32,15 @@ type Service interface {
 
 	FindSends(Send *[]models.Send)
 	FindSendPrdtInfo(Send *models.Send)
+
+	FindSaleSend(sale *models.Sale)
 	FindSendLoadingInfo(Send *models.Send)
 	SaveSend(Send *models.Send) error
 	DeleteSendMerchant(Send *models.Send, Merchant *[]models.Merchant) error
 	DeleteSendPrdtInfo(Send *models.Send, prdtInfo *models.PrdtInfo) error
 	DeleteSendLoadingInfo(Send *models.Send, LoadingInfo *models.LoadingInfo) error
 
+	DeleteSaleSend(sale *models.Sale, send *models.Send) error
 	FindSalePrdtInfo(sale *models.Sale)
 	FindSales(sale *[]models.Sale)
 	DeleteSalePrdtInfo(sale *models.Sale, prdtInfo *models.PrdtInfo) error

@@ -3,7 +3,7 @@ package database
 import "exporter/internal/models"
 
 func (s *service) FindSends(Send *[]models.Send) {
-	s.gormDB.Find(Send)
+	s.gormDB.Order("id desc").Find(Send)
 }
 
 func (s *service) FindSendPrdtInfo(Send *models.Send) {

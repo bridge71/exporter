@@ -87,7 +87,8 @@ type Sale struct {
 	Notes           string     `gorm:"column:notes" form:"Notes"` // 备注
 	FileName        string     `gorm:"column:fileName" form:"FileName"`
 	FileId          uint       `gorm:"column:fileId" form:"FileId"`
-	// Sends           []Send     `gorm:"many2many:saleSend" form:"Sends"`         // 销售发货单，多表关联, 查找接口
+	Sends           []Send     `gorm:"many2many:saleSend" form:"Sends"` // 销售发货单，多表关联, 查找接口
+	SendId          uint       `form:"SendId"`
 	// ShouldIns       []ShouldIn `gorm:"many2many:shouldInSale" form:"ShouldIns"` // 应收账款单
 	// Ins             []In       `gorm:"many2many:inSale" form:"ins"`             // 收款单
 	gorm.Model

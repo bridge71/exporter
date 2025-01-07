@@ -25,13 +25,13 @@
           <el-table :data="paginatedSendData" style="width: 100%" max-height="450">
             <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="SaleInvNum" label="销售发票号" width="220%"></el-table-column>
-            <el-table-column prop="SaleInvDate" label="销售发票日期" width="420%"></el-table-column>
             <el-table-column prop="Merchant1Name" label="客户" width="220%"></el-table-column>
             <el-table-column prop="Merchant2Name" label="收货人" width="220%"></el-table-column>
             <el-table-column prop="Merchant3Name" label="通知人" width="220%"></el-table-column>
             <el-table-column prop="AcctName" label="发货人" width="420%"></el-table-column>
             <el-table-column prop="SrcPlace" label="起运地" width="220%"></el-table-column>
             <el-table-column prop="Des" label="目的地" width="220%"></el-table-column>
+            <el-table-column prop="SaleInvDate" label="销售发票日期" width="420%"></el-table-column>
             <el-table-column prop="ShipName" label="船名" width="220%"></el-table-column>
             <el-table-column prop="Voyage" label="航次" width="220%"></el-table-column>
             <el-table-column prop="TotNum" label="总件数" width="220%"></el-table-column>
@@ -54,6 +54,7 @@
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
+                  <el-button @click="fetchPrdtInfoData(scope.row.ID)" type="text" size="small">产品明细</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -66,6 +67,32 @@
     </el-container>
 
 
+    <el-dialog v-model="prdtInfoVisible" title="产品明细" width="80%">
+      <!-- 添加按钮和输入框 -->
+      <div style="text-align: right; margin-bottom: 20px;">
+        <el-input v-model="prdtInfoId" placeholder="请输入产品ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addPrdtInfo(nowId)">添加</el-button>
+      </div>
+
+      <!-- 产品明细表格 -->
+      <el-table :data="prdtInfoData" height="400" style="width: 100%">
+        <el-table-column prop="ID" label="ID" width="60%" />
+        <el-table-column prop="CatEngName" label="产品" width="150%" />
+        <el-table-column prop="BrandEngName" label="品牌" width="150%" />
+        <el-table-column prop="PackSpec" label="包装规格" width="150%" />
+        <el-table-column prop="Currency" label="币种" width="100%" />
+        <el-table-column prop="UnitPrice" label="单价" width="70%" />
+        <el-table-column prop="TradeTerm" label="贸易条款" width="100%" />
+        <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" />
+        <el-table-column label="操作" width="150">
+          <template #default="scope">
+            <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
+            <el-button type="text" size="small"
+              @click="DeletePrdtInfo(scope.$index, nowId, scope.row.ID)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <!-- 添加发货单信息的对话框 -->
 
     <el-dialog v-model="showSendDialog" title="销售发货信息" width="80%" @close="resetSendForm">
@@ -87,7 +114,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="客户" prop="Merchants">
-              <el-select v-model="sendForm.Merchant1Id" @change="onAcctChange" placeholder="请选择客户">
+              <el-select v-model="sendForm.Merchant1Id" @change="onMerchantChange" placeholder="请选择客户">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -106,7 +133,7 @@
 
           <el-col :span="12">
             <el-form-item label="收货人" prop="Merchants">
-              <el-select v-model="sendForm.Merchant2Id" @change="onAcctChange" placeholder="请选择收货人">
+              <el-select v-model="sendForm.Merchant2Id" @change="onMerchantChange" placeholder="请选择收货人">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -115,7 +142,7 @@
 
           <el-col :span="12">
             <el-form-item label="通知人" prop="Merchants">
-              <el-select v-model="sendForm.Merchant3Id" @change="onAcctChange" placeholder="请选择通知人">
+              <el-select v-model="sendForm.Merchant3Id" @change="onMerchantChange" placeholder="请选择通知人">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -311,6 +338,247 @@
       </el-form>
     </el-dialog>
 
+    <el-dialog v-model="showshowSendDialog" title="销售发货信息" width="80%" @close="resetSendForm">
+      <el-form :model="sendForm" label-width="150px" :rules="sendRules" ref="sendFormRef">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="销售发票号" prop="SaleInvNum">
+              <el-input v-model="sendForm.SaleInvNum" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="销售发票日期" prop="SaleInvDate">
+              <el-date-picker v-model="sendForm.SaleInvDate" type="date" placeholder="选择日期"
+                :disabled="true"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="客户" prop="Merchants">
+              <el-select v-model="sendForm.Merchant1Id" @change="onMerchantChange" placeholder="请选择客户" :disabled="true">
+                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
+                  :value="merchant.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="发货人" prop="AcctId">
+              <el-select v-model="sendForm.AcctId" @change="onAcctChange" placeholder="请选择发货人" :disabled="true">
+                <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="收货人" prop="Merchants">
+              <el-select v-model="sendForm.Merchant2Id" @change="onMerchantChange" placeholder="请选择收货人"
+                :disabled="true">
+                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
+                  :value="merchant.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="通知人" prop="Merchants">
+              <el-select v-model="sendForm.Merchant3Id" @change="onMerchantChange" placeholder="请选择通知人"
+                :disabled="true">
+                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
+                  :value="merchant.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="起运地" prop="SrcPlace">
+              <el-select v-model="sendForm.SrcPlace" placeholder="请选择起运地" :disabled="true">
+                <el-option v-for="srcPlace in srcPlaceData" :key="srcPlace" :label="srcPlace"
+                  :value="srcPlace"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="目的地" prop="Des">
+              <el-select v-model="sendForm.Des" placeholder="请选择目的地" :disabled="true">
+                <el-option v-for="des in desData" :key="des" :label="des" :value="des"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="船名" prop="ShipName">
+              <el-input v-model="sendForm.ShipName" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="航次" prop="Voyage">
+              <el-input v-model="sendForm.Voyage" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="总件数" prop="TotNum">
+              <el-input v-model="sendForm.TotNum" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="包装规格" prop="PackSpecId">
+              <el-select v-model="sendForm.PackSpecId" @change="onPackSpecChange" placeholder="请选择包装规格"
+                :disabled="true">
+                <el-option v-for="packSpec in packSpecData" :key="packSpec.ID" :label="packSpec.SpecName"
+                  :value="packSpec.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="总净重" prop="TotalNetWeight">
+              <el-input v-model="sendForm.TotalNetWeight" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="单位" prop="UnitMeas1">
+              <el-select v-model="sendForm.UnitMeas1" placeholder="请选择单位" :disabled="true">
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                  :value="unitMeas.UnitMeas"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="总毛重" prop="GrossWt">
+              <el-input v-model="sendForm.GrossWt" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="单位" prop="UnitMeas2">
+              <el-select v-model="sendForm.UnitMeas2" placeholder="请选择单位" :disabled="true">
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                  :value="unitMeas.UnitMeas"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="总体积" prop="TotVol">
+              <el-input v-model="sendForm.TotVol" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="单位" prop="UnitMeas3">
+              <el-select v-model="sendForm.UnitMeas3" placeholder="请选择单位" :disabled="true">
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                  :value="unitMeas.UnitMeas"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="提单号" prop="BillLadNum">
+              <el-input v-model="sendForm.BillLadNum" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发货（开船）日期" prop="DateOfShip">
+              <el-date-picker v-model="sendForm.DateOfShip" type="date" placeholder="选择日期"
+                :disabled="true"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="提单货物描述" prop="Note1">
+              <el-input v-model="sendForm.Note1" type="textarea" :rows="4" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="箱单货物描述" prop="Note2">
+              <el-input v-model="sendForm.Note2" type="textarea" :rows="4" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="付款方式" prop="PayMentMethodId">
+              <el-select v-model="sendForm.PayMentMethodId" @change="onPayMentMethodChange" placeholder="请选择付款方式"
+                :disabled="true">
+                <el-option v-for="payMentMethod in payMentMethodData" :key="payMentMethod.ID"
+                  :label="payMentMethod.PayMtdName" :value="payMentMethod.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="收款银行" prop="AcctBankId">
+              <el-select v-model="sendForm.AcctBankId" @change="onAcctBankChange" placeholder="请选择收款银行"
+                :disabled="true">
+                <el-option v-for="acctBank in acctBankData" :key="acctBank.ID" :label="acctBank.AccName"
+                  :value="acctBank.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="提单">
+              <el-button v-if="sendForm.File1Id" type="success"
+                @click="downloadFile(sendForm.File1Id, sendForm.File1Name)">
+                下载文件
+              </el-button>
+            </el-form-item>
+            <el-form-item label="文件名" prop="File1Name">
+              <el-input v-model="sendForm.File1Name" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="其他单据">
+              <el-button v-if="sendForm.File2Id" type="success"
+                @click="downloadFile(sendForm.File2Id, sendForm.File2Name)">
+                下载文件
+              </el-button>
+            </el-form-item>
+            <el-form-item label="文件名" prop="File2Name">
+              <el-input v-model="sendForm.File2Name" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24" style="text-align: right;">
+            <el-button @click="showshowSendDialog = false">关闭</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script setup>
@@ -318,6 +586,44 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
+
+const prdtInfoData = ref([]); // 存储产品明细数据
+
+const fetchPrdtInfoData = async (ID) => {
+  try {
+    const response = await axios.get('/find/send/prdtInfo', {
+      "ID": ID,
+    }); // 调用产品明细接口
+    prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
+    prdtInfoVisible.value = true;
+    nowId.value = ID
+    console.log("nowid", nowId.value)
+  } catch (error) {
+    console.error('获取产品明细失败:', error);
+    ElMessage.error('获取产品明细失败');
+  }
+};
+const prdtInfoVisible = ref(false);
+const nowId = ref(null);
+
+const prdtInfoId = ref(null);
+const addPrdtInfo = async (ID) => {
+
+  console.log(nowId.value)
+  // acctForm.value.ID = parseInt(acctForm.value.ID, 10);
+  try {
+    const response = await axios.post('/add/send/prdtInfo', {
+      "ID": ID,
+      "PrdtInfoId": parseInt(prdtInfoId.value, 10)
+    }); // 调用产品明细接口
+
+    ElMessage.success("添加成功");
+    fetchPrdtInfoData(nowId.value)
+  } catch (error) {
+    console.error('添加产品明细失败:', error);
+    ElMessage.error(error.response.data.RetMessage);
+  }
+};
 const file1 = ref(null);
 const file2 = ref(null);
 const searchQuery = ref(''); // 添加搜索查询字段
@@ -332,9 +638,9 @@ const paginatedSendData = computed(() => {
     filteredData = filteredData.filter(item =>
       item.SaleInvNum.includes(searchQuery.value) ||
       item.SaleInvDate.includes(searchQuery.value) ||
-      item.Merchant1.includes(searchQuery.value) ||
-      item.Merchant2.includes(searchQuery.value) ||
-      item.Merchant3.includes(searchQuery.value) ||
+      // item.Merchant1.includes(searchQuery.value) ||
+      // item.Merchant2.includes(searchQuery.value) ||
+      // item.Merchant3.includes(searchQuery.value) ||
       item.AcctName.includes(searchQuery.value) ||
       item.SrcPlace.includes(searchQuery.value) ||
       item.Des.includes(searchQuery.value) ||
@@ -381,20 +687,8 @@ onMounted(() => {
   fetchBankAccountData(); // 获取对方银行账户数据
   fetchSendData(); // 获取销售订单信息
   fetchCurrencyData(); // 新增：获取货币数据
-  // fetchPrdtInfoData(); // 新增：获取产品明细数据
 });
 
-const prdtInfoData = ref([]); // 存储产品明细数据
-
-const fetchPrdtInfoData = async () => {
-  try {
-    const response = await axios.get('/find/prdtInfo'); // 调用产品明细接口
-    prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
-  } catch (error) {
-    console.error('获取产品明细失败:', error);
-    ElMessage.error('获取产品明细失败，请稍后重试');
-  }
-};
 const currencyData = ref([]); // 存储货币数据
 
 const fetchCurrencyData = async () => {
@@ -714,7 +1008,6 @@ const resetSendForm = () => {
     Notes: '',
     FileId: '', // 重置文件 ID
     FileName: '', // 重置文件名
-    PrdtInfos: [], // 重置产品明细
     File1Name: '',
     File1Id: '',
     File2Name: '',

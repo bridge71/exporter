@@ -64,6 +64,7 @@
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                   <el-button @click="fetchPrdtInfoData(scope.row.ID)" type="text" size="small">产品明细</el-button>
+                  <el-button @click="fetchSendData(scope.row.ID)" type="text" size="small">销售发货单</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -103,17 +104,28 @@
       </el-table>
     </el-dialog>
 
-    <!-- 添加订单的弹窗 -->
-    <el-dialog v-model="addOrderDialogVisible" title="添加订单" width="30%">
-      <el-form :model="addOrderForm" label-width="100px">
-        <el-form-item label="订单ID">
-          <el-input v-model="addOrderForm.orderId" placeholder="请输入订单ID" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="addOrderDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmAddOrder">确认</el-button>
-      </template>
+
+    <el-dialog v-model="sendVisible" title="销售发货单" width="80%">
+      <!-- 添加按钮和输入框 -->
+      <div style="text-align: right; margin-bottom: 20px;">
+        <el-input v-model="sendId" placeholder="请输入销售发货单ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addSend(nowId)">添加</el-button>
+      </div>
+
+      <!-- 销售发货表格 -->
+      <el-table :data="sendData" height="400" style="width: 100%">
+        <el-table-column prop="ID" label="ID" width="60%" />
+        <el-table-column prop="SaleInvNum" label="销售发票号" width="150%" />
+        <el-table-column prop="AcctName" label="发货人" width="150%" />
+        <el-table-column prop="Note1" label="提单货物描述" width="360%" />
+        <el-table-column label="操作" width="150">
+          <template #default="scope">
+            <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
+            <el-button type="text" size="small" @click="DeleteSend(scope.$index, nowId, scope.row.ID)">删除</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="SaleInvDate" label="销售发票日期" width="420%" />
+      </el-table>
     </el-dialog>
 
     <!-- 添加销售订单信息的对话框 -->
@@ -568,21 +580,169 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
+
+// 控制主弹窗显示
+const sendVisible = ref(false);
+
+const sendData = ref([]);
+const sendId = ref(null);
+
+// 删除按钮逻辑
+const DeleteSend = (index, ID, SendId) => {
+  // console.log('Delete button clicked', index, row); // 添加调试信息
+  ElMessageBox.confirm('确定要删除该信息吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("SendId", SendId)
+
+    axios.post('/delete/sale/send', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+      .then(response => {
+        if (response.status === 200) {
+          ElMessage.success('删除成功');
+          fetchSendData(nowId.value); // 重新获取会计实体信息数据
+        } else {
+          ElMessage.error(response.data.RetMessage || '删除失败');
+        }
+      })
+      .catch(error => {
+        ElMessage.error(error.response.data.RetMessage);
+      });
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
+};
+const addSend = async (ID) => {
+
+  console.log(nowId.value)
+  // acctForm.value.ID = parseInt(acctForm.value.ID, 10);
+
+  try {
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("SendId", sendId.value)
+
+    const response = await axios.post('/add/sale/send', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+    ElMessage.success("添加成功");
+    fetchSendData(nowId.value)
+  } catch (error) {
+    console.error('添加产品明细失败:', error);
+    ElMessage.error(error.response.data.RetMessage);
+  }
+};
+
+const fetchSendData = async (ID) => {
+  try {
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+
+    const response = await axios.post('/find/sale/send', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+    sendData.value = response.data.Send; // 假设返回的数据结构中有 PrdtInfo 字段
+    nowId.value = ID
+    sendVisible.value = true;
+    console.log("nowid", nowId.value)
+  } catch (error) {
+    console.error('获取产品明细失败:', error);
+    ElMessage.error('获取产品明细失败');
+  }
+};
 // 控制主弹窗显示
 const prdtInfoVisible = ref(false);
 const nowId = ref(null);
 
 const prdtInfoId = ref(null);
+
+const prdtInfoData = ref([]); // 存储产品明细数据
+
+// 删除按钮逻辑
+const DeletePrdtInfo = (index, ID, PrdtInfoId) => {
+  // console.log('Delete button clicked', index, row); // 添加调试信息
+  ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    console.log('Confirmed delete', ID); // 添加调试信息
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("PrdtInfoId", PrdtInfoId)
+
+    axios.post('/delete/sale/prdtInfo', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+      .then(response => {
+        if (response.status === 200) {
+          ElMessage.success('删除成功');
+          fetchPrdtInfoData(nowId.value); // 重新获取会计实体信息数据
+        } else {
+          ElMessage.error(response.data.RetMessage || '删除失败');
+        }
+      })
+      .catch(error => {
+        ElMessage.error(error.response.data.RetMessage);
+      });
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
+};
+const fetchPrdtInfoData = async (ID) => {
+  console.log("id ? ", ID)
+
+  try {
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+
+    const response = await axios.post('/find/sale/prdtInfo', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    });
+    prdtInfoVisible.value = true;
+    // prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
+
+    prdtInfoData.value = Object.assign([], response.data.PrdtInfo); // 强制更新
+    nowId.value = ID
+    console.log("nowid", nowId.value)
+  } catch (error) {
+    console.error('获取产品明细失败:', error);
+    ElMessage.error('获取产品明细失败');
+  }
+};
 const addPrdtInfo = async (ID) => {
 
   console.log(nowId.value)
-  // acctForm.value.ID = parseInt(acctForm.value.ID, 10);
   try {
-    const response = await axios.post('/add/sale/prdtInfo', {
-      "ID": ID,
-      "PrdtInfoId": parseInt(prdtInfoId.value, 10)
-    }); // 调用产品明细接口
 
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("PrdtInfoId", prdtInfoId.value)
+
+    const response = await axios.post('/add/sale/prdtInfo', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
     ElMessage.success("添加成功");
     fetchPrdtInfoData(nowId.value)
   } catch (error) {
@@ -647,22 +807,6 @@ onMounted(() => {
   // fetchPrdtInfoData(); // 新增：获取产品明细数据
 });
 
-const prdtInfoData = ref([]); // 存储产品明细数据
-
-const fetchPrdtInfoData = async (ID) => {
-  try {
-    const response = await axios.get('/find/sale/prdtInfo', {
-      "ID": ID,
-    }); // 调用产品明细接口
-    prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
-    prdtInfoVisible.value = true;
-    nowId.value = ID
-    console.log("nowid", nowId.value)
-  } catch (error) {
-    console.error('获取产品明细失败:', error);
-    ElMessage.error('获取产品明细失败');
-  }
-};
 const currencyData = ref([]); // 存储货币数据
 
 const fetchCurrencyData = async () => {
@@ -941,7 +1085,6 @@ const handleDelete = (index, ID) => {
     ElMessage.info('已取消删除');
   });
 };
-
 // 重置销售订单信息表单
 const resetSaleForm = () => {
   saleForm.value = {
@@ -982,34 +1125,6 @@ const resetSaleForm = () => {
   }
 };
 
-// 删除按钮逻辑
-const DeletePrdtInfo = (index, ID, PrdtInfoId) => {
-  // console.log('Delete button clicked', index, row); // 添加调试信息
-  ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    console.log('Confirmed delete', ID); // 添加调试信息
-    axios.post('/delete/sale/prdtInfo', {
-      "ID": ID,
-      "PrdtInfoId": PrdtInfoId
-    })
-      .then(response => {
-        if (response.status === 200) {
-          ElMessage.success('删除成功');
-          fetchPrdtInfoData(nowId.value); // 重新获取会计实体信息数据
-        } else {
-          ElMessage.error(response.data.RetMessage || '删除失败');
-        }
-      })
-      .catch(error => {
-        ElMessage.error(error.response.data.RetMessage);
-      });
-  }).catch(() => {
-    ElMessage.info('已取消删除');
-  });
-};
 const uploadRef = ref(null);
 
 const submitSaleForm = async () => {

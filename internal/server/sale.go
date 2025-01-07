@@ -12,17 +12,24 @@ import (
 // FindSaleHandler 查询所有 Sale 记录
 func (s *Server) FindSaleHandler(c *gin.Context) {
 	var Sales []models.Sale
-
 	s.db.FindSales(&Sales)
 	c.JSON(http.StatusOK, models.Message{Sale: Sales})
 }
 
 func (s *Server) FindSalePrdtInfoHandler(c *gin.Context) {
-	var Sale models.Sale
-
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	s.db.FindSalePrdtInfo(&Sale)
 	PrdtInfos := Sale.PrdtInfos
 	c.JSON(http.StatusOK, models.Message{PrdtInfo: PrdtInfos})
+}
+
+func (s *Server) FindSaleSendHandler(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	s.db.FindSaleSend(&Sale)
+	sends := Sale.Sends
+	c.JSON(http.StatusOK, models.Message{Send: sends})
 }
 
 // DeleteSaleHandler 删除 Sale 记录
@@ -50,21 +57,58 @@ func (s *Server) DeleteSaleHandler(c *gin.Context) {
 }
 
 func (s *Server) DeleteSalePrdtInfo(c *gin.Context) {
-	Sale := &models.Sale{}
-	if err := c.ShouldBind(Sale); err != nil {
-		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	var PrdtInfo models.PrdtInfo
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	Sale.PrdtInfos = append(Sale.PrdtInfos, PrdtInfo)
+
+	if err := s.db.DeleteSalePrdtInfo(&Sale, &PrdtInfo); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "删除失败",
 		})
 		return
 	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "删除成功",
+	})
+}
+
+func (s *Server) DeleteSaleSend(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	var send models.Send
+	send.ID = s.Str2Uint(c.PostForm("SendId"))
+	Sale.Sends = append(Sale.Sends, send)
+
+	// 保存 Sale 记录
+	if err := s.db.DeleteSaleSend(&Sale, &send); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "删除失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "删除成功",
+	})
+}
+
+func (s *Server) AddSalePrdtInfo(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	Sale.PrdtInfoId = s.Str2Uint(c.PostForm("PrdtInfoId"))
 	var PrdtInfo models.PrdtInfo
-	s.db.FindById(Sale.PrdtInfoId, &PrdtInfo)
-	s.db.FindById(Sale.ID, Sale)
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+
+	s.db.FindById(Sale.SendId, &PrdtInfo)
+	s.db.FindById(Sale.ID, &Sale)
+	log.Printf("%d\n", PrdtInfo.ID)
 	Sale.PrdtInfos = append(Sale.PrdtInfos, PrdtInfo)
 
 	// 保存 Sale 记录
-	if err := s.db.DeleteSalePrdtInfo(Sale, &PrdtInfo); err != nil {
+	if err := s.db.Save(Sale); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "保存失败",
 		})
@@ -76,20 +120,14 @@ func (s *Server) DeleteSalePrdtInfo(c *gin.Context) {
 	})
 }
 
-func (s *Server) AddSalePrdtInfo(c *gin.Context) {
-	Sale := &models.Sale{}
-	if err := c.ShouldBind(Sale); err != nil {
-		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
-		})
-		return
-	}
-	log.Printf("%d   %d\n", Sale.ID, Sale.PrdtInfoId)
-	var PrdtInfo models.PrdtInfo
-	s.db.FindById(Sale.PrdtInfoId, &PrdtInfo)
-	s.db.FindById(Sale.ID, Sale)
-	Sale.PrdtInfos = append(Sale.PrdtInfos, PrdtInfo)
+func (s *Server) AddSaleSend(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	var Send models.Send
+	Send.ID = s.Str2Uint(c.PostForm("SendId"))
+	s.db.FindById(Send.ID, &Send)
+	s.db.FindById(Sale.ID, &Sale)
+	Sale.Sends = append(Sale.Sends, Send)
 
 	// 保存 Sale 记录
 	if err := s.db.Save(Sale); err != nil {

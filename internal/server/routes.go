@@ -22,25 +22,28 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.POST("/file", s.Uploader)
 
-	r.GET("/find/send/prdtInfo", s.FindSendPrdtInfoHandler)
 	r.GET("/find/send", s.FindSendHandler)
+	r.POST("/find/send/prdtInfo", s.FindSendPrdtInfoHandler)
 	r.POST("/save/send", s.SaveSendHandler)
 	r.POST("/delete/send", s.DeleteSendHandler)
 	r.POST("/add/send/prdtInfo", s.AddSendPrdtInfo)
 	// r.POST("/delete/send/prdtInfo", s.DeleteSalePrdtInfo)
 
 	r.GET("/add/dicdata", s.AddDicData)
+
+	r.GET("/find/sale", s.FindSaleHandler)
+	r.POST("/find/sale/prdtInfo", s.FindSalePrdtInfoHandler)
+	r.POST("/find/sale/send", s.FindSaleSendHandler)
 	r.POST("/add/sale/prdtInfo", s.AddSalePrdtInfo)
+	r.POST("/add/sale/send", s.AddSaleSend)
 	r.POST("/delete/sale/prdtInfo", s.DeleteSalePrdtInfo)
-	r.GET("/find/sale/prdtInfo", s.FindSalePrdtInfoHandler)
+	r.POST("/delete/sale/send", s.DeleteSaleSend)
+	r.POST("/delete/sale", s.DeleteSaleHandler)
+	r.POST("/save/sale", s.SaveSaleHandler)
 
 	r.GET("/find/spot", s.FindSpotHandler)
 	r.POST("/delete/spot", s.DeleteSpotHandler)
 	r.POST("/save/spot", s.SaveSpotHandler)
-
-	r.GET("/find/sale", s.FindSaleHandler)
-	r.POST("/delete/sale", s.DeleteSaleHandler)
-	r.POST("/save/sale", s.SaveSaleHandler)
 
 	r.GET("/find/costInfo", s.FindCostInfoHandler)
 	r.POST("/delete/costInfo", s.DeleteCostInfoHandler)
