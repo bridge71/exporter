@@ -359,7 +359,7 @@ const navigateToDictionaryManager = () => {
 
 
 const searchQuery = ref(''); // 添加搜索查询字段
-
+const acctFormRef = ref(null);
 
 const downloadFile = async (fileId, fileName) => {
   try {
@@ -436,27 +436,35 @@ const resetAcctForm = () => {
     uploadRef.value.clearFiles(); // 清空文件列表
   }
 };
+
+
 // 会计实体信息表单提交逻辑
 const submitAcctForm = async () => {
   try {
-
-    // acctForm.value.ID = parseInt(acctForm.value.ID, 10);
-    // const response = await axios.post('/save/acct', acctForm.value); // 调用保存会计实体信息接口
+    const isValid = await acctFormRef.value.validate();
+    
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+    
+    // 如果验证通过，继续执行提交逻辑
     const formData = new FormData(); // 创建 FormData 对象
-    acctForm.value.AcctBanks = null
-    acctForm.value.Sales = null
-    acctForm.value.Sends = null
+    acctForm.value.AcctBanks = null;
+    acctForm.value.Sales = null;
+    acctForm.value.Sends = null;
     // 添加表单数据
     Object.keys(acctForm.value).forEach((key) => {
       formData.append(key, acctForm.value[key]);
     });
 
-    console.log(acctForm.value)
+    console.log(acctForm.value);
     // 添加文件
     if (file.value) {
       formData.append('file', file.value);
     }
-
+    console.log('success');
     const response = await axios.post('/save/acct', formData, {
       headers: {
         'Content-Type': 'multipart/form-data', // 设置请求头
@@ -473,6 +481,7 @@ const submitAcctForm = async () => {
     ElMessage.error(error.response.data.RetMessage);
   }
 };
+
 
 // 删除按钮逻辑
 const handleDelete = (index, ID) => {
@@ -588,11 +597,33 @@ var acctForm = ref({
   // AcctBanks: [],
 });
 
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));
+  } else {
+    callback();
+  }
+};
+
 // 会计实体信息表单验证规则
 const acctRules = {
-  AcctCode: [{ required: true, message: '请输入会计实体编码', trigger: 'blur' }],
-  AcctAbbr: [{ required: true, message: '请输入会计实体缩写', trigger: 'blur' }],
-  EtyAbbr: [{ required: true, message: '请输入实体简称', trigger: 'blur' }]
+  AcctCode: [
+    { required: true, validator: validateNotEmpty, trigger: 'blur' },
+    { message: '请输入会计实体编码', trigger: 'blur' }
+  ],
+  AcctAbbr: [
+    { required: true, validator: validateNotEmpty, trigger: 'blur' },
+    { message: '请输入会计实体缩写', trigger: 'blur' }
+  ],
+  EtyAbbr: [
+    { required: true, validator: validateNotEmpty, trigger: 'blur' },
+    { message: '请输入实体简称', trigger: 'blur' }
+  ],
+  AcctName: [
+    { required: true, validator: validateNotEmpty, trigger: 'blur' },
+    { message: '请输入会计实体名称', trigger: 'blur' }
+  ]
 };
 
 
