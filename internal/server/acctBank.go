@@ -16,7 +16,9 @@ func (s *Server) FindAcctBankHandler(c *gin.Context) {
 	var acct []models.Acct
 	for i := 0; i < length; i++ {
 		s.db.FirstAcct(acctBanks[i].AcctId, &acct)
-		acctBanks[i].AcctName = acct[0].AcctName
+		if len(acct) > 0 {
+			acctBanks[i].AcctName = acct[0].AcctName
+		}
 	}
 	c.JSON(http.StatusOK, models.Message{AcctBank: acctBanks})
 }

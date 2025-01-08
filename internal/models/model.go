@@ -151,11 +151,11 @@ type ShouldIn struct {
 	BankAccName   string `gorm:"column:bankAccName" form:"BankAccName"`
 	AcctBankId    uint   `gorm:"column:acctBankId" form:"AcctBankId"` // 收款银行账户 绑定id，查找接口 /find/acctBank
 	AccName       string `gorm:"column:accName" form:"AccName"`
-	TotAmt        uint   `form:"TotAmt"`     // 总金额
-	Currency      string `form:"CuCurrency"` // 币种
-	Notes         string `form:"Notes"`      // 描述
+	TotAmt        uint   `form:"TotAmt"`   // 总金额
+	Currency      string `form:"Currency"` // 币种
+	Notes         string `form:"Notes"`    // 描述
 	FileId        uint   `form:"FileId"`
-	FileName      string `form:"File1Name"`
+	FileName      string `form:"FileName"`
 	Sends         []Send `gorm:"many2many:shouldInSend" form:"Sends"` // 销售发货单，多表关联, 查找接口
 	Sales         []Sale `gorm:"many2many:shouldInSale" form:"Sales"` // 销售订单，多表关联, 查找接口
 	Ins           []In   `gorm:"many2many:inShouldIn" form:"Ins"`     // 收款单

@@ -281,6 +281,7 @@ const submitCostForm = async () => {
     if (response.status === 200) {
       ElMessage.success('费用信息保存成功');
       showCostDialog.value = fetchCostData();
+      showCostDialog.value = false
     } else {
       ElMessage.error(response.data.RetMessage || '保存失败');
     }
