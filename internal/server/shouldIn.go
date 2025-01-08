@@ -12,7 +12,7 @@ func (s *Server) DeleteShouldInSend(c *gin.Context) {
 	ShouldIn := models.ShouldIn{}
 	ShouldIn.ID = s.Str2Uint(c.PostForm("ID"))
 	var Send models.Send
-	ShouldIn.ID = s.Str2Uint(c.PostForm("SendId"))
+	Send.ID = s.Str2Uint(c.PostForm("SendId"))
 	ShouldIn.Sends = append(ShouldIn.Sends, Send)
 
 	if Send.ID == 0 || ShouldIn.ID == 0 {
@@ -110,13 +110,15 @@ func (s *Server) FindShouldInSaleHandler(c *gin.Context) {
 // DeleteShouldInHandler 删除 ShouldIn 记录
 func (s *Server) DeleteShouldInHandler(c *gin.Context) {
 	ShouldIn := &models.ShouldIn{}
-	if err := c.ShouldBind(ShouldIn); err != nil {
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ID"))
+
+	if ShouldIn.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: "绑定数据失败",
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
 		})
 		return
 	}
-
 	log.Printf("删除 ShouldIn: %+v\n", ShouldIn)
 
 	if err := s.db.Delete(ShouldIn); err != nil {
@@ -284,6 +286,7 @@ func (s *Server) SaveShouldInHandler(c *gin.Context) {
 
 	log.Printf("保存 ShouldIn: %+v\n", ShouldIn)
 
+	_, ShouldIn.FileId, ShouldIn.FileName = s.SaveFile(c, "file")
 	// 保存 ShouldIn 记录
 	if err := s.db.SaveShouldIn(ShouldIn); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{

@@ -52,10 +52,12 @@ func (s *service) DeleteSaleSend(sale *models.Sale, send *models.Send) error {
 
 func (s *service) TransSale(sale *models.Sale, DocReq *[]models.DocReq) error {
 	return s.gormDB.Transaction(func(tx *gorm.DB) error {
-		if err := s.gormDB.Model(sale).Association("DocReq").Delete(DocReq); err != nil {
-			return err
+		if len(*DocReq) != 0 {
+			if err := s.gormDB.Model(sale).Association("DocReq").Delete(DocReq); err != nil {
+				return err
+			}
 		}
-		if err := s.gormDB.Omit("Sends", "PrdtInfos", "DocReq").Save(sale).Error; err != nil {
+		if err := s.gormDB.Omit("Sends", "PrdtInfos").Save(sale).Error; err != nil {
 			return err
 		}
 		return nil

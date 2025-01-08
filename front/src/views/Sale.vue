@@ -189,7 +189,7 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="付款方式" prop="PayMentMethodId">
-              <el-select v-model="saleForm.PayMentMethodId" @change="onPayMentMethodChange" placeholder="请选择付款方式">
+              <el-select v-model="saleForm.PayMentMethodId" placeholder="请选择付款方式">
                 <el-option v-for="payMentMethod in payMentMethodData" :key="payMentMethod.ID"
                   :label="payMentMethod.PayMtdName" :value="payMentMethod.ID"></el-option>
               </el-select>
@@ -600,10 +600,13 @@ const route = useRoute();
 const isExactMatch = ref(true);
 const onlyId = ref(true);
 const toggleMatchMode = () => {
+  console.log("check onlyId", isExactMatch.value)
   isExactMatch.value = !isExactMatch.value;
 };
 
 const toggleIdMode = () => {
+
+  console.log("check match", onlyId.value)
   onlyId.value = !onlyId.value;
 };
 // 控制主弹窗显示
@@ -826,8 +829,9 @@ const paginatedSaleData = computed(() => {
   let filteredData = saleData.value;
   if (searchQuery.value) {
 
-    if (isExactMatch === false) {
-      if (onlyId === false) {
+    if (isExactMatch.value === false) {
+      if (onlyId.value === false) {
+        console.log("sss ", saleData.value)
         filteredData = filteredData.filter(item =>
           item.ID.toString().includes(searchQuery.value) ||
           item.OrderNum.includes(searchQuery.value) ||
@@ -1334,12 +1338,12 @@ const onMerchantChange = (value) => {
 };
 
 // 监听 change 事件并更新 PayMtdName
-const onPayMentMethodChange = (value) => {
-  const selectedPayMentMethod = payMentMethodData.value.find(payMentMethod => payMentMethod.ID === value);
-  if (selectedPayMentMethod) {
-    saleForm.value.PayMtdName = selectedPayMentMethod.PayMtdName;
-  }
-};
+// const onPayMentMethodChange = (value) => {
+//   const selectedPayMentMethod = payMentMethodData.value.find(payMentMethod => payMentMethod.ID === value);
+//   if (selectedPayMentMethod) {
+//     saleForm.value.PayMtdName = selectedPayMentMethod.PayMtdName;
+//   }
+// };
 
 // 监听 change 事件并更新 SpecName
 const onPackSpecChange = (value) => {

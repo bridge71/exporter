@@ -934,33 +934,33 @@ const paginatedSendData = computed(() => {
 
   if (searchQuery.value) {
     console.log(sendData.value)
-    if (isExactMatch === false) {
-      if (onlyId === false) {
+    if (isExactMatch.value === false) {
+      if (onlyId.value === false) {
         filteredData = filteredData.filter(item =>
           item.ID.toString().includes(searchQuery.value) ||
           item.SaleInvNum.toString().includes(searchQuery.value) ||
           item.Merchant1Name.includes(searchQuery.value) ||
           item.Merchant2Name.includes(searchQuery.value) ||
           item.Merchant3Name.includes(searchQuery.value) ||
-          // item.AcctName.includes(searchQuery.value) ||
-          // item.SrcPlace.includes(searchQuery.value) ||
-          // item.Des.includes(searchQuery.value) ||
-          // item.SaleInvDate.includes(searchQuery.value) ||
-          // item.ShipName.includes(searchQuery.value) ||
-          // item.Voyage.includes(searchQuery.value) ||
-          // item.TotNum.toString().includes(searchQuery.value) ||
-          // item.SpecName.includes(searchQuery.value) ||
-          // item.TotalNetWeight.includes(searchQuery.value) ||
-          // item.UnitMeas1.includes(searchQuery.value) ||
-          // item.GrossWt.includes(searchQuery.value) ||
-          // item.UnitMeas2.includes(searchQuery.value) ||
-          // item.TotVol.includes(searchQuery.value) ||
-          // item.UnitMeas3.includes(searchQuery.value) ||
-          // item.BillLadNum.includes(searchQuery.value) ||
-          // item.DateOfShip.includes(searchQuery.value) ||
-          // item.Note1.includes(searchQuery.value) ||
-          // item.Note2.includes(searchQuery.value) ||
-          // item.PayMtdName.includes(searchQuery.value) ||
+          item.AcctName.includes(searchQuery.value) ||
+          item.SrcPlace.includes(searchQuery.value) ||
+          item.Des.includes(searchQuery.value) ||
+          item.SaleInvDate.includes(searchQuery.value) ||
+          item.ShipName.includes(searchQuery.value) ||
+          item.Voyage.includes(searchQuery.value) ||
+          item.TotNum.toString().includes(searchQuery.value) ||
+          item.SpecName.includes(searchQuery.value) ||
+          item.TotalNetWeight.includes(searchQuery.value) ||
+          item.UnitMeas1.includes(searchQuery.value) ||
+          item.GrossWt.includes(searchQuery.value) ||
+          item.UnitMeas2.includes(searchQuery.value) ||
+          item.TotVol.includes(searchQuery.value) ||
+          item.UnitMeas3.includes(searchQuery.value) ||
+          item.BillLadNum.includes(searchQuery.value) ||
+          item.DateOfShip.includes(searchQuery.value) ||
+          item.Note1.includes(searchQuery.value) ||
+          item.Note2.includes(searchQuery.value) ||
+          item.PayMtdName.includes(searchQuery.value) ||
           item.AccName.includes(searchQuery.value)
         );
       } else {
