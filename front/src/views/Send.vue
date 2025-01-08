@@ -70,8 +70,8 @@
                   <el-button @click="fetchLoadingInfoData(scope.row.ID)" type="text" size="small">装货明细</el-button>
                   <el-button @click="fetchSaleData(scope.row.ID)" type="text" size="small">销售订单</el-button>
 
-                  <!-- <el-button @click="fetchSaleData(scope.row.ID)" type="text" size="small">应收账款单</el-button> -->
-                  <!-- <el-button @click="fetchSaleData(scope.row.ID)" type="text" size="small">收款单</el-button> -->
+                  <el-button @click="fetchShouldInData(scope.row.ID)" type="text" size="small">应收账款单</el-button>
+                  <el-button @click="fetchInData(scope.row.ID)" type="text" size="small">收款单</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -83,6 +83,75 @@
       </el-container>
     </el-container>
 
+
+    <el-dialog v-model="InVisible" title="收款单" width="80%">
+      <!-- 添加按钮和输入框 -->
+      <div style="text-align: right; margin-bottom: 20px;">
+        <el-input v-model="InId" placeholder="请输入收款单ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addIn(nowId)">添加</el-button>
+      </div>
+      <el-table :data="InData" style="width: 100%" max-height="450">
+        <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
+        <el-table-column prop="ReceNum" label="账款单号" width="220%"></el-table-column>
+        <el-table-column prop="RealReceDate" label="实际收款日期" width="220%"></el-table-column>
+        <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
+        <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
+        <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
+        <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column>
+        <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column>
+        <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="TotAmt" label="收款金额" width="220%"></el-table-column>
+        <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
+        <el-table-column prop="Notes" label="描述" width="220%"></el-table-column>
+        <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
+
+        <el-table-column label="操作" fixed="right" width="160%">
+          <template #default="scope">
+            <el-row type="flex" justify="space-between">
+              <el-button type="text" size="small" @click="DeleteIn(scope.$index, nowId, scope.row.ID)">删除</el-button>
+              <el-button type="text" size="small" @click="CheckIn(scope.row.ID)">跳转</el-button>
+            </el-row>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 销售发货表格 -->
+    </el-dialog>
+
+    <el-dialog v-model="ShouldInVisible" title="应收账款单" width="80%">
+      <!-- 添加按钮和输入框 -->
+      <div style="text-align: right; margin-bottom: 20px;">
+        <el-input v-model="ShouldInId" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addShouldIn(nowId)">添加</el-button>
+      </div>
+
+      <!-- 产品明细表格 -->
+      <el-table :data="ShouldInData" height="400" style="width: 100%">
+
+        <el-table-column prop="ID" label="ID" width="60%" />
+        <el-table-column prop="BillReceNum" label="应收账款单号" width="220%"></el-table-column>
+        <el-table-column prop="DocDate" label="单据日期" width="220%"></el-table-column>
+        <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
+        <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
+        <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
+        <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column>
+        <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column>
+        <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="TotAmt" label="总金额" width="220%"></el-table-column>
+        <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
+        <el-table-column prop="Notes" label="描述" width="220%"></el-table-column>
+        <el-table-column label="操作" fixed="right" width="150">
+          <template #default="scope">
+            <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
+
+            <el-button type="text" size="small" @click="CheckShouldIn(scope.row.ID)">跳转</el-button>
+            <el-button type="text" size="small"
+              @click="DeleteShouldIn(scope.$index, nowId, scope.row.ID)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
 
     <el-dialog v-model="SaleVisible" title="销售订单" width="80%">
       <!-- 添加按钮和输入框 -->
@@ -669,6 +738,108 @@ const router = useRouter();
 
 import { useRoute } from 'vue-router';
 const route = useRoute();
+
+const InVisible = ref(false)
+const InId = ref(null)
+const InData = ref([])
+
+const fetchInData = async (ID) => {
+  try {
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+
+    const response = await axios.post('/find/send/in', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+    InData.value = response.data.In; // 假设返回的数据结构中有 PrdtInfo 字段
+    nowId.value = ID
+    InVisible.value = true;
+  } catch (error) {
+    console.error('获取失败:', error);
+    ElMessage.error('获取失败');
+  }
+};
+const DeleteIn = (index, ID, InId) => {
+  // console.log('Delete button clicked', index, row); // 添加调试信息
+  ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    console.log('Confirmed delete', ID); // 添加调试信息
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("InId", InId)
+
+    axios.post('/delete/send/in', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+
+      // axios.post('/delete/sale/prdtInfo', {
+      //   "ID": ID,
+      //   "PrdtInfoId": PrdtInfoId.value
+      // })
+      .then(response => {
+        if (response.status === 200) {
+          ElMessage.success('删除成功');
+          fetchInData(nowId.value); // 重新获取会计实体信息数据
+        } else {
+          ElMessage.error(response.data.RetMessage || '删除失败');
+        }
+      })
+      .catch(error => {
+        ElMessage.error(error.response.data.RetMessage);
+      });
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
+};
+const addIn = async (ID) => {
+
+  console.log(nowId.value)
+  try {
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("InId", InId.value)
+
+    const response = await axios.post('/add/send/in', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+    ElMessage.success("添加成功");
+    fetchInData(nowId.value)
+    InVisible.value = ''
+  } catch (error) {
+    console.error('添加失败:', error);
+    ElMessage.error(error.response.data.RetMessage);
+  }
+};
+const CheckIn = (ID) => {
+  try {
+    // 确保 ID 是字符串
+    const searchQuery = String(ID);
+
+    // 使用路由的 resolve 方法生成完整路径
+    const route = router.resolve({
+      name: 'In', // 路由名称
+      query: { searchQuery }, // 传递的查询参数（对象形式）
+    });
+
+    // 在新标签页打开
+    window.open(route.href, '_blank');
+  } catch (error) {
+    ElMessage.error("查看失败");
+  }
+};
+
 const CheckLoadingInfo = (ID) => {
   try {
     // 确保 ID 是字符串
@@ -830,6 +1001,108 @@ const addSale = async (ID) => {
     console.error('添加失败:', error);
     ElMessage.error(error.response.data.RetMessage);
   }
+};
+
+
+const CheckShouldIn = (ID) => {
+  try {
+    // 确保 ID 是字符串
+    const searchQuery = String(ID);
+    console.log(searchQuery)
+
+    // 使用路由的 resolve 方法生成完整路径
+    const route = router.resolve({
+      name: 'ShouldIn', // 路由名称
+      query: { searchQuery }, // 传递的查询参数（对象形式）
+    });
+
+    // 在新标签页打开
+    window.open(route.href, '_blank');
+  } catch (error) {
+    ElMessage.error("查看失败");
+  }
+};
+const ShouldInVisible = ref(false)
+const ShouldInId = ref(null)
+const ShouldInData = ref([])
+
+const fetchShouldInData = async (ID) => {
+  console.log("id ? ", ID)
+
+  try {
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+
+    const response = await axios.post('/find/send/shouldIn', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    });
+    ShouldInVisible.value = true;
+
+    ShouldInData.value = Object.assign([], response.data.ShouldIn); // 强制更新
+    nowId.value = ID
+    console.log("nowid", nowId.value)
+  } catch (error) {
+    console.error('获取失败:', error);
+    ElMessage.error('获取失败');
+  }
+};
+const addShouldIn = async (ID) => {
+
+  console.log(nowId.value)
+  try {
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("ShouldInId", ShouldInId.value)
+
+    const response = await axios.post('/add/send/shouldIn', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+    ElMessage.success("添加成功");
+    fetchShouldInData(nowId.value)
+    ShouldInVisible.value = ''
+  } catch (error) {
+    console.error('添加失败:', error);
+    ElMessage.error(error.response.data.RetMessage);
+  }
+};
+
+const DeleteShouldIn = (index, ID, id) => {
+  // console.log('Delete button clicked', index, row); // 添加调试信息
+  ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    console.log('Confirmed delete', ID); // 添加调试信息
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("ShouldInId", id)
+
+    axios.post('/delete/send/shouldIn', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+      .then(response => {
+        if (response.status === 200) {
+          ElMessage.success('删除成功');
+          fetchShouldInData(nowId.value); // 重新获取会计实体信息数据
+        } else {
+          ElMessage.error(response.data.RetMessage || '删除失败');
+        }
+      })
+      .catch(error => {
+        ElMessage.error(error.response.data.RetMessage);
+      });
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 };
 // 控制主弹窗显示
 const prdtInfoVisible = ref(false);

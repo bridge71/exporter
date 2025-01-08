@@ -46,7 +46,7 @@ func (s *Server) DeleteShouldInIn(c *gin.Context) {
 	ShouldIn := models.ShouldIn{}
 	ShouldIn.ID = s.Str2Uint(c.PostForm("ID"))
 	var In models.In
-	ShouldIn.ID = s.Str2Uint(c.PostForm("InId"))
+	In.ID = s.Str2Uint(c.PostForm("InId"))
 	ShouldIn.Ins = append(ShouldIn.Ins, In)
 
 	if In.ID == 0 || ShouldIn.ID == 0 {
