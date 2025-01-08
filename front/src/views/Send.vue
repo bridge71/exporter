@@ -69,6 +69,9 @@
                   <el-button @click="fetchPrdtInfoData(scope.row.ID)" type="text" size="small">产品明细</el-button>
                   <el-button @click="fetchLoadingInfoData(scope.row.ID)" type="text" size="small">装货明细</el-button>
                   <el-button @click="fetchSaleData(scope.row.ID)" type="text" size="small">销售订单</el-button>
+
+                  <!-- <el-button @click="fetchSaleData(scope.row.ID)" type="text" size="small">应收账款单</el-button> -->
+                  <!-- <el-button @click="fetchSaleData(scope.row.ID)" type="text" size="small">收款单</el-button> -->
                 </el-row>
               </template>
             </el-table-column>

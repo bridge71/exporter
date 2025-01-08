@@ -322,23 +322,6 @@ const CheckSend = (ID) => {
     ElMessage.error("查看失败");
   }
 };
-const CheckPrdtInfo = (ID) => {
-  try {
-    // 确保 ID 是字符串
-    const searchQuery = String(ID);
-
-    // 使用路由的 resolve 方法生成完整路径
-    const route = router.resolve({
-      name: 'Prdt', // 路由名称
-      query: { searchQuery }, // 传递的查询参数（对象形式）
-    });
-
-    // 在新标签页打开
-    window.open(route.href, '_blank');
-  } catch (error) {
-    ElMessage.error("查看失败");
-  }
-};
 // 删除按钮逻辑
 const DeleteSend = (index, ID, SendId) => {
   // console.log('Delete button clicked', index, row); // 添加调试信息

@@ -15,6 +15,90 @@ func (s *Server) FindSendHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, models.Message{Send: Sends})
 }
 
+func (s *Server) DeleteSendIn(c *gin.Context) {
+	Send := models.Send{}
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	var In models.In
+	In.ID = s.Str2Uint(c.PostForm("InId"))
+	Send.Ins = append(Send.Ins, In)
+
+	if Send.ID == 0 || In.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	// 保存 Send 记录
+	if err := s.db.DeleteSendIns(&Send, &In); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "删除失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "删除成功",
+	})
+}
+
+func (s *Server) DeleteSendShouldIn(c *gin.Context) {
+	Send := models.Send{}
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	var ShouldIn models.ShouldIn
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+	Send.ShouldIns = append(Send.ShouldIns, ShouldIn)
+
+	if Send.ID == 0 || ShouldIn.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	// 保存 Send 记录
+	if err := s.db.DeleteSendShouldIns(&Send, &ShouldIn); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "删除失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "删除成功",
+	})
+}
+
+func (s *Server) FindSendShouldInHandler(c *gin.Context) {
+	Send := models.Send{}
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	if Send.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindSendShouldIns(&Send)
+	ShouldIns := Send.ShouldIns
+	c.JSON(http.StatusOK, models.Message{ShouldIn: ShouldIns})
+}
+
+func (s *Server) FindSendInHandler(c *gin.Context) {
+	Send := models.Send{}
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	if Send.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindSendIns(&Send)
+	Ins := Send.Ins
+	c.JSON(http.StatusOK, models.Message{In: Ins})
+}
+
 func (s *Server) FindSendPrdtInfoHandler(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
@@ -246,6 +330,82 @@ func (s *Server) AddSendSale(c *gin.Context) {
 	})
 }
 
+func (s *Server) AddSendIns(c *gin.Context) {
+	Send := models.Send{}
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	var In models.In
+	In.ID = s.Str2Uint(c.PostForm("InId"))
+
+	if Send.ID == 0 || In.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindById(Send.ID, &Send)
+	s.db.FindById(In.ID, &In)
+
+	if In.ReceNum == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	Send.Ins = append(Send.Ins, In)
+
+	// 保存 Send 记录
+	if err := s.db.Save(Send); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "保存失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "保存成功",
+	})
+}
+
+func (s *Server) AddSendShouldIns(c *gin.Context) {
+	Send := models.Send{}
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	var ShouldIn models.ShouldIn
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+
+	if Send.ID == 0 || ShouldIn.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindById(Send.ID, &Send)
+	s.db.FindById(ShouldIn.ID, &ShouldIn)
+
+	if ShouldIn.BillReceNum == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	Send.ShouldIns = append(Send.ShouldIns, ShouldIn)
+
+	// 保存 Send 记录
+	if err := s.db.Save(Send); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "保存失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "保存成功",
+	})
+}
+
 func (s *Server) SaveSendHandler(c *gin.Context) {
 	Send := &models.Send{}
 	if err := c.ShouldBind(Send); err != nil {
@@ -267,7 +427,7 @@ func (s *Server) SaveSendHandler(c *gin.Context) {
 		})
 	}
 	// 保存 Send 记录
-	if err := s.db.Save(Send); err != nil {
+	if err := s.db.SaveSend(Send); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "保存失败",
 		})

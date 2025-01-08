@@ -62,6 +62,9 @@
                   <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                   <el-button @click="fetchPrdtInfoData(scope.row.ID)" type="text" size="small">产品明细</el-button>
                   <el-button @click="fetchSendData(scope.row.ID)" type="text" size="small">销售发货单</el-button>
+
+                  <!-- <el-button @click="fetchSaleData(scope.row.ID)" type="text" size="small">应收账款单</el-button> -->
+                  <!-- <el-button @click="fetchSaleData(scope.row.ID)" type="text" size="small">收款单</el-button> -->
                 </el-row>
               </template>
             </el-table-column>

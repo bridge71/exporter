@@ -16,6 +16,164 @@ func (s *Server) FindSaleHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, models.Message{Sale: Sales})
 }
 
+func (s *Server) DeleteSaleIn(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	var In models.In
+	In.ID = s.Str2Uint(c.PostForm("InId"))
+	Sale.Ins = append(Sale.Ins, In)
+
+	if Sale.ID == 0 || In.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	// 保存 Sale 记录
+	if err := s.db.DeleteSaleIns(&Sale, &In); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "删除失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "删除成功",
+	})
+}
+
+func (s *Server) DeleteSaleShouldIn(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	var ShouldIn models.ShouldIn
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+	Sale.ShouldIns = append(Sale.ShouldIns, ShouldIn)
+
+	if Sale.ID == 0 || ShouldIn.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	// 保存 Sale 记录
+	if err := s.db.DeleteSaleShouldIns(&Sale, &ShouldIn); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "删除失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "删除成功",
+	})
+}
+
+func (s *Server) AddSaleShouldIn(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	var ShouldIn models.ShouldIn
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+
+	if Sale.ID == 0 || ShouldIn.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindById(ShouldIn.ID, &ShouldIn)
+	s.db.FindById(Sale.ID, &Sale)
+	Sale.ShouldIns = append(Sale.ShouldIns, ShouldIn)
+
+	if ShouldIn.BillReceNum == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	// 保存 Sale 记录
+	if err := s.db.Save(Sale); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "保存失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "保存成功",
+	})
+}
+
+func (s *Server) AddSaleIn(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	var In models.In
+	In.ID = s.Str2Uint(c.PostForm("InId"))
+
+	if Sale.ID == 0 || In.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindById(In.ID, &In)
+	s.db.FindById(Sale.ID, &Sale)
+	Sale.Ins = append(Sale.Ins, In)
+
+	if In.ReceNum == "" {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	// 保存 Sale 记录
+	if err := s.db.Save(Sale); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "保存失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "保存成功",
+	})
+}
+
+func (s *Server) FindSaleShouldInHandler(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	if Sale.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindSaleShouldIns(&Sale)
+	ShouldIns := Sale.ShouldIns
+	c.JSON(http.StatusOK, models.Message{ShouldIn: ShouldIns})
+}
+
+func (s *Server) FindSaleInHandler(c *gin.Context) {
+	Sale := models.Sale{}
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	if Sale.ID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非数字",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	s.db.FindSaleIns(&Sale)
+	Ins := Sale.Ins
+	c.JSON(http.StatusOK, models.Message{In: Ins})
+}
+
 func (s *Server) FindSalePrdtInfoHandler(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
@@ -282,7 +440,7 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 	for i := 0; i < len(diffInFirst); i++ {
 		shouldDelDocReq = append(shouldDelDocReq, models.DocReq{DocReqId: diffInFirst[i]})
 	}
-	s.db.DeleteSaleDocReq(Sale, &shouldDelDocReq)
+	// s.db.DeleteSaleDocReq(Sale, &shouldDelDocReq)
 	var err error
 	err, Sale.FileId, Sale.FileName = s.SaveFile(c, "file")
 	if err != nil {
@@ -291,7 +449,7 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 		})
 	}
 	// 保存 Sale 记录
-	if err := s.db.Save(Sale); err != nil {
+	if err := s.db.TransSale(Sale, &shouldDelDocReq); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "保存失败",
 		})

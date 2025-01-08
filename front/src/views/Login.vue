@@ -55,11 +55,12 @@ const rules = {
 // 登录按钮加载状态
 const loading = ref(false);
 
+
+
 // 登录逻辑
 const handleLogin = () => {
   loading.value = true; // 开始加载
 
-  router.push({ name: 'Acct' }); // 跳转到菜单页面
   axios
     .post('/auth', {
       Email: loginForm.value.email,
@@ -83,6 +84,11 @@ const handleLogin = () => {
 // 禁止页面滚动
 const disableScroll = () => {
   document.body.style.overflow = 'hidden';
+  ElMessage.info('操作开始，等待三秒...');
+  setTimeout(() => {
+    router.push({ name: 'Acct' }); // 跳转到菜单页面
+  }, 3000); // 3000 毫秒 = 3 秒
+
 };
 
 // 恢复页面滚动

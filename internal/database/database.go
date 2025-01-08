@@ -26,6 +26,36 @@ type Service interface {
 	FindUserById(user *models.User, userId uint)
 	FindUserByEmail(user *models.User, email string)
 
+	FindShouldIns(ShouldIn *[]models.ShouldIn)
+	FindShouldInSend(ShouldIn *models.ShouldIn)
+	FindShouldInIn(ShouldIn *models.ShouldIn)
+	FindShouldInSale(ShouldIn *models.ShouldIn)
+	SaveShouldIn(ShouldIn *models.ShouldIn) error
+	DeleteShouldInSend(ShouldIn *models.ShouldIn, send *models.Send) error
+	DeleteShouldInSale(ShouldIn *models.ShouldIn, sale *models.Sale) error
+	DeleteShouldInIn(ShouldIn *models.ShouldIn, in *models.In) error
+
+	FindIns(In *[]models.In)
+	FindInSend(In *models.In)
+	FindInShouldIn(In *models.In)
+	FindInSale(In *models.In)
+	SaveIn(In *models.In) error
+	DeleteInSend(In *models.In, send *models.Send) error
+	DeleteInSale(In *models.In, sale *models.Sale) error
+	DeleteInShouldIn(In *models.In, shouldIns *models.ShouldIn) error
+
+	DeleteSaleIns(sale *models.Sale, ins *models.In) error
+	DeleteSaleShouldIns(sale *models.Sale, shouldins *models.ShouldIn) error
+	FindSaleIns(sale *models.Sale)
+	FindSaleShouldIns(sale *models.Sale)
+
+	FindSendIns(Send *models.Send)
+	FindSendShouldIns(Send *models.Send)
+	DeleteSendIns(Send *models.Send, ins *models.In) error
+	DeleteSendShouldIns(Send *models.Send, shouldIns *models.ShouldIn) error
+
+	SaveSale(sale *models.Sale) error
+	TransSale(sale *models.Sale, DocReq *[]models.DocReq) error
 	DeleteSaleDocReq(sale *models.Sale, DocReq *[]models.DocReq) error
 	FindDocReqById(id uint, mercTypes *[]models.DocReq)
 	FindById(id uint, model interface{})
