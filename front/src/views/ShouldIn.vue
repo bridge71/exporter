@@ -108,6 +108,40 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog v-model="InVisible" title="收款单" width="80%">
+      <!-- 添加按钮和输入框 -->
+      <div style="text-align: right; margin-bottom: 20px;">
+        <el-input v-model="InId" placeholder="请输入收款单ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addIn(nowId)">添加</el-button>
+      </div>
+      <el-table :data="InData" style="width: 100%" max-height="450">
+        <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
+        <el-table-column prop="ReceNum" label="账款单号" width="220%"></el-table-column>
+        <el-table-column prop="RealReceDate" label="实际收款日期" width="220%"></el-table-column>
+        <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
+        <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
+        <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
+        <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column>
+        <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column>
+        <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="TotAmt" label="收款金额" width="220%"></el-table-column>
+        <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
+        <el-table-column prop="Notes" label="描述" width="220%"></el-table-column>
+        <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
+
+        <el-table-column label="操作" fixed="right" width="160%">
+          <template #default="scope">
+            <el-row type="flex" justify="space-between">
+              <el-button type="text" size="small" @click="DeleteIn(scope.$index, nowId, scope.row.ID)">删除</el-button>
+              <el-button type="text" size="small" @click="CheckIn(scope.row.ID)">跳转</el-button>
+            </el-row>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 销售发货表格 -->
+    </el-dialog>
+
     <el-dialog v-model="showShouldInDialog" title="应收账款单" width="80%" @close="resetShouldInForm">
       <el-form :model="shouldInForm" label-width="150px" :rules="saleRules" ref="shouldInFormRef">
         <!-- 第一行 -->
@@ -253,6 +287,148 @@
     </el-dialog>
 
 
+    <el-dialog v-model="showshowShouldInDialog" title="应收账款单" width="80%" @close="resetShouldInForm">
+      <el-form :model="shouldInForm" label-width="150px" :rules="saleRules" ref="shouldInFormRef">
+        <!-- 第一行 -->
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="应收账款单号" prop="BillReceNum">
+              <el-input v-model="shouldInForm.BillReceNum" placeholder="请输入应收账款单号" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="单据日期" prop="DocDate">
+              <el-date-picker v-model="shouldInForm.DocDate" type="date" placeholder="请选择单据日期"
+                :disabled="true"></el-date-picker>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="预计收款日期" prop="ExpReceDate">
+              <el-date-picker v-model="shouldInForm.ExpReceDate" type="date" placeholder="请选择预计收款日期"
+                :disabled="true"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!-- 第三行 -->
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="单据类型" prop="FinaDocType">
+              <el-select v-model="shouldInForm.FinaDocType" @change="onFinaDocTypeChange" placeholder="请选择财务单据类型"
+                :disabled="true">
+                <el-option v-for="type in FinaDocTypeData" :key="type.FinaDocTypeId" :label="type.FinaDocType"
+                  :value="type.FinaDocType"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="单据状态" prop="FinaDocStatus">
+              <el-select v-model="shouldInForm.FinaDocStatus" @change="onFinaDocStatusChange" placeholder="请选择财务单据状态"
+                :disabled="true">
+                <el-option v-for="st in FinaDocStatusData" :key="st.FinaDocStatusId" :label="st.FinaDocStatus"
+                  :value="st.FinaDocStatus"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="付款方" prop="MerchantId">
+              <el-select v-model="shouldInForm.MerchantId" @change="onMerchantChange" placeholder="请选择付款方"
+                :disabled="true">
+                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
+                  :value="merchant.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="收款方" prop="AcctId">
+              <el-select v-model="shouldInForm.AcctId" @change="onAcctChange" placeholder="请选择收款方" :disabled="true">
+                <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="付款银行账户" prop="BankAccountId">
+              <el-select v-model="shouldInForm.BankAccountId" @change="onBankAccountChange" placeholder="请选择付款银行账户"
+                :disabled="true">
+                <el-option v-for="bankAccount in bankAccountData" :key="bankAccount.ID" :label="bankAccount.BankAccName"
+                  :value="bankAccount.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="收款银行账户" prop="AcctBankId">
+              <el-select v-model="shouldInForm.AcctBankId" @change="onAcctBankChange" placeholder="请选择收款银行账户"
+                :disabled="true">
+                <el-option v-for="acctBank in acctBankData" :key="acctBank.ID" :label="acctBank.AccName"
+                  :value="acctBank.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!-- 第四行 -->
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="总金额" prop="TotAmt">
+              <el-input v-model="shouldInForm.TotAmt" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="币种" prop="CurrencyId">
+              <el-select v-model="shouldInForm.Currency" placeholder="请选择币种" :disabled="true">
+                <el-option v-for="currency in currencyData" :key="currency.Currency" :label="currency.Currency"
+                  :value="currency.Currency"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="备注" prop="Notes">
+              <el-input v-model="shouldInForm.Notes" type="textarea" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="文件">
+              <el-upload v-if="!shouldInForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+                :auto-upload="false" :show-file-list="true" :disabled="true">
+                <el-button type="primary" :disabled="true">选择文件</el-button>
+              </el-upload>
+              <el-button v-else type="success" @click="downloadFile(shouldInForm.FileId, shouldInForm.FileName)">
+                下载文件
+              </el-button>
+            </el-form-item>
+
+            <el-form-item label="文件名" prop="FileName">
+              <el-input v-model="shouldInForm.FileName" :readonly="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showShouldInDialog = false">取消</el-button>
+          <!-- 隐藏提交按钮 -->
+          <!-- <el-button type="primary" @click="submitShouldInForm()">提交</el-button> -->
+        </span>
+      </template>
+    </el-dialog>
 
 
   </div>
@@ -281,6 +457,87 @@ const toggleIdMode = () => {
   onlyId.value = !onlyId.value;
 };
 
+const InVisible = ref(false)
+const InId = ref(null)
+const InData = ref([])
+
+const DeleteIn = (index, ID, InId) => {
+  // console.log('Delete button clicked', index, row); // 添加调试信息
+  ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    console.log('Confirmed delete', ID); // 添加调试信息
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("InId", InId)
+
+    axios.post('/delete/shouldIn/in', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+
+      // axios.post('/delete/sale/prdtInfo', {
+      //   "ID": ID,
+      //   "PrdtInfoId": PrdtInfoId.value
+      // })
+      .then(response => {
+        if (response.status === 200) {
+          ElMessage.success('删除成功');
+          fetchInData(nowId.value); // 重新获取会计实体信息数据
+        } else {
+          ElMessage.error(response.data.RetMessage || '删除失败');
+        }
+      })
+      .catch(error => {
+        ElMessage.error(error.response.data.RetMessage);
+      });
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
+};
+const addIn = async (ID) => {
+
+  console.log(nowId.value)
+  try {
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    params.append("InId", InId.value)
+
+    const response = await axios.post('/add/shouldIn/in', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+    ElMessage.success("添加成功");
+    fetchInData(nowId.value)
+    InVisible.value = ''
+  } catch (error) {
+    console.error('添加失败:', error);
+    ElMessage.error(error.response.data.RetMessage);
+  }
+};
+const CheckIn = (ID) => {
+  try {
+    // 确保 ID 是字符串
+    const searchQuery = String(ID);
+
+    // 使用路由的 resolve 方法生成完整路径
+    const route = router.resolve({
+      name: 'In', // 路由名称
+      query: { searchQuery }, // 传递的查询参数（对象形式）
+    });
+
+    // 在新标签页打开
+    window.open(route.href, '_blank');
+  } catch (error) {
+    ElMessage.error("查看失败");
+  }
+};
 const SaleVisible = ref(false)
 const SaleId = ref(null)
 const SaleData = ref([])
@@ -528,9 +785,67 @@ const fetchFinaDocStatusData = async () => {
     ElMessage.error('获取数据失败，请稍后重试');
   }
 };
+
 const paginatedSaleData = computed(() => {
   let filteredData = shouldInData.value;
 
+  // 如果有搜索查询
+  if (searchQuery.value) {
+    console.log("s2s")
+    if (isExactMatch.value === false) {
+      if (onlyId.value === false) {
+        // 模糊匹配多个字段
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value) ||
+          item.BillReceNum.includes(searchQuery.value) ||
+          item.DocDate.includes(searchQuery.value) ||
+          item.ExpReceDate.includes(searchQuery.value) ||
+          item.FinaDocType.includes(searchQuery.value) ||
+          item.FinaDocStatus.includes(searchQuery.value) ||
+          item.Merc.includes(searchQuery.value) ||
+          item.AcctName.includes(searchQuery.value) ||
+          item.BankAccName.includes(searchQuery.value) ||
+          item.AccName.includes(searchQuery.value) ||
+          item.TotAmt.toString().includes(searchQuery.value) ||
+          item.Currency.includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value) ||
+          item.FileName.includes(searchQuery.value)
+        );
+      } else {
+        // 仅匹配 ID
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyId.value === false) {
+        // 精确匹配多个字段
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value ||
+          item.BillReceNum === searchQuery.value ||
+          item.DocDate === searchQuery.value ||
+          item.ExpReceDate === searchQuery.value ||
+          item.FinaDocType === searchQuery.value ||
+          item.FinaDocStatus === searchQuery.value ||
+          item.Merc === searchQuery.value ||
+          item.AcctName === searchQuery.value ||
+          item.BankAccName === searchQuery.value ||
+          item.AccName === searchQuery.value ||
+          item.TotAmt.toString() === searchQuery.value ||
+          item.Currency === searchQuery.value ||
+          item.Notes === searchQuery.value ||
+          item.FileName === searchQuery.value
+        );
+      } else {
+        // 仅精确匹配 ID
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
+  }
+
+  // 分页逻辑
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);
@@ -614,6 +929,26 @@ const fetchSaleData = async (ID) => {
     SaleData.value = response.data.Sale; // 假设返回的数据结构中有 PrdtInfo 字段
     nowId.value = ID
     SaleVisible.value = true;
+  } catch (error) {
+    console.error('获取失败:', error);
+    ElMessage.error('获取失败');
+  }
+};
+
+const fetchInData = async (ID) => {
+  try {
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+
+    const response = await axios.post('/find/shouldIn/in', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
+    InData.value = response.data.In; // 假设返回的数据结构中有 PrdtInfo 字段
+    nowId.value = ID
+    InVisible.value = true;
   } catch (error) {
     console.error('获取失败:', error);
     ElMessage.error('获取失败');

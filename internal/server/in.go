@@ -212,7 +212,7 @@ func (s *Server) AddInShouldIns(c *gin.Context) {
 	s.db.FindById(In.ID, &In)
 	s.db.FindById(ShouldIn.ID, &ShouldIn)
 
-	if In.ReceNum == "" {
+	if ShouldIn.BillReceNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
@@ -250,7 +250,7 @@ func (s *Server) AddInSends(c *gin.Context) {
 	s.db.FindById(In.ID, &In)
 	s.db.FindById(Send.ID, &Send)
 
-	if In.ReceNum == "" {
+	if Send.SaleInvNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
@@ -284,6 +284,7 @@ func (s *Server) SaveInHandler(c *gin.Context) {
 
 	log.Printf("保存 In: %+v\n", In)
 
+	_, In.FileId, In.FileName = s.SaveFile(c, "file")
 	// 保存 In 记录
 	if err := s.db.SaveIn(In); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
