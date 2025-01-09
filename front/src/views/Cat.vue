@@ -259,10 +259,25 @@ const catForm = ref({
   CatId: '',
 });
 
-// 表单验证规则
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+const catFormRef = ref(null);
+
+// 品类表单验证规则
 const catRules = {
-  CatAbbr: [{ required: true, message: '请输入品类缩写', trigger: 'blur' }],
-  CatName: [{ required: true, message: '请输入品类名称', trigger: 'blur' }],
+  CatAbbr: [
+    { required: true, validator: validateNotEmpty, message: '请输入品类缩写', trigger: 'blur' }
+  ],
+  CatName: [
+    { required: true, validator: validateNotEmpty, message: '请输入品类名称', trigger: 'blur' }
+  ]
 };
 
 // 分页数据
@@ -348,6 +363,14 @@ const handleDelete = (index, CatId) => {
 // 提交表单
 const submitCatForm = async () => {
   try {
+
+    const isValid = await catFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
     Object.keys(catForm.value).forEach((key) => {
       formData.append(key, catForm.value[key]);

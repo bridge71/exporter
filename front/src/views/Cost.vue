@@ -274,6 +274,13 @@ const resetCostForm = () => {
 const submitCostForm = async () => {
   try {
 
+    const isValid = await costFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     costForm.value.Amount = parseInt(costForm.value.Amount, 10);
     costForm.value.Number = parseInt(costForm.value.Number, 10);
     costForm.value.UnitPrice = parseInt(costForm.value.UnitPrice, 10);
@@ -334,13 +341,40 @@ onMounted(() => {
 const headerTitle = computed(() => '费用信息');
 const addButtonText = computed(() => '添加费用信息');
 
+// 自定义验证函数：检查非空
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 自定义验证函数：检查大于 0
+const validateGreaterThanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
 const costRules = {
   ExpType: [{ required: true, message: '请选择费用类型', trigger: 'blur' }],
   Rates: [{ required: true, message: '请选择收费标准', trigger: 'blur' }],
-  UnitPrice: [{ required: true, message: '请输入单价', trigger: 'blur' }],
-  Number: [{ required: true, message: '请输入数量', trigger: 'blur' }],
-  Amount: [{ required: true, message: '请输入金额', trigger: 'blur' }],
-  Currency: [{ required: true, message: '请选择币种', trigger: 'blur' }],
+  UnitPrice: [
+    { required: true, validator: validateNotEmpty, message: '请输入单价', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '单价必须大于 0', trigger: 'blur' }  // 新增验证：单价大于 0
+  ],
+  Number: [
+    { required: true, validator: validateNotEmpty, message: '请输入数量', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '数量必须大于 0', trigger: 'blur' }  // 新增验证：数量大于 0
+  ],
+  Amount: [
+    { required: true, validator: validateNotEmpty, message: '请输入金额', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '金额必须大于 0', trigger: 'blur' }  // 新增验证：金额大于 0
+  ],
+  Currency: [{ required: true, message: '请选择币种', trigger: 'blur' }]
 };
 </script>
 

@@ -417,11 +417,32 @@ const merchantForm = ref({
   CustsDisplay: '',
   BankAccountsDisplay: ''
 });
+
+
+const merchantFormRef = ref(null);
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 商户表单验证规则
 const merchantRules = {
-  MercCode: [{ required: true, message: '请输入商户编码', trigger: 'blur' }],
-  MercAbbr: [{ required: true, message: '请输入商户缩写', trigger: 'blur' }],
-  ShortMerc: [{ required: true, message: '请输入商户简称', trigger: 'blur' }],
-  Merc: [{ required: true, message: '请输入商户名称', trigger: 'blur' }]
+  MercCode: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户编码', trigger: 'blur' }
+  ],
+  MercAbbr: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户缩写', trigger: 'blur' }
+  ],
+  ShortMerc: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户简称', trigger: 'blur' }
+  ],
+  Merc: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户名称', trigger: 'blur' }
+  ]
 };
 
 const merchantData = ref([]);
@@ -532,6 +553,13 @@ const resetMerchantForm = () => {
 // 提交表单
 const submitMerchantForm = async () => {
   try {
+    const isValid = await merchantFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
     Object.keys(merchantForm.value).forEach((key) => {
       formData.append(key, merchantForm.value[key]);

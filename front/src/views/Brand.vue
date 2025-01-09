@@ -297,6 +297,14 @@ const onNationChange = (value) => {
 
 const submitBrandForm = async () => {
   try {
+
+    const isValid = await brandFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
     Object.keys(brandForm.value).forEach((key) => {
       formData.append(key, brandForm.value[key]);
@@ -371,9 +379,25 @@ const fetchNationData = async () => {
 const headerTitle = computed(() => '品牌信息');
 const addButtonText = computed(() => '添加品牌信息');
 
+
+const brandFormRef = ref(null);
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 品牌表单验证规则
 const brandRules = {
-  BrandName: [{ required: true, message: '请输入品牌名称', trigger: 'blur' }],
-  BrandEngName: [{ required: true, message: '请输入品牌英文名称', trigger: 'blur' }],
+  BrandName: [
+    { required: true, validator: validateNotEmpty, message: '请输入品牌名称', trigger: 'blur' }
+  ],
+  BrandEngName: [
+    { required: true, validator: validateNotEmpty, message: '请输入品牌英文名称', trigger: 'blur' }
+  ]
 };
 </script>
 

@@ -538,6 +538,14 @@ const onEduLevelChange = (value) => {
 
 const submitEmplForm = async () => {
   try {
+
+    const isValid = await emplFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
     Object.keys(emplForm.value).forEach((key) => {
       formData.append(key, emplForm.value[key]);
@@ -633,17 +641,55 @@ const fetchEduLevelData = async () => {
 
 const headerTitle = computed(() => '员工信息');
 const addButtonText = computed(() => '添加员工信息');
-
-const emplRules = {
-  EmpName: [{ required: true, message: '请输入员工姓名', trigger: 'blur' }],
-  EmpEngName: [{ required: true, message: '请输入员工英文名', trigger: 'blur' }],
-  Dept: [{ required: true, message: '请选择部门', trigger: 'blur' }],
-  Position: [{ required: true, message: '请选择岗位', trigger: 'blur' }],
-  JoinDate: [{ required: true, message: '请选择入职日期', trigger: 'blur' }],
-  Gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-  Age: [{ required: true, message: '请输入年龄', trigger: 'blur' }],
-  EduLevel: [{ required: true, message: '请选择学历', trigger: 'blur' }],
+// 自定义验证函数：检查非空
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
 };
+
+
+const emplFormRef = ref(null);
+// 自定义验证函数：检查大于 0
+const validateGreaterThanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error('年龄必须大于 0'));
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 员工表单验证规则
+const emplRules = {
+  EmpName: [
+    { required: true, validator: validateNotEmpty, message: '请输入员工姓名', trigger: 'blur' }
+  ],
+  EmpEngName: [
+    { required: true, validator: validateNotEmpty, message: '请输入员工英文名', trigger: 'blur' }
+  ],
+  Dept: [
+    { required: true, validator: validateNotEmpty, message: '请选择部门', trigger: 'blur' }
+  ],
+  Position: [
+    { required: true, validator: validateNotEmpty, message: '请选择岗位', trigger: 'blur' }
+  ],
+  JoinDate: [
+    { required: true, validator: validateNotEmpty, message: '请选择入职日期', trigger: 'blur' }
+  ],
+  Gender: [
+    { required: true, validator: validateNotEmpty, message: '请选择性别', trigger: 'blur' }
+  ],
+  Age: [
+    { required: true, validator: validateNotEmpty, message: '请输入年龄', trigger: 'blur' },
+    { validator: validateGreaterThanZero, trigger: 'blur' }  // 新增验证：年龄大于 0
+  ],
+  EduLevel: [
+    { required: true, validator: validateNotEmpty, message: '请选择学历', trigger: 'blur' }
+  ]
+};
+
 </script>
 
 

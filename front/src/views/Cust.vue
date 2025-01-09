@@ -295,10 +295,29 @@ const custForm = ref({
   FileName: '',
   FileId: ''
 });
+
+const custFormRef = ref(null);
+
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 客户表单验证规则
 const custRules = {
-  Name: [{ required: true, message: '请输入联系人姓名', trigger: 'blur' }],
-  Gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-  Nation: [{ required: true, message: '请输入国家', trigger: 'blur' }]
+  Name: [
+    { required: true, validator: validateNotEmpty, message: '请输入联系人姓名', trigger: 'blur' }
+  ],
+  Gender: [
+    { required: true, validator: validateNotEmpty, message: '请选择性别', trigger: 'blur' }
+  ],
+  Nation: [
+    { required: true, validator: validateNotEmpty, message: '请输入国家', trigger: 'blur' }
+  ]
 };
 
 const custData = ref([]);
@@ -389,6 +408,14 @@ const resetCustForm = () => {
 // 提交表单
 const submitCustForm = async () => {
   try {
+
+    const isValid = await custFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
     Object.keys(custForm.value).forEach((key) => {
       formData.append(key, custForm.value[key]);

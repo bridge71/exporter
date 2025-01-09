@@ -254,7 +254,7 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
-
+const bankFormRef = ref(null);
 const searchQuery = ref(''); // 添加搜索查询字段
 const downloadFile = async (fileId, fileName) => {
   try {
@@ -367,9 +367,17 @@ const selectedAcct = ref({ AcctId: '', AcctName: '' }); // 默认值为空对象
 
 // 会计实体银行账户信息表单提交逻辑
 const submitBankForm = async () => {
+  
   try {
-    const formData = new FormData(); // 创建 FormData 对象
+    const isValid = await bankFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
 
+    const formData = new FormData(); // 创建 FormData 对象
+    
     // 添加表单数据
     Object.keys(bankForm.value).forEach((key) => {
       formData.append(key, bankForm.value[key]);
@@ -494,11 +502,25 @@ const bankForm = ref({
 });
 
 
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));
+  } else {
+    callback();
+  }
+};
+
 // 会计实体银行账户信息表单验证规则
 const bankRules = {
-  AccName: [{ required: true, message: '请输入账户名称', trigger: 'blur' }],
-  AccNum: [{ required: true, message: '请输入账号', trigger: 'blur' }]
+  AccName: [
+    { required: true, validator: validateNotEmpty, message: '请输入账户名称', trigger: 'blur' },
+  ],
+  AccNum: [
+    { required: true, validator: validateNotEmpty, message: '请输入账号', trigger: 'blur' },
+  ]
 };
+
 
 // 表格数据（初始值为空数组）
 const acctData = ref([]); // 会计实体信息

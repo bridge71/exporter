@@ -173,13 +173,33 @@ const payMentMethodForm = ref({
   Notes: '',
   PayMentMethodId: '',
 });
-const payMentMethodRules = {
-  PayMtdName: [{ required: true, message: '请输入支付方式名称', trigger: 'blur' }],
-  PayRat: [{ required: true, message: '请输入支付费率', trigger: 'blur' }],
-  PayMth: [{ required: true, message: '请选择后付款转账方式', trigger: 'blur' }],
-  PayLimit: [{ required: true, message: '请选择后付款转账期限', trigger: 'blur' }],
+
+
+const payMentMethodFormRef = ref(null);
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
 };
 
+// 支付方式表单验证规则
+const payMentMethodRules = {
+  PayMtdName: [
+    { required: true, validator: validateNotEmpty, message: '请输入支付方式名称', trigger: 'blur' }
+  ],
+  PayRat: [
+    { required: true, validator: validateNotEmpty, message: '请输入支付费率', trigger: 'blur' }
+  ],
+  PayMth: [
+    { required: true, validator: validateNotEmpty, message: '请选择后付款转账方式', trigger: 'blur' }
+  ],
+  PayLimit: [
+    { required: true, validator: validateNotEmpty, message: '请选择后付款转账期限', trigger: 'blur' }
+  ]
+};
 const handlePageChange = (page) => {
   currentPage.value = page;
 };
@@ -264,6 +284,14 @@ const onPayLimitChange = (value) => {
 
 const submitPayMentMethodForm = async () => {
   try {
+
+    const isValid = await payMentMethodFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     payMentMethodForm.value.PayRat = parseInt(payMentMethodForm.value.PayRat, 10)
     payMentMethodForm.value.PayMentMethodId = parseInt(payMentMethodForm.value.PayMentMethodId, 10)
     const response = await axios.post('/save/payMentMethod', payMentMethodForm.value);

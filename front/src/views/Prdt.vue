@@ -477,6 +477,14 @@ const resetPrdtForm = () => {
 
 const submitPrdtForm = async () => {
   try {
+
+    const isValid = await prdtFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     console.log(prdtForm.value)
 
     prdtForm.value.Weight = parseInt(prdtForm.value.Weight, 10);
@@ -555,25 +563,55 @@ onMounted(() => {
   searchQuery.value = route.query.searchQuery || '';
   console.log("query ", route.query.searchQuery)
 });
+// 自定义验证函数：检查非空
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
 
-const headerTitle = computed(() => '产品信息');
-const addButtonText = computed(() => '添加产品信息');
+// 自定义验证函数：检查大于 0
+const validateGreaterThanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
 
+
+
+// 产品表单验证规则
 const prdtRules = {
   CatEngName: [{ required: true, message: '请选择产品', trigger: 'blur' }],
   BrandEngName: [{ required: true, message: '请选择品牌', trigger: 'blur' }],
   Factory: [{ required: true, message: '请选择生产工厂', trigger: 'blur' }],
   Currency: [{ required: true, message: '请选择币种', trigger: 'blur' }],
-  UnitPrice: [{ required: true, message: '请输入单价', trigger: 'blur' }],
+  UnitPrice: [
+    { required: true, validator: validateNotEmpty, message: '请输入单价', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '单价必须大于 0', trigger: 'blur' }  // 新增验证：大于 0
+  ],
   Unit: [{ required: true, message: '请选择单位', trigger: 'blur' }],
-  Amount: [{ required: true, message: '请输入金额', trigger: 'blur' }],
-  ItemNum: [{ required: true, message: '请输入件数', trigger: 'blur' }],
+  Amount: [
+    { required: true, validator: validateNotEmpty, message: '请输入金额', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '金额必须大于 0', trigger: 'blur' }  // 新增验证：大于 0
+  ],
+  ItemNum: [
+    { required: true, validator: validateNotEmpty, message: '请输入件数', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '件数必须大于 0', trigger: 'blur' }  // 新增验证：大于 0
+  ],
   PackSpec: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
-  Weight: [{ required: true, message: '请输入重量', trigger: 'blur' }],
+  Weight: [
+    { required: true, validator: validateNotEmpty, message: '请输入重量', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '重量必须大于 0', trigger: 'blur' }  // 新增验证：大于 0
+  ],
   WeightUnit: [{ required: true, message: '请选择重量单位', trigger: 'blur' }],
   TradeTerm: [{ required: true, message: '请选择贸易条款', trigger: 'blur' }],
-  DeliveryLoc: [{ required: true, message: '请选择交货地点', trigger: 'blur' }],
+  DeliveryLoc: [{ required: true, message: '请选择交货地点', trigger: 'blur' }]
 };
+
 </script>
 
 <style src="../assets/styles/Bottom.css"></style>
