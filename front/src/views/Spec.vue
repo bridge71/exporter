@@ -314,6 +314,14 @@ const onPackTypeChange = (value) => {
 
 const submitPackSpecForm = async () => {
   try {
+
+    const isValid = await packSpecFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
     Object.keys(packSpecForm.value).forEach((key) => {
       formData.append(key, packSpecForm.value[key]);
@@ -399,13 +407,47 @@ const fetchPackTypeData = async () => {
 const headerTitle = computed(() => '包装规格信息');
 const addButtonText = computed(() => '添加包装规格信息');
 
-const packSpecRules = {
-  SpecName: [{ required: true, message: '请输入规格名称', trigger: 'blur' }],
-  SpecEngName: [{ required: true, message: '请输入规格英文名称', trigger: 'blur' }],
-  UnitMeas: [{ required: true, message: '请选择单位', trigger: 'blur' }],
-  PackType: [{ required: true, message: '请选择包装类型', trigger: 'blur' }],
-  NetWt: [{ required: true, message: '请输入净重', trigger: 'blur' }],
+
+const packSpecFormRef = ref(null)
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
 };
+
+// 自定义验证函数，检查大于 0
+const validateGreaterThanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error('净重必须大于 0'));
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+
+// 包装规格表单验证规则
+const packSpecRules = {
+  SpecName: [
+    { required: true, validator: validateNotEmpty, message: '请输入规格名称', trigger: 'blur' }
+  ],
+  SpecEngName: [
+    { required: true, validator: validateNotEmpty, message: '请输入规格英文名称', trigger: 'blur' }
+  ],
+  UnitMeas: [
+    { required: true, validator: validateNotEmpty, message: '请选择单位', trigger: 'blur' }
+  ],
+  PackType: [
+    { required: true, validator: validateNotEmpty, message: '请选择包装类型', trigger: 'blur' }
+  ],
+  NetWt: [
+    { required: true, validator: validateNotEmpty, message: '请输入净重', trigger: 'blur' },
+    { validator: validateGreaterThanZero, trigger: 'blur' }  // 新增验证，确保大于 0
+  ]
+};
+
 </script>
 
 <style src="../assets/styles/Bottom.css"></style>

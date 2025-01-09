@@ -1366,7 +1366,24 @@ const fetchDocReqData = async () => {
     ElMessage.error('获取单据要求失败');
   }
 };
-// 销售订单信息表单验证规则
+// 自定义验证函数：检查非空
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 自定义验证函数：检查大于 0
+const validateGreaterThanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
 const saleRules = {
   OrderNum: [{ required: true, message: '请输入订单编号', trigger: 'blur' }],
   OrderDate: [{ required: true, message: '请选择订单日期', trigger: 'blur' }],
@@ -1380,15 +1397,22 @@ const saleRules = {
   SrcPlace: [{ required: true, message: '请选择起运地', trigger: 'blur' }],
   Des: [{ required: true, message: '请选择目的地', trigger: 'blur' }],
   PayMentMethodId: [{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-  TotAmt: [{ required: true, message: '请输入总金额', trigger: 'blur' }],
+  TotAmt: [
+    { required: true, validator: validateNotEmpty, message: '请输入总金额', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '总金额必须大于 0', trigger: 'blur' }  // 新增验证：总金额大于 0
+  ],
   Currency: [{ required: true, message: '请输入币种', trigger: 'blur' }],
-  TotNum: [{ required: true, message: '请输入总件数', trigger: 'blur' }],
+  TotNum: [
+    { required: true, validator: validateNotEmpty, message: '请输入总件数', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '总件数必须大于 0', trigger: 'blur' }  // 新增验证：总件数大于 0
+  ],
   PackSpecId: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
   TotalNetWeight: [{ required: true, message: '请输入总净重', trigger: 'blur' }],
   UnitMeas: [{ required: true, message: '请选择单位', trigger: 'blur' }],
   AcctBankId: [{ required: true, message: '请选择我方银行账户', trigger: 'blur' }],
-  BankAccountId: [{ required: true, message: '请选择对方银行账户', trigger: 'blur' }],
+  BankAccountId: [{ required: true, message: '请选择对方银行账户', trigger: 'blur' }]
 };
+
 
 // 表格数据（初始值为空数组）
 const acctData = ref([]); // 会计实体信息
@@ -1509,11 +1533,18 @@ const resetSaleForm = () => {
     uploadRef.value.clearFiles(); // 清空文件列表
   }
 };
-
+const saleFormRef = ref(null);
 const uploadRef = ref(null);
 
 const submitSaleForm = async () => {
   try {
+
+    const isValid = await saleFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
     const formData = new FormData();
 
     // 添加其他字段

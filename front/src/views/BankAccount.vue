@@ -291,10 +291,29 @@ const bankAccountForm = ref({
   MerchantId: '',
   Merc: ''
 });
+
+const bankAccountFormRef = ref(null);
+
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));
+  } else {
+    callback();
+  }
+};
+
+
 const bankAccountRules = {
-  BankAccName: [{ required: true, message: '请输入银行账户名称', trigger: 'blur' }],
-  CompName: [{ required: true, message: '请输入公司名称', trigger: 'blur' }],
-  AcctNum: [{ required: true, message: '请输入账号', trigger: 'blur' }]
+  BankAccName: [
+    { required: true, validator: validateNotEmpty, message: '请输入银行账户名称', trigger: 'blur' }
+  ],
+  CompName: [
+    { required: true, validator: validateNotEmpty, message: '请输入公司名称', trigger: 'blur' }
+  ],
+  AcctNum: [
+    { required: true, validator: validateNotEmpty, message: '请输入账号', trigger: 'blur' }
+  ]
 };
 
 const bankAccountData = ref([]);
@@ -394,6 +413,13 @@ const resetBankAccountForm = () => {
 // 提交表单
 const submitBankAccountForm = async () => {
   try {
+    const isValid = await bankAccountFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
     Object.keys(bankAccountForm.value).forEach((key) => {
       formData.append(key, bankAccountForm.value[key]);

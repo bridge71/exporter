@@ -124,7 +124,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, customRef } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
@@ -142,10 +142,29 @@ const SpotForm = ref({
   InvAddr: '',
   Notes: '',
 });
+
+
+const SpotFormRef = ref(null);
+// 自定义验证函数
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 库存地点表单验证规则
 const SpotRules = {
-  InvLocName: [{ required: true, message: '请输入库存地点', trigger: 'blur' }],
-  InvLocAbbr: [{ required: true, message: '请输入库存地点简称', trigger: 'blur' }],
-  InvAddr: [{ required: true, message: '请输入库存地址', trigger: 'blur' }],
+  InvLocName: [
+    { required: true, validator: validateNotEmpty, message: '请输入库存地点', trigger: 'blur' }
+  ],
+  InvLocAbbr: [
+    { required: true, validator: validateNotEmpty, message: '请输入库存地点简称', trigger: 'blur' }
+  ],
+  InvAddr: [
+    { required: true, validator: validateNotEmpty, message: '请输入库存地址', trigger: 'blur' }
+  ]
 };
 
 const handlePageChange = (page) => {
@@ -216,7 +235,15 @@ const resetSpotForm = () => {
 
 const submitSpotForm = async () => {
   try {
+    const isValid = await SpotFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     SpotForm.value.ID = parseInt(SpotForm.value.ID, 10)
+    console.log("success");
     const response = await axios.post('/save/spot', SpotForm.value);
     if (response.status === 200) {
       ElMessage.success('库存地点信息保存成功');
