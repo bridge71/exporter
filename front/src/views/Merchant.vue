@@ -9,17 +9,14 @@
       </el-aside>
 
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 商户信息表格 -->
           <el-table :data="paginatedMerchantData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="MercCode" label="商户编码" width="160%"></el-table-column>
             <el-table-column prop="MercAbbr" label="商户缩写" width="160%"></el-table-column>
             <el-table-column prop="ShortMerc" label="商户简称" width="160%"></el-table-column>
@@ -385,9 +382,12 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import SideMenu from '@/components/SideMenu.vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import axios from 'axios';
 
+const isExactMatch = ref(true);
+const onlyID = ref(true);
 const searchQuery = ref('');
 const currentPage = ref(1);
 const pageSize = 8;
@@ -429,6 +429,17 @@ const validateNotEmpty = (rule, value, callback) => {
   }
 };
 
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
+
 // 商户表单验证规则
 const merchantRules = {
   MercCode: [
@@ -453,27 +464,63 @@ const file = ref(null);
 const paginatedMerchantData = computed(() => {
   let filteredData = merchantData.value;
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.MercCode.includes(searchQuery.value) ||
-      item.MercAbbr.includes(searchQuery.value) ||
-      item.ShortMerc.includes(searchQuery.value) ||
-      item.Merc.includes(searchQuery.value) ||
-      item.EngName.includes(searchQuery.value) ||
-      item.Address.includes(searchQuery.value) ||
-      item.Nation.includes(searchQuery.value) ||
-      item.PhoneNum.includes(searchQuery.value) ||
-      item.Email.includes(searchQuery.value) ||
-      item.Fax.includes(searchQuery.value) ||
-      item.Website.includes(searchQuery.value) ||
-      item.TaxType.includes(searchQuery.value) ||
-      item.TaxCode.includes(searchQuery.value) ||
-      item.MercType.includes(searchQuery.value) ||
-      item.RegCap.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value) ||
-      item.FileName.includes(searchQuery.value) ||
-      (item.Custs && item.Custs.some(cust => cust.Name.includes(searchQuery.value))) ||
-      (item.BankAccounts && item.BankAccounts.some(account => account.AcctNum.includes(searchQuery.value)))
-    );
+    if (isExactMatch.value === false) { // 非精确匹配
+      if (onlyID.value === false) { // 不是仅按ID匹配
+        filteredData = filteredData.filter(item =>
+          item.MercCode.includes(searchQuery.value) ||
+          item.MercAbbr.includes(searchQuery.value) ||
+          item.ShortMerc.includes(searchQuery.value) ||
+          item.Merc.includes(searchQuery.value) ||
+          item.EngName.includes(searchQuery.value) ||
+          item.Address.includes(searchQuery.value) ||
+          item.Nation.includes(searchQuery.value) ||
+          item.PhoneNum.includes(searchQuery.value) ||
+          item.Email.includes(searchQuery.value) ||
+          item.Fax.includes(searchQuery.value) ||
+          item.Website.includes(searchQuery.value) ||
+          item.TaxType.includes(searchQuery.value) ||
+          item.TaxCode.includes(searchQuery.value) ||
+          item.MercType.includes(searchQuery.value) ||
+          item.RegCap.includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value) ||
+          item.FileName.includes(searchQuery.value) ||
+          (item.Custs && item.Custs.some(cust => cust.Name.includes(searchQuery.value))) ||
+          (item.BankAccounts && item.BankAccounts.some(account => account.AcctNum.includes(searchQuery.value)))
+        );
+      } else { // 仅按ID匹配
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else { // 精确匹配
+      if (onlyID.value === false) { // 不是仅按ID匹配
+        filteredData = filteredData.filter(item =>
+          item.MercCode === searchQuery.value ||
+          item.MercAbbr === searchQuery.value ||
+          item.ShortMerc === searchQuery.value ||
+          item.Merc === searchQuery.value ||
+          item.EngName === searchQuery.value ||
+          item.Address === searchQuery.value ||
+          item.Nation === searchQuery.value ||
+          item.PhoneNum === searchQuery.value ||
+          item.Email === searchQuery.value ||
+          item.Fax === searchQuery.value ||
+          item.Website === searchQuery.value ||
+          item.TaxType === searchQuery.value ||
+          item.TaxCode === searchQuery.value ||
+          item.MercType === searchQuery.value ||
+          item.RegCap === searchQuery.value ||
+          item.Notes === searchQuery.value ||
+          item.FileName === searchQuery.value ||
+          (item.Custs && item.Custs.some(cust => cust.Name === searchQuery.value)) ||
+          (item.BankAccounts && item.BankAccounts.some(account => account.AcctNum === searchQuery.value))
+        );
+      } else { // 仅按ID匹配
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;

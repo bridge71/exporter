@@ -11,18 +11,15 @@
       <!-- 主体内容 -->
       <el-container>
 
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
 
           <!-- 会计实体银行账户信息表格 -->
           <el-table :data="paginatedBankData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="AccName" label="账户名称" width="220%"></el-table-column>
             <el-table-column prop="AccNum" label="账号" width="220%"></el-table-column>
 
@@ -254,6 +251,7 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
+import HeaderComponent from '@/components/HeaderComponent.vue';
 const bankFormRef = ref(null);
 const searchQuery = ref(''); // 添加搜索查询字段
 const downloadFile = async (fileID, fileName) => {
@@ -312,7 +310,8 @@ const handleDelete = (index, ID) => {
 
 // 文件数据（会计实体银行账户信息）
 const bankFile = ref(null);
-
+const isExactMatch = ref(true);
+const onlyID = ref(true);
 // 文件选择事件（会计实体银行账户信息）
 const handleBankFileChange = (uploadFile) => {
   bankFile.value = uploadFile.raw; // 保存选择的文件
@@ -358,6 +357,17 @@ function onAcctChange(value) {
   const selectedAcct = acctData.value.find(acct => acct.ID === value);
 }
 const selectedAcct = ref({ AcctID: '', AcctName: '' }); // 默认值为空对象
+
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
 
 // 会计实体银行账户信息表单提交逻辑
 const submitBankForm = async () => {
@@ -420,19 +430,47 @@ const pageSize = 8; // 每页显示的行数
 
 const paginatedBankData = computed(() => {
   let filteredData = bankData.value;
+  console.log(bankData.value);
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.AccName.includes(searchQuery.value) ||
-      item.AccNum.includes(searchQuery.value) ||
-      item.Acct.AcctName.includes(searchQuery.value) ||
-      item.Currency.includes(searchQuery.value) ||
-      item.BankName.includes(searchQuery.value) ||
-      item.BankNum.includes(searchQuery.value) ||
-      item.SwiftCode.includes(searchQuery.value) ||
-      item.BankAddr.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value) ||
-      item.FileName.includes(searchQuery.value)
-    );
+    if (isExactMatch.value === false) {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.AccName.includes(searchQuery.value) ||
+          item.AccNum.includes(searchQuery.value) ||
+          (item.Acct && item.Acct.AcctName.includes(searchQuery.value)) ||
+          item.Currency.includes(searchQuery.value) ||
+          item.BankName.includes(searchQuery.value) ||
+          item.BankNum.includes(searchQuery.value) ||
+          item.SwiftCode.includes(searchQuery.value) ||
+          item.BankAddr.includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value) ||
+          item.FileName.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.AccName === searchQuery.value ||
+          item.AccNum === searchQuery.value ||
+          (item.Acct && item.Acct.AcctName === searchQuery.value) ||
+          item.Currency === searchQuery.value ||
+          item.BankName === searchQuery.value ||
+          item.BankNum === searchQuery.value ||
+          item.SwiftCode === searchQuery.value ||
+          item.BankAddr === searchQuery.value ||
+          item.Notes === searchQuery.value ||
+          item.FileName === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
@@ -501,6 +539,7 @@ const bankForm = ref({
   AcctID: '',
   FileID: '', // 添加 FileName 字段
   FileName: '', // 添加 FileName 字段
+  ID:'',
 });
 
 
