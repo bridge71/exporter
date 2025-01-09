@@ -22,8 +22,42 @@
           <el-table :data="paginatedSaleData" style="width: 100%" max-height="450">
             <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="OrderNum" label="订单编号" width="220%"></el-table-column>
-            <el-table-column prop="AcctName" label="销售方" width="220%"></el-table-column>
-            <el-table-column prop="Merc" label="购买方" width="220%"></el-table-column>
+            <el-table-column label="销售方" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Acct.AcctName">{{ scope.row.Acct.AcctName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="购买方" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Merchant.Merc">{{ scope.row.Merchant.Merc }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="我方银行账户" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.AcctBank.AccName">{{ scope.row.AcctBank.AccName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="对方银行账户" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.BankAccount.BankAccName">{{ scope.row.BankAccount.BankAccName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="付款方式" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PayMentMethod.PayMtdName">{{ scope.row.PayMentMethod.PayMtdName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="包装规格" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PackSpec.SpecName">{{ scope.row.PackSpec.SpecName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="QualStd" label="质量标准" width="220%"></el-table-column>
             <el-table-column prop="OrderDate" label="订单日期" width="420%"></el-table-column>
             <el-table-column prop="BillValidity" label="账单有效期" width="420%"></el-table-column>
@@ -42,15 +76,13 @@
             <el-table-column prop="EndShip" label="发货截止日期" width="420%"></el-table-column>
             <el-table-column prop="SrcPlace" label="起运地" width="220%"></el-table-column>
             <el-table-column prop="Des" label="目的地" width="220%"></el-table-column>
-            <el-table-column prop="PayMtdName" label="付款方式" width="220%"></el-table-column>
             <el-table-column prop="TotAmt" label="总金额" width="220%"></el-table-column>
             <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
             <el-table-column prop="TotNum" label="总件数" width="220%"></el-table-column>
-            <el-table-column prop="SpecName" label="包装规格" width="220%"></el-table-column>
+
             <el-table-column prop="TotalNetWeight" label="总净重" width="220%"></el-table-column>
             <el-table-column prop="UnitMeas" label="单位" width="220%"></el-table-column>
             <el-table-column prop="AccName" label="我方银行账户" width="220%"></el-table-column>
-            <el-table-column prop="BankAccName" label="对方银行账户" width="220%"></el-table-column>
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
 
@@ -1324,9 +1356,7 @@ const saleForm = ref({
   OrderNum: '',
   OrderDate: '',
   AcctID: '',
-  AcctName: '',
   MerchantID: '',
-  Merc: '',
   QualStd: '',
   BillValidity: '',
   BussOrderSta: '',
@@ -1335,18 +1365,14 @@ const saleForm = ref({
   SrcPlace: '',
   Des: '',
   PayMentMethodID: '',
-  PayMtdName: '',
   TotAmt: 0,
   Currency: '',
   TotNum: 0,
   PackSpecID: '',
-  SpecName: '',
   TotalNetWeight: '',
   UnitMeas: '',
   AcctBankID: '',
-  AccName: '',
   BankAccountID: '',
-  BankAccName: '',
   Notes: '',
   FileID: '', // 新增：文件 ID
   FileName: '', // 新增：文件名
@@ -1377,7 +1403,7 @@ const validateNotEmpty = (rule, value, callback) => {
 
 // 自定义验证函数：检查大于 0
 const validateGreaterThanZero = (rule, value, callback) => {
-  if (value <= 0) {
+  if (value < 0) {
     callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
   } else {
     callback();  // 验证通过
@@ -1386,29 +1412,29 @@ const validateGreaterThanZero = (rule, value, callback) => {
 
 const saleRules = {
   OrderNum: [{ required: true, message: '请输入订单编号', trigger: 'blur' }],
-  OrderDate: [{ required: true, message: '请选择订单日期', trigger: 'blur' }],
+  // OrderDate: [{ required: true, message: '请选择订单日期', trigger: 'blur' }],
   AcctID: [{ required: true, message: '请选择销售方', trigger: 'blur' }],
   MerchantID: [{ required: true, message: '请选择购买方', trigger: 'blur' }],
-  QualStd: [{ required: true, message: '请选择质量标准', trigger: 'blur' }],
-  BillValidity: [{ required: true, message: '请选择账单有效期', trigger: 'blur' }],
-  BussOrderSta: [{ required: true, message: '请选择单据状态', trigger: 'blur' }],
-  StartShip: [{ required: true, message: '请选择发货开始日期', trigger: 'blur' }],
-  EndShip: [{ required: true, message: '请选择发货截止日期', trigger: 'blur' }],
-  SrcPlace: [{ required: true, message: '请选择起运地', trigger: 'blur' }],
-  Des: [{ required: true, message: '请选择目的地', trigger: 'blur' }],
+  // QualStd: [{ required: true, message: '请选择质量标准', trigger: 'blur' }],
+  // BillValidity: [{ required: true, message: '请选择账单有效期', trigger: 'blur' }],
+  // BussOrderSta: [{ required: true, message: '请选择单据状态', trigger: 'blur' }],
+  // StartShip: [{ required: true, message: '请选择发货开始日期', trigger: 'blur' }],
+  // EndShip: [{ required: true, message: '请选择发货截止日期', trigger: 'blur' }],
+  // SrcPlace: [{ required: true, message: '请选择起运地', trigger: 'blur' }],
+  // Des: [{ required: true, message: '请选择目的地', trigger: 'blur' }],
   PayMentMethodID: [{ required: true, message: '请选择付款方式', trigger: 'blur' }],
   TotAmt: [
-    { required: true, validator: validateNotEmpty, message: '请输入总金额', trigger: 'blur' },
+    // { required: true, validator: validateNotEmpty, message: '请输入总金额', trigger: 'blur' },
     { validator: validateGreaterThanZero, message: '总金额必须大于 0', trigger: 'blur' }  // 新增验证：总金额大于 0
   ],
-  Currency: [{ required: true, message: '请输入币种', trigger: 'blur' }],
+  // Currency: [{ required: true, message: '请输入币种', trigger: 'blur' }],
   TotNum: [
-    { required: true, validator: validateNotEmpty, message: '请输入总件数', trigger: 'blur' },
+    // { required: true, validator: validateNotEmpty, message: '请输入总件数', trigger: 'blur' },
     { validator: validateGreaterThanZero, message: '总件数必须大于 0', trigger: 'blur' }  // 新增验证：总件数大于 0
   ],
   PackSpecID: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
-  TotalNetWeight: [{ required: true, message: '请输入总净重', trigger: 'blur' }],
-  UnitMeas: [{ required: true, message: '请选择单位', trigger: 'blur' }],
+  // TotalNetWeight: [{ required: true, message: '请输入总净重', trigger: 'blur' }],
+  // UnitMeas: [{ required: true, message: '请选择单位', trigger: 'blur' }],
   AcctBankID: [{ required: true, message: '请选择我方银行账户', trigger: 'blur' }],
   BankAccountID: [{ required: true, message: '请选择对方银行账户', trigger: 'blur' }]
 };
@@ -1476,9 +1502,17 @@ const handleDelete = (index, ID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/sale', {
-      "ID": ID,
-    })
+
+    const formData = new FormData();
+    formData.append("ID", ID)
+    axios.post('/delete/sale', formData,
+
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+        },
+      }
+    )
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');

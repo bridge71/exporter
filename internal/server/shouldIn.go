@@ -276,13 +276,41 @@ func (s *Server) AddShouldInSends(c *gin.Context) {
 
 func (s *Server) SaveShouldInHandler(c *gin.Context) {
 	ShouldIn := &models.ShouldIn{}
-	if err := c.ShouldBind(ShouldIn); err != nil {
+
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ID"))
+	if ShouldIn.ID != 0 {
+		s.db.FindByID(ShouldIn.ID, ShouldIn)
+	}
+	ShouldIn.MerchantID = s.Str2Uint(c.PostForm("MerchantID"))
+	ShouldIn.AcctID = s.Str2Uint(c.PostForm("AcctID"))
+	ShouldIn.BankAccountID = s.Str2Uint(c.PostForm("BankAccountID"))
+	ShouldIn.AcctBankID = s.Str2Uint(c.PostForm("AcctBankID"))
+
+	// 验证必填字段
+	if ShouldIn.MerchantID == 0 || ShouldIn.AcctID == 0 || ShouldIn.BankAccountID == 0 || ShouldIn.AcctBankID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+			RetMessage: "绑定数据失败，必填字段缺失",
 		})
 		return
 	}
+
+	// 绑定嵌套结构体
+	ShouldIn.Merchant.ID = ShouldIn.MerchantID
+	ShouldIn.Acct.ID = ShouldIn.AcctID
+	ShouldIn.BankAccount.ID = ShouldIn.BankAccountID
+	ShouldIn.AcctBank.ID = ShouldIn.AcctBankID
+
+	// 绑定其他字段
+	ShouldIn.BillReceNum = c.PostForm("BillReceNum")
+	ShouldIn.DocDate = c.PostForm("DocDate")
+	ShouldIn.ExpReceDate = c.PostForm("ExpReceDate")
+	ShouldIn.FinaDocType = c.PostForm("FinaDocType")
+	ShouldIn.FinaDocStatus = c.PostForm("FinaDocStatus")
+	ShouldIn.TotAmt = s.Str2Uint(c.PostForm("TotAmt"))
+	ShouldIn.Currency = c.PostForm("Currency")
+	ShouldIn.Notes = c.PostForm("Notes")
+	ShouldIn.FileID = s.Str2Uint(c.PostForm("FileID"))
+	ShouldIn.FileName = c.PostForm("FileName")
 
 	log.Printf("保存 ShouldIn: %+v\n", ShouldIn)
 

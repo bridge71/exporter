@@ -26,6 +26,9 @@ type Service interface {
 	FindUserByID(user *models.User, userID uint)
 	FindUserByEmail(user *models.User, email string)
 
+	FindPrdtInfo(bankAccounts *[]models.PrdtInfo)
+	FindLoadingInfo(LoadingInfo *[]models.LoadingInfo)
+
 	FindShouldOuts(ShouldOut *[]models.ShouldOut)
 	FindShouldOutPurrec(ShouldOut *models.ShouldOut)
 	FindShouldOutOut(ShouldOut *models.ShouldOut)

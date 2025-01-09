@@ -65,10 +65,12 @@ func (s *Server) FindUserHandler(c *gin.Context) {
 
 func (s *Server) SaveUserHandler(c *gin.Context) {
 	user := &models.User{}
-	err := c.ShouldBind(user)
-	if err != nil {
+	user.Email = c.PostForm("Email")
+	user.UserName = c.PostForm("UserName")
+	user.EmplID = s.Str2Uint(c.PostForm("EmplID"))
+	if user.Email == "" || user.UserName == "" || user.EmplID == 0 {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of user",
+			RetMessage: "不可为空",
 		})
 		return
 	}
@@ -83,9 +85,9 @@ func (s *Server) SaveUserHandler(c *gin.Context) {
 		})
 		return
 	}
-	user.Password, err = EncryptPassword(user.Password)
+	user.Password, _ = EncryptPassword(user.Password)
 
-	err = s.db.Save(user)
+	err := s.db.Save(user)
 
 	user.Password = ""
 	if err != nil {

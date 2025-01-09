@@ -33,8 +33,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.BrandID)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -253,7 +252,11 @@ const handleDelete = (index, BrandID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/brand', { BrandID })
+    axios.post('/delete/brand', {
+      ID: BrandID,
+      BrandName: "ss",
+      BrandEngName: "ss",
+    })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');

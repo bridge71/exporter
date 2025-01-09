@@ -38,8 +38,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.BankAccID)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -74,8 +73,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="币种" prop="Currency">
-              <el-input v-model="bankAccountForm.Currency"></el-input>
+
+            <el-form-item label="币种">
+              <el-select v-model="bankAccountForm.Currency" placeholder="请选择币种">
+                <el-option v-for="currency in currencyData" :key="currency.CurrencyID" :label="currency.Currency"
+                  :value="currency.Currency"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -246,9 +249,10 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联商户信息">
-              <el-select v-model="bankAccountForm.MerchantID" @change="onMercChange" placeholder="请选择商户信息">
-                <el-option v-for="merc in merchantData" :key="merc.MerchantID"
-                  :label="`${merc.Merc} (${merc.MercCode})`" :value="merc.MerchantID"></el-option>
+              <el-select v-model="bankAccountForm.MerchantID" :disabled="true" @change="onMercChange"
+                placeholder="请选择商户信息">
+                <el-option v-for="merc in merchantData" :key="merc.ID" :label="`${merc.Merc} (${merc.MercCode})`"
+                  :value="merc.MerchantID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -313,6 +317,9 @@ const bankAccountRules = {
   ],
   AcctNum: [
     { required: true, validator: validateNotEmpty, message: '请输入账号', trigger: 'blur' }
+  ],
+  BankName: [
+    { required: true, validator: validateNotEmpty, message: '请输入开户行名称', trigger: 'blur' }
   ]
 };
 
@@ -421,8 +428,13 @@ const submitBankAccountForm = async () => {
     }
 
     const formData = new FormData();
+
+    formData.append("MercCode", "ss")
+    formData.append("ShortMerc", "wss")
     Object.keys(bankAccountForm.value).forEach((key) => {
-      formData.append(key, bankAccountForm.value[key]);
+      if (key != 'Merchant') {
+        formData.append(key, bankAccountForm.value[key]);
+      }
     });
     if (bankAccountFile.value) {
       formData.append('file', bankAccountFile.value);
@@ -451,11 +463,14 @@ const handleDelete = (index, BankAccID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/bankAccount', {
-      BankAccID: BankAccID,
-      BankAccName: bankAccountData.value[index].BankAccName,
-      CompName: bankAccountData.value[index].CompName,
-      AcctNum: bankAccountData.value[index].AcctNum
+
+    const params = new URLSearchParams();
+    params.append('ID', BankAccID); // 添加表单字段
+    axios.post('/delete/bankAccount', params, {
+
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
     })
       .then(response => {
         if (response.status === 200) {
@@ -519,7 +534,19 @@ const onMercChange = (value) => {
   }
 };
 
+const currencyData = ref([]); // 存储货币数据
+
+const fetchCurrencyData = async () => {
+  try {
+    const response = await axios.get('/find/currency'); // 调用货币数据接口
+    currencyData.value = response.data.Currency; // 假设返回的数据结构中有 Currency 字段
+  } catch (error) {
+    console.error('获取货币数据失败:', error);
+    ElMessage.error('获取货币数据失败');
+  }
+};
 onMounted(() => {
+  fetchCurrencyData();
   fetchBankAccountData();
   fetchMerchantData();
 });

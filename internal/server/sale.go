@@ -200,7 +200,8 @@ func (s *Server) FindSaleSendHandler(c *gin.Context) {
 // DeleteSaleHandler 删除 Sale 记录
 func (s *Server) DeleteSaleHandler(c *gin.Context) {
 	Sale := &models.Sale{}
-	if err := c.ShouldBind(Sale); err != nil {
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	if Sale.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "绑定数据失败",
 		})
@@ -360,13 +361,53 @@ func (s *Server) AddSaleSend(c *gin.Context) {
 
 func (s *Server) SaveSaleHandler(c *gin.Context) {
 	Sale := &models.Sale{}
-	if err := c.ShouldBind(Sale); err != nil {
+
+	// 如果 ID 存在，查找已有记录
+	Sale.ID = s.Str2Uint(c.PostForm("ID"))
+	if Sale.ID != 0 {
+		s.db.FindByID(Sale.ID, Sale)
+	}
+	Sale.AcctID = s.Str2Uint(c.PostForm("AcctID"))
+	Sale.MerchantID = s.Str2Uint(c.PostForm("MerchantID"))
+	Sale.PayMentMethodID = s.Str2Uint(c.PostForm("PayMentMethodID"))
+	Sale.PackSpecID = s.Str2Uint(c.PostForm("PackSpecID"))
+	Sale.AcctBankID = s.Str2Uint(c.PostForm("AcctBankID"))
+	Sale.BankAccountID = s.Str2Uint(c.PostForm("BankAccountID"))
+
+	// 验证必填字段
+	if Sale.AcctID == 0 || Sale.MerchantID == 0 || Sale.PayMentMethodID == 0 || Sale.PackSpecID == 0 || Sale.AcctBankID == 0 || Sale.BankAccountID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+			RetMessage: "绑定数据失败，必填字段缺失",
 		})
 		return
 	}
+
+	// 绑定嵌套结构体
+	Sale.Acct.ID = Sale.AcctID
+	Sale.Merchant.ID = Sale.MerchantID
+	Sale.PayMentMethod.ID = Sale.PayMentMethodID
+	Sale.PackSpec.ID = Sale.PackSpecID
+	Sale.AcctBank.ID = Sale.AcctBankID
+	Sale.BankAccount.ID = Sale.BankAccountID
+
+	// 绑定其他字段
+	Sale.OrderNum = c.PostForm("OrderNum")
+	Sale.OrderDate = c.PostForm("OrderDate")
+	Sale.QualStd = c.PostForm("QualStd")
+	Sale.BillValidity = c.PostForm("BillValidity")
+	Sale.BussOrderSta = c.PostForm("BussOrderSta")
+	Sale.StartShip = c.PostForm("StartShip")
+	Sale.EndShip = c.PostForm("EndShip")
+	Sale.SrcPlace = c.PostForm("SrcPlace")
+	Sale.Des = c.PostForm("Des")
+	Sale.TotAmt = s.Str2Uint(c.PostForm("TotAmt"))
+	Sale.Currency = c.PostForm("Currency")
+	Sale.TotNum = s.Str2Uint(c.PostForm("TotNum"))
+	Sale.TotalNetWeight = c.PostForm("TotalNetWeight")
+	Sale.UnitMeas = c.PostForm("UnitMeas")
+	Sale.Notes = c.PostForm("Notes")
+	Sale.FileName = c.PostForm("FileName")
+	Sale.FileID = s.Str2Uint(c.PostForm("FileID"))
 
 	log.Printf("保存 Sale: %+v\n", Sale)
 

@@ -7,7 +7,20 @@ import (
 )
 
 func (s *service) FindSales(sale *[]models.Sale) {
-	s.gormDB.Preload("DocReq").Order("id desc").Find(sale)
+	s.gormDB.
+		Preload("DocReq").        // 加载 DocReq
+		Preload("PrdtInfos").     // 加载 PrdtInfos
+		Preload("Sends").         // 加载 Sends
+		Preload("ShouldIns").     // 加载 ShouldIns
+		Preload("Ins").           // 加载 Ins
+		Preload("Acct").          // 加载 Acct
+		Preload("Merchant").      // 加载 Merchant
+		Preload("PayMentMethod"). // 加载 PayMentMethod
+		Preload("PackSpec").      // 加载 PackSpec
+		Preload("AcctBank").      // 加载 AcctBank
+		Preload("BankAccount").   // 加载 BankAccount
+		Order("id desc").         // 按 ID 降序排序
+		Find(sale)                // 查询结果存储到 sales 中
 }
 
 func (s *service) FindSalePrdtInfo(sale *models.Sale) {
@@ -35,7 +48,7 @@ func (s *service) FindSaleShouldIns(sale *models.Sale) {
 }
 
 func (s *service) SaveSale(sale *models.Sale) error {
-	return s.gormDB.Omit("Sends", "PrdtInfos", "DocReq", "Ins", "ShouldIns").Save(sale).Error
+	return s.gormDB.Save(sale).Error
 }
 
 func (s *service) DeleteSaleDocReq(sale *models.Sale, DocReq *[]models.DocReq) error {
@@ -57,7 +70,7 @@ func (s *service) TransSale(sale *models.Sale, DocReq *[]models.DocReq) error {
 				return err
 			}
 		}
-		if err := s.gormDB.Omit("Sends", "PrdtInfos").Save(sale).Error; err != nil {
+		if err := s.gormDB.Save(sale).Error; err != nil {
 			return err
 		}
 		return nil

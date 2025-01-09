@@ -3,11 +3,22 @@ package database
 import "exporter/internal/models"
 
 func (s *service) SaveSend(Send *models.Send) error {
-	return s.gormDB.Omit("Sales", "LoadingInfos", "PrdtInfos").Save(Send).Error
+	return s.gormDB.Save(Send).Error
 }
 
 func (s *service) FindSends(Send *[]models.Send) {
-	s.gormDB.Order("id desc").Find(Send)
+	s.gormDB.
+		Preload("Sales").         // 加载 Sales
+		Preload("PrdtInfos").     // 加载 PrdtInfos
+		Preload("LoadingInfos").  // 加载 LoadingInfos
+		Preload("ShouldIns").     // 加载 ShouldIns
+		Preload("Ins").           // 加载 Ins
+		Preload("Acct").          // 加载 Acct
+		Preload("PackSpec").      // 加载 PackSpec
+		Preload("PayMentMethod"). // 加载 PayMentMethod
+		Preload("AcctBank").      // 加载 AcctBank
+		Order("id desc").         // 按 ID 降序排序
+		Find(Send)                // 查询结果存储到 sends 中
 }
 
 func (s *service) FindSendPrdtInfo(Send *models.Send) {

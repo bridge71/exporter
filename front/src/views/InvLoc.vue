@@ -159,12 +159,12 @@ const SpotRules = {
   InvLocName: [
     { required: true, validator: validateNotEmpty, message: '请输入库存地点', trigger: 'blur' }
   ],
-  InvLocAbbr: [
-    { required: true, validator: validateNotEmpty, message: '请输入库存地点简称', trigger: 'blur' }
-  ],
-  InvAddr: [
-    { required: true, validator: validateNotEmpty, message: '请输入库存地址', trigger: 'blur' }
-  ]
+  // InvLocAbbr: [
+  //   { required: true, validator: validateNotEmpty, message: '请输入库存地点简称', trigger: 'blur' }
+  // ],
+  // InvAddr: [
+  //   { required: true, validator: validateNotEmpty, message: '请输入库存地址', trigger: 'blur' }
+  // ]
 };
 
 const handlePageChange = (page) => {
@@ -201,12 +201,15 @@ const handleView = (index, row) => {
 };
 
 const handleDelete = (index, SpotID) => {
-  ElMessageBox.confirm('确定要删除该支付方式信息吗?', '提示', {
+  ElMessageBox.confirm('确定要删除该库存地点信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/spot', { SpotID })
+    axios.post('/delete/spot', {
+      ID: SpotID,
+      InvLocName: "ss"
+    })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');

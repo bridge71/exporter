@@ -76,8 +76,12 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="币种" prop="Currency">
-              <el-input v-model="bankForm.Currency"></el-input>
+
+            <el-form-item label="币种">
+              <el-select v-model="bankForm.Currency" placeholder="请选择币种">
+                <el-option v-for="currency in currencyData" :key="currency.CurrencyID" :label="currency.Currency"
+                  :value="currency.Currency"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -229,7 +233,7 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联会计实体信息">
-              <el-select v-model="bankForm.AcctID" @change=onAcctChange placeholder="请选择会计实体信息">
+              <el-select v-model="bankForm.AcctID" :disabled="true" @change=onAcctChange placeholder="请选择会计实体信息">
                 <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} (${acct.AcctCode})`"
                   :value="acct.ID"></el-option>
               </el-select>
@@ -289,10 +293,14 @@ const handleDelete = (index, ID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/acctBank', {
-      "ID": ID,
-      "AccName": "ss",
-      "AccNum": "ss"
+
+    const params = new URLSearchParams();
+    params.append('ID', ID); // 添加表单字段
+    axios.post('/delete/acctBank', params, {
+
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
     })
       .then(response => {
         if (response.status === 200) {
@@ -440,9 +448,21 @@ const paginatedBankData = computed(() => {
 });
 
 
+const currencyData = ref([]); // 存储货币数据
+
+const fetchCurrencyData = async () => {
+  try {
+    const response = await axios.get('/find/currency'); // 调用货币数据接口
+    currencyData.value = response.data.Currency; // 假设返回的数据结构中有 Currency 字段
+  } catch (error) {
+    console.error('获取货币数据失败:', error);
+    ElMessage.error('获取货币数据失败');
+  }
+};
 onMounted(() => {
   fetchAcctData(); // 获取会计实体信息
   fetchAcctBankData(); // 获取会计实体银行账户信息
+  fetchCurrencyData();
 });
 // 定义接口请求函数
 const fetchAcctData = async () => {

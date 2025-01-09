@@ -18,16 +18,14 @@
 
         <el-main>
 
-          <!-- 销售订单信息表格 -->
           <el-table :data="paginatedBuyData" style="width: 100%" max-height="450">
             <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="OrderNum" label="订单编号" width="220%"></el-table-column>
-            <el-table-column prop="AcctName" label="销售方" width="220%"></el-table-column>
-            <el-table-column prop="Merc" label="购买方" width="220%"></el-table-column>
+            <el-table-column prop="AcctName" label="购买方" width="220%"></el-table-column>
+            <el-table-column prop="Merc" label="销售方" width="220%"></el-table-column>
             <el-table-column prop="QualStd" label="质量标准" width="220%"></el-table-column>
             <el-table-column prop="OrderDate" label="订单日期" width="420%"></el-table-column>
             <el-table-column prop="BillValidity" label="账单有效期" width="420%"></el-table-column>
-            <el-table-column prop="BussOrderSta" label="单据状态" width="220%"></el-table-column>
             <el-table-column label="单据要求" width="700%">
               <template #default="scope">
                 <div v-if="scope.row.DocReq && scope.row.DocReq.length > 0">
@@ -49,8 +47,8 @@
             <el-table-column prop="SpecName" label="包装规格" width="220%"></el-table-column>
             <el-table-column prop="TotalNetWeight" label="总净重" width="220%"></el-table-column>
             <el-table-column prop="UnitMeas" label="单位" width="220%"></el-table-column>
-            <el-table-column prop="AccName" label="我方银行账户" width="220%"></el-table-column>
-            <el-table-column prop="BankAccName" label="对方银行账户" width="220%"></el-table-column>
+            <el-table-column prop="AccName" label="对方银行账户" width="220%"></el-table-column>
+            <el-table-column prop="BankAccName" label="我方银行账户" width="220%"></el-table-column>
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
 
@@ -76,10 +74,10 @@
       </el-container>
     </el-container>
 
-    <el-dialog v-model="OutVisible" title="付款单" width="80%">
+    <el-dialog v-model="OutVisible" title="收款单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
-        <el-input v-model="OutID" placeholder="请输入付款单ID" style="width: 200px; margin-right: 10px;" />
+        <el-input v-model="OutID" placeholder="请输入收款单ID" style="width: 200px; margin-right: 10px;" />
         <el-button type="primary" @click="addOut(nowID)">添加</el-button>
       </div>
       <el-table :data="OutData" style="width: 100%" max-height="450">
@@ -89,10 +87,10 @@
         <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
         <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
         <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
-        <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column>
-        <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column>
-        <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column>
-        <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="Merc" label="收款方" width="220%"></el-table-column>
+        <el-table-column prop="AcctName" label="付款方" width="220%"></el-table-column>
+        <el-table-column prop="BankAccName" label="收款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="AccName" label="付款银行账户" width="220%"></el-table-column>
         <el-table-column prop="TotAmt" label="收款金额" width="220%"></el-table-column>
         <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
         <el-table-column prop="Notes" label="描述" width="220%"></el-table-column>
@@ -110,7 +108,7 @@
       <!-- 销售发货表格 -->
     </el-dialog>
 
-    <el-dialog v-model="ShouldOutVisible" title="应付账款单" width="80%">
+    <el-dialog v-model="ShouldOutVisible" title="应收账款单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
         <el-input v-model="ShouldOutID" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />
@@ -121,15 +119,15 @@
       <el-table :data="ShouldOutData" height="400" style="width: 100%">
 
         <el-table-column prop="ID" label="ID" width="60%" />
-        <el-table-column prop="BillReceNum" label="应付账款单号" width="220%"></el-table-column>
+        <el-table-column prop="BillReceNum" label="应收账款单号" width="220%"></el-table-column>
         <el-table-column prop="DocDate" label="单据日期" width="220%"></el-table-column>
-        <el-table-column prop="ExpReceDate" label="预计付款日期" width="220%"></el-table-column>
+        <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
         <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
         <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
-        <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column>
-        <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column>
-        <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column>
-        <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="Merc" label="收款方" width="220%"></el-table-column>
+        <el-table-column prop="AcctName" label="付款方" width="220%"></el-table-column>
+        <el-table-column prop="BankAccName" label="收款银行账户" width="220%"></el-table-column>
+        <el-table-column prop="AccName" label="付款银行账户" width="220%"></el-table-column>
         <el-table-column prop="TotAmt" label="总金额" width="220%"></el-table-column>
         <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
         <el-table-column prop="Notes" label="描述" width="220%"></el-table-column>
@@ -207,7 +205,6 @@
       </el-table>
     </el-dialog>
 
-    <!-- 添加销售订单信息的对话框 -->
     <el-dialog v-model="showBuyDialog" title="采购订单信息" width="80%" @close="resetBuyForm">
       <el-form :model="buyForm" label-width="150px" :rules="buyRules" ref="buyFormRef">
         <el-row :gutter="20">
@@ -225,15 +222,15 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="销售方" prop="AcctID">
-              <el-select v-model="buyForm.AcctID" @change="onAcctChange" placeholder="请选择销售方">
+            <el-form-item label="购买方" prop="AcctID">
+              <el-select v-model="buyForm.AcctID" @change="onAcctChange" placeholder="请选择购买方">
                 <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="购买方" prop="MerchantID">
-              <el-select v-model="buyForm.MerchantID" @change="onMerchantChange" placeholder="请选择购买方">
+            <el-form-item label="销售方" prop="MerchantID">
+              <el-select v-model="buyForm.MerchantID" @change="onMerchantChange" placeholder="请选择销售方">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -255,7 +252,7 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="付款方式" prop="PayMentMethodID">
               <el-select v-model="buyForm.PayMentMethodID" placeholder="请选择付款方式">
                 <el-option v-for="payMentMethod in payMentMethodData" :key="payMentMethod.ID"
@@ -263,23 +260,9 @@
               </el-select>
             </el-form-item>
           </el-col>
+
         </el-row>
 
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="账单有效期" prop="BillValidity">
-              <el-date-picker v-model="buyForm.BillValidity" type="date" placeholder="选择日期"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="单据状态" prop="BussOrderSta">
-              <el-select v-model="buyForm.BussOrderSta" placeholder="请选择单据状态">
-                <el-option v-for="bussOrderSta in bussOrderStaData" :key="bussOrderSta.BussOrderSta"
-                  :label="bussOrderSta.BussOrderSta" :value="bussOrderSta.BussOrderSta"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
 
         <el-row :gutter="20">
 
@@ -373,16 +356,16 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="我方银行账户" prop="AcctBankID">
-              <el-select v-model="buyForm.AcctBankID" @change="onAcctBankChange" placeholder="请选择我方银行账户">
+            <el-form-item label="对方银行账户" prop="AcctBankID">
+              <el-select v-model="buyForm.AcctBankID" @change="onAcctBankChange" placeholder="请选择对方银行账户">
                 <el-option v-for="acctBank in acctBankData" :key="acctBank.ID" :label="acctBank.AccName"
                   :value="acctBank.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="对方银行账户" prop="BankAccountID">
-              <el-select v-model="buyForm.BankAccountID" @change="onBankAccountChange" placeholder="请选择对方银行账户">
+            <el-form-item label="我方银行账户" prop="BankAccountID">
+              <el-select v-model="buyForm.BankAccountID" @change="onBankAccountChange" placeholder="请选择我方银行账户">
                 <el-option v-for="bankAccount in bankAccountData" :key="bankAccount.ID" :label="bankAccount.BankAccName"
                   :value="bankAccount.ID"></el-option>
               </el-select>
@@ -450,15 +433,15 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="销售方" prop="AcctID">
-              <el-select v-model="buyForm.AcctID" @change="onAcctChange" placeholder="请选择销售方" :disabled="true">
+            <el-form-item label="购买方" prop="AcctID">
+              <el-select v-model="buyForm.AcctID" @change="onAcctChange" placeholder="请选择购买方" :disabled="true">
                 <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="购买方" prop="MerchantID">
-              <el-select v-model="buyForm.MerchantID" @change="onMerchantChange" placeholder="请选择购买方" :disabled="true">
+            <el-form-item label="销售方" prop="MerchantID">
+              <el-select v-model="buyForm.MerchantID" @change="onMerchantChange" placeholder="请选择销售方" :disabled="true">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -493,17 +476,9 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="账单有效期" prop="BillValidity">
+            <el-form-item label="订单有效期" prop="BillValidity">
               <el-date-picker v-model="buyForm.BillValidity" type="date" placeholder="选择日期"
                 :readonly="true"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="单据状态" prop="BussOrderSta">
-              <el-select v-model="buyForm.BussOrderSta" placeholder="请选择单据状态" :disabled="true">
-                <el-option v-for="bussOrderSta in bussOrderStaData" :key="bussOrderSta.BussOrderSta"
-                  :label="bussOrderSta.BussOrderSta" :value="bussOrderSta.BussOrderSta"></el-option>
-              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -599,8 +574,8 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="我方银行账户" prop="AcctBankID">
-              <el-select v-model="buyForm.AcctBankID" @change="onAcctBankChange" placeholder="请选择我方银行账户"
+            <el-form-item label="对方银行账户" prop="AcctBankID">
+              <el-select v-model="buyForm.AcctBankID" @change="onAcctBankChange" placeholder="请选择对方银行账户"
                 :disabled="true">
                 <el-option v-for="acctBank in acctBankData" :key="acctBank.ID" :label="acctBank.AccName"
                   :value="acctBank.ID"></el-option>
@@ -608,8 +583,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="对方银行账户" prop="BankAccountID">
-              <el-select v-model="buyForm.BankAccountID" @change="onBankAccountChange" placeholder="请选择对方银行账户"
+            <el-form-item label="我方银行账户" prop="BankAccountID">
+              <el-select v-model="buyForm.BankAccountID" @change="onBankAccountChange" placeholder="请选择我方银行账户"
                 :disabled="true">
                 <el-option v-for="bankAccount in bankAccountData" :key="bankAccount.ID" :label="bankAccount.BankAccName"
                   :value="bankAccount.ID"></el-option>
@@ -1450,8 +1425,12 @@ const handleDelete = (index, ID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/buy', {
-      "ID": ID,
+
+
+    const formData = new FormData();
+    formData.append("ID", ID)
+    axios.post('/delete/buy', formData, {
+      'Content-Type': 'multipart/form-data',
     })
       .then(response => {
         if (response.status === 200) {

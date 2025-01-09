@@ -27,8 +27,10 @@
             <el-table-column prop="DeclHS" label="报关HS编码" width="160"></el-table-column>
             <el-table-column prop="DocHS" label="单据HS编码" width="160"></el-table-column>
             <el-table-column prop="CAS" label="CAS编码" width="160"></el-table-column>
-            <el-table-column prop="GB" label="国标编码" width="160"></el-table-column>
             <el-table-column prop="StdDoc" label="国标文件" width="220"></el-table-column>
+            <el-table-column prop="Component" label="成分含量" width="220"></el-table-column>
+            <el-table-column prop="Source" label="底料来源" width="220"></el-table-column>
+            <el-table-column prop="Use" label="用途" width="220"></el-table-column>
             <el-table-column prop="Notes" label="备注" width="220"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="220"></el-table-column>
             <el-table-column label="操作" fixed="right" width="200">
@@ -36,8 +38,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.CatID)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -51,7 +52,7 @@
     </el-container>
 
     <!-- 添加/编辑品类信息的对话框 -->
-    <el-dialog v-model="showCatDialog" :title="dialogTitle" width="50%" @close="resetCatForm">
+    <el-dialog v-model="showCatDialog" :title="dialogTitle" width="80%" @close="resetCatForm">
       <el-form :model="catForm" label-width="150px" :rules="catRules" ref="catFormRef">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -98,13 +99,27 @@
               <el-input v-model="catForm.GB"></el-input>
             </el-form-item>
           </el-col>
+
           <el-col :span="12">
-            <el-form-item label="国标文件" prop="StdDoc">
-              <el-input v-model="catForm.StdDoc"></el-input>
+            <el-form-item label="成分含量" prop="Notes">
+              <el-input v-model="catForm.Component" type="textarea"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
 
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="底料来源" prop="Source">
+              <el-input v-model="catForm.Source" type="textarea"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="用途" prop="Use">
+              <el-input v-model="catForm.Use" type="textarea"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="备注" prop="Notes">
@@ -139,7 +154,7 @@
     </el-dialog>
 
     <!-- 查看品类信息的对话框 -->
-    <el-dialog v-model="showViewCatDialog" title="品类信息" width="50%">
+    <el-dialog v-model="showViewCatDialog" title="品类信息" width="80%">
       <el-form :model="catForm" label-width="150px">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -182,13 +197,28 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="国标编码">
+            <el-form-item label="国标编码" prop="GB">
               <el-input v-model="catForm.GB" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
+
           <el-col :span="12">
-            <el-form-item label="国标文件">
-              <el-input v-model="catForm.StdDoc" :readonly="true"></el-input>
+            <el-form-item label="成分含量" prop="Notes">
+              <el-input v-model="catForm.Component" :readonly="true" type="textarea"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="底料来源" prop="Source">
+              <el-input v-model="catForm.Source" :readonly="true" type="textarea"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="用途" prop="Use">
+              <el-input v-model="catForm.Use" :readonly="true" type="textarea"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -224,7 +254,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, readonly } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
@@ -252,8 +282,10 @@ const catForm = ref({
   DocHS: '',
   CAS: '',
   GB: '',
-  StdDoc: '',
   Notes: '',
+  Source: '',
+  Component: '',
+  Use: '',
   FileID: '',
   FileName: '',
   CatID: '',
@@ -277,6 +309,9 @@ const catRules = {
   ],
   CatName: [
     { required: true, validator: validateNotEmpty, message: '请输入品类名称', trigger: 'blur' }
+  ],
+  CatEngName: [
+    { required: true, validator: validateNotEmpty, message: '请输入品类英文名称', trigger: 'blur' }
   ]
 };
 
@@ -343,7 +378,12 @@ const handleDelete = (index, CatID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/cat', { CatID })
+    axios.post('/delete/cat', {
+      ID: CatID,
+      CatEngName: "ss",
+      CatName: "ss",
+      CatAbbr: "ss"
+    })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');

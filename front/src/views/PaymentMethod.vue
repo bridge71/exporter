@@ -31,8 +31,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.PayMentMethodID)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -190,15 +189,15 @@ const payMentMethodRules = {
   PayMtdName: [
     { required: true, validator: validateNotEmpty, message: '请输入支付方式名称', trigger: 'blur' }
   ],
-  PayRat: [
-    { required: true, validator: validateNotEmpty, message: '请输入支付费率', trigger: 'blur' }
-  ],
-  PayMth: [
-    { required: true, validator: validateNotEmpty, message: '请选择后付款转账方式', trigger: 'blur' }
-  ],
-  PayLimit: [
-    { required: true, validator: validateNotEmpty, message: '请选择后付款转账期限', trigger: 'blur' }
-  ]
+  // PayRat: [
+  //   { required: true, validator: validateNotEmpty, message: '请输入支付费率', trigger: 'blur' }
+  // ],
+  // PayMth: [
+  //   { required: true, validator: validateNotEmpty, message: '请选择后付款转账方式', trigger: 'blur' }
+  // ],
+  // PayLimit: [
+  //   { required: true, validator: validateNotEmpty, message: '请选择后付款转账期限', trigger: 'blur' }
+  // ]
 };
 const handlePageChange = (page) => {
   currentPage.value = page;
@@ -240,7 +239,10 @@ const handleDelete = (index, PayMentMethodID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/payMentMethod', { PayMentMethodID })
+    axios.post('/delete/payMentMethod', {
+      ID: PayMentMethodID,
+      PayMtdName: "ss"
+    })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');

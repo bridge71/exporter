@@ -109,8 +109,9 @@ func (s *Server) FindInSaleHandler(c *gin.Context) {
 
 // DeleteInHandler 删除 In 记录
 func (s *Server) DeleteInHandler(c *gin.Context) {
-	In := &models.In{}
-	if err := c.ShouldBind(In); err != nil {
+	In := models.In{}
+	In.ID = s.Str2Uint(c.PostForm("ID"))
+	if In.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "绑定数据失败",
 		})
@@ -119,7 +120,7 @@ func (s *Server) DeleteInHandler(c *gin.Context) {
 
 	log.Printf("删除 In: %+v\n", In)
 
-	if err := s.db.Delete(In); err != nil {
+	if err := s.db.Delete(&In); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "删除失败",
 		})
@@ -274,13 +275,42 @@ func (s *Server) AddInSends(c *gin.Context) {
 
 func (s *Server) SaveInHandler(c *gin.Context) {
 	In := &models.In{}
-	if err := c.ShouldBind(In); err != nil {
+
+	// 如果 ID 存在，查找已有记录
+	In.ID = s.Str2Uint(c.PostForm("ID"))
+	if In.ID != 0 {
+		s.db.FindByID(In.ID, In)
+	}
+	In.MerchantID = s.Str2Uint(c.PostForm("MerchantID"))
+	In.AcctID = s.Str2Uint(c.PostForm("AcctID"))
+	In.BankAccountID = s.Str2Uint(c.PostForm("BankAccountID"))
+	In.AcctBankID = s.Str2Uint(c.PostForm("AcctBankID"))
+
+	// 验证必填字段
+	if In.MerchantID == 0 || In.AcctID == 0 || In.BankAccountID == 0 || In.AcctBankID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+			RetMessage: "绑定数据失败，必填字段缺失",
 		})
 		return
 	}
+
+	// 绑定嵌套结构体
+	In.Merchant.ID = In.MerchantID
+	In.Acct.ID = In.AcctID
+	In.BankAccount.ID = In.BankAccountID
+	In.AcctBank.ID = In.AcctBankID
+
+	// 绑定其他字段
+	In.ReceNum = c.PostForm("ReceNum")
+	In.RealReceDate = c.PostForm("RealReceDate")
+	In.ExpReceDate = c.PostForm("ExpReceDate")
+	In.FinaDocType = c.PostForm("FinaDocType")
+	In.FinaDocStatus = c.PostForm("FinaDocStatus")
+	In.TotAmt = s.Str2Uint(c.PostForm("TotAmt"))
+	In.Currency = c.PostForm("Currency")
+	In.Notes = c.PostForm("Notes")
+	In.FileID = s.Str2Uint(c.PostForm("FileID"))
+	In.FileName = c.PostForm("FileName")
 
 	log.Printf("保存 In: %+v\n", In)
 

@@ -109,17 +109,21 @@
         </el-row>
 
         <el-row :gutter="20">
+
           <el-col :span="12">
             <el-form-item label="国家" prop="Nation">
-              <el-input v-model="acctForm.Nation"></el-input>
+              <el-select v-model="acctForm.Nation" placeholder="请选择国家">
+                <el-option v-for="nation in nationData" :key="nation.NationID" :label="nation.Nation"
+                  :value="nation.Nation"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="税号类型" prop="TaxType">
-              <el-select v-model="acctForm.TaxType" placeholder="请选择">
-                <el-option label="类型1" value="type1"></el-option>
-                <el-option label="类型2" value="type2"></el-option>
-                <!-- 添加更多选项 -->
+
+            <el-form-item label="税号类型" prop="Nation">
+              <el-select v-model="acctForm.TaxType" placeholder="请选择税号类型">
+                <el-option v-for="taxType in taxTypeData" :key="taxType.TaxTypeID" :label="taxType.TaxType"
+                  :value="taxType.TaxType"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -556,7 +560,31 @@ const paginatedAcctData = computed(() => {
   const end = start + pageSize;
   return filteredData.slice(start, end);
 });
+
+const taxTypeData = ref([]);
+const nationData = ref([]);
+
+const fetchNationData = async () => {
+  try {
+    const response = await axios.get('/find/nation');
+    nationData.value = response.data.Nation;
+  } catch (error) {
+    console.error('获取国家信息失败:', error);
+    ElMessage.error('获取国家信息失败，请稍后重试');
+  }
+};
+const fetchTaxTypeData = async () => {
+  try {
+    const response = await axios.get('/find/taxType');
+    taxTypeData.value = response.data.TaxType;
+  } catch (error) {
+    console.error('获取税号信息失败:', error);
+    ElMessage.error('获取税号信息失败 ，请稍后重试');
+  }
+};
 onMounted(() => {
+  fetchTaxTypeData();
+  fetchNationData();
   fetchAcctData(); // 获取会计实体信息
 });
 // 定义接口请求函数

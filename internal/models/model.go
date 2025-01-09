@@ -319,22 +319,23 @@ type In struct {
 }
 
 type PrdtInfo struct {
-	Brand       Brand
-	BrandID     uint
-	Cat         Cat
-	CatID       uint
-	PackSpec    PackSpec
-	PackSpecID  uint
-	Currency    string `gorm:"column:currency" form:"currency"`       // 币种
-	UnitPrice   uint   `gorm:"column:unitPrice" form:"UnitPrice"`     // 单价
-	TradeTerm   string `gorm:"column:tradeTerm" form:"TradeTerm"`     // 贸易条款
-	DeliveryLoc string `gorm:"column:deliveryLoc" form:"DeliveryLoc"` // 交货地点
-	Factory     string `gorm:"column:factory" form:"Factory"`         // 生产工厂
-	Unit        string `gorm:"column:unit" form:"Unit"`               // 单位
-	Amount      uint   `gorm:"column:amount" form:"Amount"`           // 金额
-	ItemNum     uint   `gorm:"column:itemNum" form:"ItemNum"`         // 件数
-	Weight      uint   `gorm:"column:weight" form:"Weight"`           // 重量
-	WeightUnit  string `gorm:"column:weightUnit" form:"WeightUnit"`   // 重量单位
+	Brand      Brand
+	BrandID    uint `form:"BrandID" binding:"required"`
+	Cat        Cat
+	CatID      uint `form:"CatID" binding:"required"`
+	PackSpec   PackSpec
+	PackSpecID uint `form:"PackSpecID" binding:"required"`
+	Spot       Spot
+	SpotID     uint   `form:"SpotID" binding:"required"`
+	Currency   string `gorm:"column:currency" form:"currency"`     // 币种
+	UnitPrice  uint   `gorm:"column:unitPrice" form:"UnitPrice"`   // 单价
+	TradeTerm  string `gorm:"column:tradeTerm" form:"TradeTerm"`   // 贸易条款
+	Factory    string `gorm:"column:factory" form:"Factory"`       // 生产工厂
+	Unit       string `gorm:"column:unit" form:"Unit"`             // 单位
+	Amount     uint   `gorm:"column:amount" form:"Amount"`         // 金额
+	ItemNum    uint   `gorm:"column:itemNum" form:"ItemNum"`       // 件数
+	Weight     uint   `gorm:"column:weight" form:"Weight"`         // 重量
+	WeightUnit string `gorm:"column:weightUnit" form:"WeightUnit"` // 重量单位
 	gorm.Model
 }
 type LoadingInfo struct {
@@ -366,31 +367,32 @@ type CostInfo struct {
 }
 
 type Empl struct {
-	EmpName          string `gorm:"column:empName; not null" form:"EmpName"`         // 员工姓名
-	EmpEngName       string `gorm:"column:empEngName" form:"EmpEngName"`             // 员工英文名
-	Dept             string `gorm:"column:dept" form:"Dept"`                         // 部门
-	Position         string `gorm:"column:position" form:"Position"`                 // 岗位
-	JoinDate         string `gorm:"column:joinDate" form:"JoinDate"`                 // 入职日期
-	Gender           string `gorm:"column:gender" form:"Gender"`                     // 性别
-	IDCardNum        string `gorm:"column:idCardNum" form:"IDCardNum"`               // 身份证号
-	EduLevel         string `gorm:"column:eduLevel" form:"EduLevel"`                 // 学历
-	GradSchool       string `gorm:"column:gradSchool" form:"GradSchool"`             // 毕业学校
-	Major            string `gorm:"column:major" form:"Major"`                       // 专业
-	ResArea          string `gorm:"column:resArea" form:"ResArea"`                   // 居住地区
-	AddrDetail       string `gorm:"column:addrDetail" form:"AddrDetail"`             // 详细地址
-	MobileNum        string `gorm:"column:mobileNum" form:"MobileNum"`               // 手机号码
-	EmailAddr        string `gorm:"column:emailAddr" form:"EmailAddr"`               // 电子邮箱
-	EmergContact     string `gorm:"column:emergContact" form:"EmergContact"`         // 紧急联系人
-	EmergContactInfo string `gorm:"column:emergContactInfo" form:"EmergContactInfo"` // 紧急联系方式
-	PersonalPhoto    string `gorm:"column:personalPhoto" form:"PersonalPhoto"`       // 个人照片
-	LaborContract    string `gorm:"column:laborContract" form:"LaborContract"`       // 劳动合同
-	DeptComponent    string `gorm:"column:deptComponent" form:"DeptComponent"`       // 部门组件
-	OrgRole          string `gorm:"column:orgRole" form:"OrgRole"`                   // 组织角色
-	FileName         string `gorm:"column:fileName" form:"FileName"`                 // 文件名
-	Notes            string `gorm:"column:notes" form:"Notes"`                       // 备注
-	Age              uint   `gorm:"column:age" form:"Age"`                           // 年龄
-	FileID           uint   `gorm:"column:fileID" form:"FileID"`                     // 文件ID
-	EmplID           uint   `gorm:"column:empID; primaryKey" form:"EmplID"`          // 员工ID
+	EmpName          string `gorm:"column:empName; not null" form:"EmpName" binding:"required"` // 员工姓名
+	EmpEngName       string `gorm:"column:empEngName" form:"EmpEngName"`                        // 员工英文名
+	Dept             string `gorm:"column:dept" form:"Dept"`                                    // 部门
+	Position         string `gorm:"column:position" form:"Position"`                            // 岗位
+	JoinDate         string `gorm:"column:joinDate" form:"JoinDate"`                            // 入职日期
+	Gender           string `gorm:"column:gender" form:"Gender"`                                // 性别
+	IDCardNum        string `gorm:"column:idCardNum" form:"IDCardNum"`                          // 身份证号
+	EduLevel         string `gorm:"column:eduLevel" form:"EduLevel"`                            // 学历
+	GradSchool       string `gorm:"column:gradSchool" form:"GradSchool"`                        // 毕业学校
+	Major            string `gorm:"column:major" form:"Major"`                                  // 专业
+	ResArea          string `gorm:"column:resArea" form:"ResArea"`                              // 居住地区
+	AddrDetail       string `gorm:"column:addrDetail" form:"AddrDetail"`                        // 详细地址
+	MobileNum        string `gorm:"column:mobileNum" form:"MobileNum"`                          // 手机号码
+	EmailAddr        string `gorm:"column:emailAddr" form:"EmailAddr" binding:"required"`       // 电子邮箱
+	EmergContact     string `gorm:"column:emergContact" form:"EmergContact"`                    // 紧急联系人
+	EmergContactInfo string `gorm:"column:emergContactInfo" form:"EmergContactInfo"`            // 紧急联系方式
+	PersonalPhoto    string `gorm:"column:personalPhoto" form:"PersonalPhoto"`                  // 个人照片
+	LaborContract    string `gorm:"column:laborContract" form:"LaborContract"`                  // 劳动合同
+	DeptComponent    string `gorm:"column:deptComponent" form:"DeptComponent"`                  // 部门组件
+	OrgRole          string `gorm:"column:orgRole" form:"OrgRole"`                              // 组织角色
+	FileName         string `gorm:"column:fileName" form:"FileName"`                            // 文件名
+	Notes            string `gorm:"column:notes" form:"Notes"`                                  // 备注
+	Age              uint   `gorm:"column:age" form:"Age"`                                      // 年龄
+	FileID           uint   `gorm:"column:fileID" form:"FileID"`                                // 文件ID
+	EmplID           uint   `gorm:"column:empID;"  binding:"required"`                          // 员工ID
+	gorm.Model
 }
 type User struct {
 	Email    string `gorm:"column:email;unique;not null" form:"Email" `
@@ -499,7 +501,7 @@ type BankAccount struct {
 	Notes       string `gorm:"column:notes;" form:"Notes"`
 	FileName    string `gorm:"column:fileName" form:"FileName"`
 	FileID      uint   `gorm:"column:fileID" form:"FileID"`
-	MerchantID  uint   `gorm:"column:merchantID;" form:"MerchantID"`
+	MerchantID  uint   `gorm:"column:merchantID;" form:"MerchantID" binding:"required"`
 	Merchant    Merchant
 	gorm.Model
 }
@@ -543,17 +545,19 @@ type Brand struct {
 	gorm.Model
 }
 type Cat struct {
-	CatAbbr    string `gorm:"column:catAbbr;not null;" form:"CatAbbr"` // 品类缩写
-	CatName    string `gorm:"column:catName;not null" form:"CatName"`  // 品类名称
-	CatEngName string `gorm:"column:catEngName" form:"CatEngName"`     // 品类英文名称
-	DeclHS     string `gorm:"column:declHS" form:"DeclHS"`             // 报关HS编码
-	DocHS      string `gorm:"column:docHS" form:"DocHS"`               // 单据HS编码
-	CAS        string `gorm:"column:CAS" form:"CAS"`                   // CAS编码
-	GB         string `gorm:"column:GB" form:"GB"`                     // 国标编码
-	StdDoc     string `gorm:"column:stdDoc" form:"StdDoc"`             // 国标文件
-	Notes      string `gorm:"column:notes" form:"Notes"`               // 备注
-	FileName   string `gorm:"column:fileName" form:"FileName"`         // 文件名字
-	FileID     uint   `gorm:"column:fileID" form:"FileID"`             // 文件ID
+	CatAbbr    string `gorm:"column:catAbbr;not null;" form:"CatAbbr" binding:"required"` // 品类缩写
+	CatName    string `gorm:"column:catName;not null" form:"CatName" binding:"required"`  // 品类名称
+	CatEngName string `gorm:"column:catEngName" form:"CatEngName" binding:"required"`     // 品类英文名称
+	DeclHS     string `gorm:"column:declHS" form:"DeclHS"`                                // 报关HS编码
+	DocHS      string `gorm:"column:docHS" form:"DocHS"`                                  // 单据HS编码
+	CAS        string `gorm:"column:CAS" form:"CAS"`                                      // CAS编码
+	GB         string `gorm:"column:GB" form:"GB"`                                        // 国标编码
+	Component  string `form:"Component"`
+	Use        string `form:"Use"`
+	Source     string `form:"Source"`
+	Notes      string `gorm:"column:notes" form:"Notes"`       // 备注
+	FileName   string `gorm:"column:fileName" form:"FileName"` // 文件名字
+	FileID     uint   `gorm:"column:fileID" form:"FileID"`     // 文件ID
 	gorm.Model
 }
 

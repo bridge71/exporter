@@ -44,8 +44,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.CustID)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -78,8 +77,12 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="国家" prop="Nation" :required="true">
-              <el-input v-model="custForm.Nation" placeholder="请输入国家"></el-input>
+
+            <el-form-item label="国家" prop="Nation">
+              <el-select v-model="custForm.Nation" placeholder="请选择国家">
+                <el-option v-for="nation in nationData" :key="nation.NationID" :label="nation.Nation"
+                  :value="nation.Nation"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -221,10 +224,16 @@
         </el-row>
 
         <el-row :gutter="20">
+
           <el-col :span="12">
-            <el-form-item label="所属商户" prop="Merc">
-              <el-input v-model="custForm.Merc" :readonly="true"></el-input>
+            <el-form-item label="所属商户" prop="MerchantID">
+              <el-select v-model="custForm.MerchantID" :disabled="true" @change="onMercChange" placeholder="请选择商户信息">
+                <el-option v-for="merc in merchantData" :key="merc.ID" :label="`${merc.Merc} (${merc.MercCode})`"
+                  :value="merc.ID"></el-option>
+              </el-select>
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
           </el-col>
           <el-col :span="12">
             <el-form-item label="职位" prop="Post">
@@ -452,11 +461,14 @@ const handleDelete = (index, CustID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/cust', {
-      CustID: CustID,
-      Name: custData.value[index].Name,
-      Gender: custData.value[index].Gender,
-      Nation: custData.value[index].Nation
+
+    const params = new URLSearchParams();
+    params.append('ID', CustID); // 添加表单字段
+    axios.post('/delete/cust', params, {
+
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
     })
       .then(response => {
         if (response.status === 200) {
@@ -496,6 +508,7 @@ const fetchCustData = async () => {
   try {
     const response = await axios.get('/find/cust');
     custData.value = response.data.Cust;
+    console.log(custData.value)
   } catch (error) {
     console.error('获取联系人信息失败:', error);
     ElMessage.error('获取联系人信息失败，请稍后重试');
@@ -521,7 +534,19 @@ const onMercChange = (value) => {
   }
 };
 
+const nationData = ref([]);
+
+const fetchNationData = async () => {
+  try {
+    const response = await axios.get('/find/nation');
+    nationData.value = response.data.Nation;
+  } catch (error) {
+    console.error('获取国家信息失败:', error);
+    ElMessage.error('获取国家信息失败，请稍后重试');
+  }
+};
 onMounted(() => {
+  fetchNationData();
   fetchCustData();
   fetchMerchantData();
 });

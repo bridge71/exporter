@@ -17,16 +17,10 @@ func (s *Server) FindCustHandler(c *gin.Context) {
 
 func (s *Server) DeleteCustHandler(c *gin.Context) {
 	cust := &models.Cust{}
-	err := c.ShouldBind(cust)
-	if err != nil {
-		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of cust",
-		})
-		return
-	}
+	cust.ID = s.Str2Uint(c.PostForm("ID"))
 	log.Printf("%v\n", cust)
 
-	err = s.db.DeleteCust(cust)
+	err := s.db.DeleteCust(cust)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to delete cust",
@@ -52,7 +46,7 @@ func (s *Server) SaveCustHandler(c *gin.Context) {
 	err := c.ShouldBind(cust)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: err.Error(),
+			RetMessage: "请选择客商信息",
 		})
 		return
 	}

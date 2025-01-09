@@ -17,16 +17,10 @@ func (s *Server) FindAcctBankHandler(c *gin.Context) {
 
 func (s *Server) DeleteAcctBankHandler(c *gin.Context) {
 	acctBank := &models.AcctBank{}
-	err := c.ShouldBind(acctBank)
-	if err != nil {
-		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of acctBank",
-		})
-		return
-	}
+	acctBank.ID = s.Str2Uint(c.PostForm("ID"))
 	log.Printf("%v\n", acctBank)
 
-	err = s.db.DeleteAcctBank(acctBank)
+	err := s.db.DeleteAcctBank(acctBank)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to delete acctBank",

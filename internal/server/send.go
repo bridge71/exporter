@@ -140,7 +140,8 @@ func (s *Server) FindSendSaleHandler(c *gin.Context) {
 // DeleteSendHandler 删除 Send 记录
 func (s *Server) DeleteSendHandler(c *gin.Context) {
 	Send := &models.Send{}
-	if err := c.ShouldBind(Send); err != nil {
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	if Send.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "绑定数据失败",
 		})
@@ -408,15 +409,64 @@ func (s *Server) AddSendShouldIns(c *gin.Context) {
 
 func (s *Server) SaveSendHandler(c *gin.Context) {
 	Send := &models.Send{}
-	if err := c.ShouldBind(Send); err != nil {
+
+	Send.ID = s.Str2Uint(c.PostForm("ID"))
+	if Send.ID != 0 {
+		s.db.FindByID(Send.ID, Send)
+	}
+	Send.AcctID = s.Str2Uint(c.PostForm("AcctID"))
+	Send.PackSpecID = s.Str2Uint(c.PostForm("PackSpecID"))
+	Send.PayMentMethodID = s.Str2Uint(c.PostForm("PayMentMethodID"))
+	Send.AcctBankID = s.Str2Uint(c.PostForm("AcctBankID"))
+
+	log.Printf("ssss ss %d %d %d\n", Send.Merchant1ID, Send.Merchant2ID, Send.Merchant3ID)
+	// 验证必填字段
+	if Send.AcctID == 0 || Send.PackSpecID == 0 || Send.PayMentMethodID == 0 || Send.AcctBankID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+			RetMessage: "绑定数据失败，必填字段缺失",
 		})
 		return
 	}
 
-	log.Printf("保存 Send: %+v\n", Send)
+	// 如果 ID 存在，查找已有记录
+
+	// 绑定嵌套结构体
+	Send.Acct.ID = Send.AcctID
+	Send.PackSpec.ID = Send.PackSpecID
+	Send.PayMentMethod.ID = Send.PayMentMethodID
+	Send.AcctBank.ID = Send.AcctBankID
+	Send.Merchant1ID = s.Str2Uint(c.PostForm("Merchant1ID"))
+	Send.Merchant2ID = s.Str2Uint(c.PostForm("Merchant2ID"))
+	Send.Merchant3ID = s.Str2Uint(c.PostForm("Merchant3ID"))
+
+	// 绑定其他字段
+	Send.SaleInvNum = c.PostForm("SaleInvNum")
+	Send.SaleInvDate = c.PostForm("SaleInvDate")
+	Send.Merchant1Name = c.PostForm("Merchant1Name")
+	Send.Merchant2Name = c.PostForm("Merchant2Name")
+	Send.Merchant3Name = c.PostForm("Merchant3Name")
+	Send.SrcPlace = c.PostForm("SrcPlace")
+	Send.Des = c.PostForm("Des")
+	Send.ShipName = c.PostForm("ShipName")
+	Send.Voyage = c.PostForm("Voyage")
+	Send.TotNum = s.Str2Uint(c.PostForm("TotNum"))
+	Send.TotalNetWeight = s.Str2Uint(c.PostForm("TotalNetWeight"))
+	Send.UnitMeas1 = c.PostForm("UnitMeas1")
+	Send.GrossWt = s.Str2Uint(c.PostForm("GrossWt"))
+	Send.UnitMeas2 = c.PostForm("UnitMeas2")
+	Send.TotVol = c.PostForm("TotVol")
+	Send.UnitMeas3 = c.PostForm("UnitMeas3")
+	Send.BillLadNum = c.PostForm("BillLadNum")
+	Send.DateOfShip = c.PostForm("DateOfShip")
+	Send.Note1 = c.PostForm("Note1")
+	Send.Note2 = c.PostForm("Note2")
+	Send.File1ID = s.Str2Uint(c.PostForm("File1ID"))
+	Send.File2ID = s.Str2Uint(c.PostForm("File2ID"))
+	Send.File1Name = c.PostForm("File1Name")
+	Send.File2Name = c.PostForm("File2Name")
+
+	// log.Printf("保存 Send: %+v\n", Send)
+	log.Printf("保存 %s\n", Send.Merchant1Name)
 	var err error
 
 	err, Send.File1ID, Send.File1Name = s.SaveFile(c, "file1")

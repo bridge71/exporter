@@ -21,6 +21,8 @@
         <el-main>
           <!-- 员工信息表格 -->
           <el-table :data="paginatedEmplData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
+            <el-table-column prop="EmplID" label="员工ID" width="100%"></el-table-column>
             <el-table-column prop="EmpName" label="员工姓名" width="220%"></el-table-column>
             <el-table-column prop="EmpEngName" label="员工英文名" width="220%"></el-table-column>
             <el-table-column prop="Dept" label="部门" width="220%"></el-table-column>
@@ -36,8 +38,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.EmplID)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                   <el-button @click="handleRegister(scope.row)" type="text" size="small">注册</el-button>
                 </el-row>
               </template>
@@ -53,6 +54,14 @@
     <!-- 添加员工信息的对话框 -->
     <el-dialog v-model="showEmplDialog" title="员工信息" width="80%" @close="resetEmplForm">
       <el-form :model="emplForm" label-width="150px" :rules="emplRules" ref="emplFormRef">
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="员工ID" prop="EmplID">
+              <el-input v-model="emplForm.EmplID"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="员工姓名" prop="EmpName">
@@ -367,6 +376,7 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
+import { message } from 'ant-design-vue';
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -380,13 +390,18 @@ const showEmplDialog = ref(false);
 const showViewEmplDialog = ref(false);
 const handleRegister = async (row) => {
   try {
-    const userData = {
-      Email: row.EmailAddr,
-      UserName: row.EmpName,
-      EmplID: row.EmplID,
-    };
 
-    const response = await axios.post('/save/user', userData);
+    const params = new URLSearchParams();
+    params.append('EmplID', row.ID); // 添加表单字段
+    params.append('Email', row.EmailAddr); // 添加表单字段
+    params.append('UserName', row.EmpName); // 添加表单字段
+
+    console.log(params)
+    const response = await axios.post('/save/user', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    })
     if (response.status === 200) {
       ElMessage.success('用户注册成功');
     } else {
@@ -419,6 +434,7 @@ const emplForm = ref({
   Notes: '',
   FileID: '',
   FileName: '',
+  ID: '',
 });
 const emplUploadRef = ref(null);
 const emplFile = ref(null);
@@ -468,7 +484,14 @@ const handleDelete = (index, EmplID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/empl', { EmplID })
+
+    axios.post('/delete/empl', {
+      ID: EmplID,
+      EmailAddr: "sss",
+      EmplID: 322,
+      EmpName: "ss",
+
+    })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -654,7 +677,7 @@ const validateNotEmpty = (rule, value, callback) => {
 const emplFormRef = ref(null);
 // 自定义验证函数：检查大于 0
 const validateGreaterThanZero = (rule, value, callback) => {
-  if (value <= 0) {
+  if (value < 0) {
     callback(new Error('年龄必须大于 0'));
   } else {
     callback();  // 验证通过
@@ -666,28 +689,18 @@ const emplRules = {
   EmpName: [
     { required: true, validator: validateNotEmpty, message: '请输入员工姓名', trigger: 'blur' }
   ],
-  EmpEngName: [
-    { required: true, validator: validateNotEmpty, message: '请输入员工英文名', trigger: 'blur' }
+  EmailAddr: [
+    { required: true, validator: validateNotEmpty, message: "请输入邮箱", trigger: 'blur' },
+    { type: 'email', message: '请输入有效的邮箱地址', trigger: ['blur', 'change'] },
   ],
-  Dept: [
-    { required: true, validator: validateNotEmpty, message: '请选择部门', trigger: 'blur' }
-  ],
-  Position: [
-    { required: true, validator: validateNotEmpty, message: '请选择岗位', trigger: 'blur' }
-  ],
-  JoinDate: [
-    { required: true, validator: validateNotEmpty, message: '请选择入职日期', trigger: 'blur' }
-  ],
-  Gender: [
-    { required: true, validator: validateNotEmpty, message: '请选择性别', trigger: 'blur' }
+
+  EmplID: [
+    { required: true, validator: validateNotEmpty, message: "请输入员工ID", trigger: 'blur' }
   ],
   Age: [
-    { required: true, validator: validateNotEmpty, message: '请输入年龄', trigger: 'blur' },
-    { validator: validateGreaterThanZero, trigger: 'blur' }  // 新增验证：年龄大于 0
-  ],
-  EduLevel: [
-    { required: true, validator: validateNotEmpty, message: '请选择学历', trigger: 'blur' }
+    { validator: validateGreaterThanZero, trigger: 'blur' }  // 新增验证，确保大于 0
   ]
+
 };
 
 </script>

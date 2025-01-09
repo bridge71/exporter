@@ -11,7 +11,7 @@ import (
 // FindPrdtInfoHandler 查询所有 PrdtInfo 记录
 func (s *Server) FindPrdtInfoHandler(c *gin.Context) {
 	var PrdtInfos []models.PrdtInfo
-	s.db.Find(&PrdtInfos)
+	s.db.FindPrdtInfo(&PrdtInfos)
 	c.JSON(http.StatusOK, models.Message{PrdtInfo: PrdtInfos})
 }
 
@@ -42,14 +42,35 @@ func (s *Server) DeletePrdtInfoHandler(c *gin.Context) {
 // SavePrdtInfoHandler 保存或更新 PrdtInfo 记录
 func (s *Server) SavePrdtInfoHandler(c *gin.Context) {
 	PrdtInfo := &models.PrdtInfo{}
-	if err := c.ShouldBind(PrdtInfo); err != nil {
+	PrdtInfo.BrandID = s.Str2Uint(c.PostForm("BrandID"))
+	PrdtInfo.CatID = s.Str2Uint(c.PostForm("CatID"))
+	PrdtInfo.PackSpecID = s.Str2Uint(c.PostForm("PackSpecID"))
+	PrdtInfo.SpotID = s.Str2Uint(c.PostForm("SpotID"))
+	if PrdtInfo.BrandID == 0 || PrdtInfo.CatID == 0 || PrdtInfo.PackSpecID == 0 || PrdtInfo.SpotID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+			RetMessage: "绑定数据失败",
 		})
 		return
 	}
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("ID"))
+	if PrdtInfo.ID != 0 {
+		s.db.FindByID(PrdtInfo.ID, PrdtInfo)
+	}
+	PrdtInfo.Brand.ID = PrdtInfo.BrandID
+	PrdtInfo.Cat.ID = PrdtInfo.CatID
+	PrdtInfo.Spot.ID = PrdtInfo.SpotID
+	PrdtInfo.PackSpec.ID = PrdtInfo.PackSpecID
 
+	PrdtInfo.Amount = s.Str2Uint(c.PostForm("Amount"))
+	PrdtInfo.Factory = c.PostForm("Factory")
+	PrdtInfo.Currency = c.PostForm("Currency")
+	PrdtInfo.Unit = c.PostForm("Unit")
+	PrdtInfo.UnitPrice = s.Str2Uint(c.PostForm("UnitPrice"))
+	PrdtInfo.Weight = s.Str2Uint(c.PostForm("Weight"))
+	PrdtInfo.ItemNum = s.Str2Uint(c.PostForm("ItemNum"))
+	PrdtInfo.WeightUnit = c.PostForm("WeightUnit")
+	PrdtInfo.TradeTerm = c.PostForm("TradeTerm")
+	PrdtInfo.Factory = c.PostForm("Factory")
 	log.Printf("保存 PrdtInfo: %+v\n", PrdtInfo)
 
 	// 保存 PrdtInfo 记录

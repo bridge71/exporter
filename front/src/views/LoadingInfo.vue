@@ -20,12 +20,29 @@
           <!-- 装货信息表格 -->
           <el-table :data="paginatedLoadingData" style="width: 100%" max-height="450">
             <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
-            <el-table-column prop="Product" label="产品" width="220%"></el-table-column>
-            <el-table-column prop="Brand" label="品牌" width="220%"></el-table-column>
+            <el-table-column label="产品" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Cat.CatEngName">{{ scope.row.Cat.CatEngName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="品牌" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Brand.BrandEngName">{{ scope.row.Brand.BrandEngName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="PrdtPlant" label="生产工厂" width="220%"></el-table-column>
             <el-table-column prop="BatNum" label="批次号" width="220%"></el-table-column>
             <el-table-column prop="ItemNum" label="件数" width="220%"></el-table-column>
-            <el-table-column prop="PackSpec" label="包装规格" width="220%"></el-table-column>
+
+            <el-table-column label="包装规格" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PackSpec.SpecName">{{ scope.row.PackSpec.SpecName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="NetWeight" label="净重量" width="220%"></el-table-column>
             <el-table-column prop="Unit" label="单位" width="220%"></el-table-column>
             <el-table-column prop="CnrNum" label="集装箱号" width="220%"></el-table-column>
@@ -54,19 +71,20 @@
     <el-dialog v-model="showLoadingDialog" title="装货信息" width="80%" @close="resetLoadingForm">
       <el-form :model="loadingForm" label-width="150px" :rules="loadingRules" ref="loadingFormRef">
         <el-row :gutter="20">
+
           <el-col :span="12">
-            <el-form-item label="产品" prop="Product">
-              <el-select v-model="loadingForm.Product" placeholder="请选择产品">
-                <el-option v-for="item in prdtTypeData" :key="item.PrdtType" :label="item.PrdtType"
-                  :value="item.PrdtType"></el-option>
+            <el-form-item label="产品" prop="CatID">
+              <el-select v-model="loadingForm.CatID" placeholder="请选择产品">
+                <el-option v-for="item in prdtTypeData" :key="item.ID" :label="item.CatEngName"
+                  :value="item.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="品牌" prop="Brand">
-              <el-select v-model="loadingForm.Brand" placeholder="请选择品牌">
-                <el-option v-for="item in brandTypeData" :key="item.BrandType" :label="item.BrandType"
-                  :value="item.BrandType"></el-option>
+            <el-form-item label="品牌" prop="BrandID">
+              <el-select v-model="loadingForm.BrandID" placeholder="请选择品牌">
+                <el-option v-for="item in brandTypeData" :key="item.ID" :label="item.BrandEngName"
+                  :value="item.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -95,10 +113,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="包装规格" prop="PackSpec">
-              <el-select v-model="loadingForm.PackSpec" placeholder="请选择包装规格">
-                <el-option v-for="item in packTypeData" :key="item.PackType" :label="item.PackType"
-                  :value="item.PackType"></el-option>
+
+            <el-form-item label="包装规格" prop="PackSpecID">
+              <el-select v-model="loadingForm.PackSpecID" placeholder="请选择包装规格">
+                <el-option v-for="item in packTypeData" :key="item.ID" :label="item.SpecName"
+                  :value="item.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -185,9 +204,13 @@
               <el-input v-model="loadingForm.ItemNum" type="number" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
+
           <el-col :span="12">
-            <el-form-item label="包装规格" prop="PackSpec">
-              <el-input v-model="loadingForm.PackSpec" :readonly="true"></el-input>
+            <el-form-item label="包装规格" prop="PackSpecID">
+              <el-select v-model="loadingForm.PackSpecID" placeholder="请选择包装规格">
+                <el-option v-for="item in packTypeData" :key="item.ID" :label="item.SpecName"
+                  :value="item.ID"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -274,18 +297,17 @@ const loadingData = ref([]);
 const showLoadingDialog = ref(false);
 const showViewLoadingDialog = ref(false);
 const loadingForm = ref({
-  Product: '',
-  Brand: '',
+  CatID: '',
+  PackSpecID: '',
+  BrandID: '',
   PrdtPlant: '',
   BatNum: '',
   ItemNum: 0,
-  PackSpec: '',
   NetWeight: 0,
   Unit: '',
   CnrNum: '',
   SealNum: '',
-  VehNum: '',
-  LoadingInfoID: '',
+
 });
 const loadingFormRef = ref(null);
 
@@ -302,47 +324,48 @@ const handlePageChange = (page) => {
 
 const paginatedLoadingData = computed(() => {
   let filteredData = loadingData.value;
+
   if (searchQuery.value) {
     if (isExactMatch.value === false) {
       if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
-          item.Product.includes(searchQuery.value) ||
-          item.Brand.includes(searchQuery.value) ||
-          item.PrdtPlant.includes(searchQuery.value) ||
-          item.BatNum.includes(searchQuery.value) ||
-          item.ItemNum.toString().includes(searchQuery.value) ||
-          item.PackSpec.includes(searchQuery.value) ||
-          item.NetWeight.toString().includes(searchQuery.value) ||
-          item.ID.toString().includes(searchQuery.value) ||
-          item.Unit.includes(searchQuery.value) ||
-          item.CnrNum.includes(searchQuery.value) ||
-          item.SealNum.includes(searchQuery.value) ||
-          item.VehNum.includes(searchQuery.value)
+          (item.Cat?.CatEngName || '').includes(searchQuery.value) ||
+          (item.Brand?.BrandEngName || '').includes(searchQuery.value) ||
+          (item.PrdtPlant || '').includes(searchQuery.value) ||
+          (item.BatNum || '').includes(searchQuery.value) ||
+          (item.ItemNum?.toString() || '').includes(searchQuery.value) ||
+          (item.PackSpec?.SpecName || '').includes(searchQuery.value) ||
+          (item.NetWeight?.toString() || '').includes(searchQuery.value) ||
+          (item.Unit || '').includes(searchQuery.value) ||
+          (item.CnrNum || '').includes(searchQuery.value) ||
+          (item.SealNum || '').includes(searchQuery.value) ||
+          (item.VehNum || '').includes(searchQuery.value) ||
+          (item.ID?.toString() || '').includes(searchQuery.value)
         );
       } else {
         filteredData = filteredData.filter(item =>
-          item.ID.toString().includes(searchQuery.value)
+          (item.ID?.toString() || '').includes(searchQuery.value)
         );
       }
     } else {
       if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
-          item.Product === searchQuery.value ||
-          item.Brand === searchQuery.value ||
-          item.PrdtPlant === searchQuery.value ||
-          item.BatNum === searchQuery.value ||
-          item.ItemNum.toString() === searchQuery.value ||
-          item.PackSpec === searchQuery.value ||
-          item.NetWeight.toString() === searchQuery.value ||
-          item.ID.toString() === searchQuery.value ||
-          item.Unit === searchQuery.value ||
-          item.CnrNum === searchQuery.value ||
-          item.SealNum === searchQuery.value ||
-          item.VehNum === searchQuery.value
+          (item.Cat?.CatEngName || '') === searchQuery.value ||
+          (item.Brand?.BrandEngName || '') === searchQuery.value ||
+          (item.PrdtPlant || '') === searchQuery.value ||
+          (item.BatNum || '') === searchQuery.value ||
+          (item.ItemNum?.toString() || '') === searchQuery.value ||
+          (item.PackSpec?.SpecName || '') === searchQuery.value ||
+          (item.NetWeight?.toString() || '') === searchQuery.value ||
+          (item.Unit || '') === searchQuery.value ||
+          (item.CnrNum || '') === searchQuery.value ||
+          (item.SealNum || '') === searchQuery.value ||
+          (item.VehNum || '') === searchQuery.value ||
+          (item.ID?.toString() || '') === searchQuery.value
         );
       } else {
         filteredData = filteredData.filter(item =>
-          item.ID.toString() === searchQuery.value
+          (item.ID?.toString() || '') === searchQuery.value
         );
       }
     }
@@ -379,6 +402,7 @@ const handleDelete = (index, row) => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
           fetchLoadingData();
+          resetLoadingForm();
         } else {
           ElMessage.error(response.data.RetMessage || '删除失败');
         }
@@ -420,9 +444,23 @@ const submitLoadingForm = async () => {
       return; // 如果验证不通过，阻止提交
     }
 
-    loadingForm.value.ItemNum = parseInt(loadingForm.value.ItemNum, 10);
-    loadingForm.value.NetWeight = parseInt(loadingForm.value.NetWeight, 10);
-    const response = await axios.post('/save/loadingInfo', loadingForm.value);
+    // loadingForm.value.ItemNum = parseInt(loadingForm.value.ItemNum, 10);
+    // loadingForm.value.NetWeight = parseInt(loadingForm.value.NetWeight, 10);
+
+    const formData = new FormData(); // 创建 FormData 对象
+
+    Object.keys(loadingForm.value).forEach((key) => {
+      formData.append(key, loadingForm.value[key]);
+    });
+
+    console.log(formData)
+
+    const response = await axios.post('/save/loadingInfo', formData, {
+      headers: {
+
+        'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+      },
+    });
     if (response.status === 200) {
       ElMessage.success('装货信息保存成功');
       showLoadingDialog.value = false
@@ -446,19 +484,19 @@ const fetchDictionaryData = async () => {
       unitMeasResponse,
       packTypeResponse,
     ] = await Promise.all([
-      axios.get('/find/prdtType'), // 产品类型
-      axios.get('/find/brandType'), // 品牌类型
+      axios.get('/find/cat'), // 产品类型
+      axios.get('/find/brand'), // 品牌类型
       axios.get('/find/suprType'), // 供应商类型
       axios.get('/find/unitMeas'), // 单位
-      axios.get('/find/packType'), // 包装规格
+      axios.get('/find/packSpec'), // 包装规格
     ]);
 
     // 提取字典数据
-    prdtTypeData.value = prdtTypeResponse.data.PrdtType || [];
-    brandTypeData.value = brandTypeResponse.data.BrandType || [];
+    prdtTypeData.value = prdtTypeResponse.data.Cat || [];
+    brandTypeData.value = brandTypeResponse.data.Brand || [];
     suprTypeData.value = suprTypeResponse.data.SuprType || [];
     unitMeasData.value = unitMeasResponse.data.UnitMeas || [];
-    packTypeData.value = packTypeResponse.data.PackType || [];
+    packTypeData.value = packTypeResponse.data.PackSpec || [];
   } catch (error) {
     console.error('获取字典数据失败:', error);
     ElMessage.error('获取字典数据失败，请稍后重试');
@@ -497,7 +535,7 @@ const validateNotEmpty = (rule, value, callback) => {
 
 // 自定义验证函数：检查大于 0
 const validateGreaterThanZero = (rule, value, callback) => {
-  if (value <= 0) {
+  if (value < 0) {
     callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
   } else {
     callback();  // 验证通过
@@ -505,23 +543,20 @@ const validateGreaterThanZero = (rule, value, callback) => {
 };
 
 const loadingRules = {
-  Product: [{ required: true, message: '请选择产品', trigger: 'blur' }],
-  Brand: [{ required: true, message: '请选择品牌', trigger: 'blur' }],
-  PrdtPlant: [{ required: true, message: '请选择生产工厂', trigger: 'blur' }],
-  BatNum: [{ required: true, message: '请输入批次号', trigger: 'blur' }],
+  CatID: [{ required: true, message: '请选择产品', trigger: 'blur' }],
+  BrandID: [{ required: true, message: '请选择品牌', trigger: 'blur' }],
   ItemNum: [
-    { required: true, validator: validateNotEmpty, message: '请输入件数', trigger: 'blur' },
     { validator: validateGreaterThanZero, message: '件数必须大于 0', trigger: 'blur' }  // 新增验证：件数大于 0
   ],
-  PackSpec: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
-  NetWeight: [
-    { required: true, validator: validateNotEmpty, message: '请输入净重量', trigger: 'blur' },
-    { validator: validateGreaterThanZero, message: '净重量必须大于 0', trigger: 'blur' }  // 新增验证：净重量大于 0
-  ],
-  Unit: [{ required: true, message: '请选择单位', trigger: 'blur' }],
-  CnrNum: [{ required: true, message: '请输入集装箱号', trigger: 'blur' }],
-  SealNum: [{ required: true, message: '请输入铅封号', trigger: 'blur' }],
-  VehNum: [{ required: true, message: '请输入车辆号', trigger: 'blur' }]
+  PackSpecID: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
+  // NetWeight: [
+  //   { required: true, validator: validateNotEmpty, message: '请输入净重量', trigger: 'blur' },
+  //   { validator: validateGreaterThanZero, message: '净重量必须大于 0', trigger: 'blur' }  // 新增验证：净重量大于 0
+  // ],
+  // Unit: [{ required: true, message: '请选择单位', trigger: 'blur' }],
+  // CnrNum: [{ required: true, message: '请输入集装箱号', trigger: 'blur' }],
+  // SealNum: [{ required: true, message: '请输入铅封号', trigger: 'blur' }],
+  // VehNum: [{ required: true, message: '请输入车辆号', trigger: 'blur' }]
 };
 </script>
 

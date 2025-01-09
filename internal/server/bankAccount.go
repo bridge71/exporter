@@ -17,16 +17,10 @@ func (s *Server) FindBankAccountHandler(c *gin.Context) {
 
 func (s *Server) DeleteBankAccountHandler(c *gin.Context) {
 	bankAccount := &models.BankAccount{}
-	err := c.ShouldBind(bankAccount)
-	if err != nil {
-		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of bankAccount",
-		})
-		return
-	}
-	log.Printf("%v\n", bankAccount)
+	bankAccount.ID = s.Str2Uint(c.PostForm("ID"))
+	log.Printf("%d\n", bankAccount.ID)
 
-	err = s.db.DeleteBankAccount(bankAccount)
+	err := s.db.DeleteBankAccount(bankAccount)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to delete bankAccount",
@@ -52,7 +46,8 @@ func (s *Server) SaveBankAccountHandler(c *gin.Context) {
 	err := c.ShouldBind(bankAccount)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of bankAccount",
+			// RetMessage: err.Error(),
+			RetMessage: "请绑定客商信息",
 		})
 		return
 	}
@@ -64,7 +59,9 @@ func (s *Server) SaveBankAccountHandler(c *gin.Context) {
 			RetMessage: "failed to save file",
 		})
 	}
-	err = s.db.SaveBankAccount(bankAccount)
+	log.Printf("id   %d\n", bankAccount.MerchantID)
+	bankAccount.Merchant.ID = bankAccount.MerchantID
+	err = s.db.Save(bankAccount)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save bankAccount",

@@ -9,12 +9,12 @@ func (s *service) DeleteBankAccount(bankAccount *models.BankAccount) error {
 
 // SaveBankAccount 保存或更新一个 BankAccount 记录
 func (s *service) SaveBankAccount(bankAccount *models.BankAccount) error {
-	return s.gormDB.Omit("Sales").Save(bankAccount).Error
+	return s.gormDB.Save(bankAccount).Error
 }
 
 // FindBankAccount 查询所有 BankAccount 记录
 func (s *service) FindBankAccount(bankAccounts *[]models.BankAccount) {
-	s.gormDB.Find(bankAccounts)
+	s.gormDB.Preload("Merchant").Find(bankAccounts)
 }
 
 // FindBankAccountByID 根据 MercID 查询 BankAccount 记录

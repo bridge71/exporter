@@ -200,7 +200,8 @@ func (s *Server) FindBuyPurrecHandler(c *gin.Context) {
 // DeleteBuyHandler 删除 Buy 记录
 func (s *Server) DeleteBuyHandler(c *gin.Context) {
 	Buy := &models.Buy{}
-	if err := c.ShouldBind(Buy); err != nil {
+	Buy.ID = s.Str2Uint(c.PostForm("ID"))
+	if Buy.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "绑定数据失败",
 		})
@@ -360,13 +361,53 @@ func (s *Server) AddBuyPurrec(c *gin.Context) {
 
 func (s *Server) SaveBuyHandler(c *gin.Context) {
 	Buy := &models.Buy{}
-	if err := c.ShouldBind(Buy); err != nil {
+
+	// 如果 ID 存在，查找已有记录
+	Buy.ID = s.Str2Uint(c.PostForm("ID"))
+	if Buy.ID != 0 {
+		s.db.FindByID(Buy.ID, Buy)
+	}
+	Buy.AcctID = s.Str2Uint(c.PostForm("AcctID"))
+	Buy.MerchantID = s.Str2Uint(c.PostForm("MerchantID"))
+	Buy.PayMentMethodID = s.Str2Uint(c.PostForm("PayMentMethodID"))
+	Buy.PackSpecID = s.Str2Uint(c.PostForm("PackSpecID"))
+	Buy.AcctBankID = s.Str2Uint(c.PostForm("AcctBankID"))
+	Buy.BankAccountID = s.Str2Uint(c.PostForm("BankAccountID"))
+
+	// 验证必填字段
+	if Buy.AcctID == 0 || Buy.MerchantID == 0 || Buy.PayMentMethodID == 0 || Buy.PackSpecID == 0 || Buy.AcctBankID == 0 || Buy.BankAccountID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+			RetMessage: "绑定数据失败，必填字段缺失",
 		})
 		return
 	}
+
+	// 绑定嵌套结构体
+	Buy.Acct.ID = Buy.AcctID
+	Buy.Merchant.ID = Buy.MerchantID
+	Buy.PayMentMethod.ID = Buy.PayMentMethodID
+	Buy.PackSpec.ID = Buy.PackSpecID
+	Buy.AcctBank.ID = Buy.AcctBankID
+	Buy.BankAccount.ID = Buy.BankAccountID
+
+	// 绑定其他字段
+	Buy.OrderNum = c.PostForm("OrderNum")
+	Buy.OrderDate = c.PostForm("OrderDate")
+	Buy.QualStd = c.PostForm("QualStd")
+	Buy.BillValidity = c.PostForm("BillValidity")
+	Buy.BussOrderSta = c.PostForm("BussOrderSta")
+	Buy.StartShip = c.PostForm("StartShip")
+	Buy.EndShip = c.PostForm("EndShip")
+	Buy.SrcPlace = c.PostForm("SrcPlace")
+	Buy.Des = c.PostForm("Des")
+	Buy.TotAmt = s.Str2Uint(c.PostForm("TotAmt"))
+	Buy.Currency = c.PostForm("Currency")
+	Buy.TotNum = s.Str2Uint(c.PostForm("TotNum"))
+	Buy.TotalNetWeight = c.PostForm("TotalNetWeight")
+	Buy.UnitMeas = c.PostForm("UnitMeas")
+	Buy.Notes = c.PostForm("Notes")
+	Buy.FileName = c.PostForm("FileName")
+	Buy.FileID = s.Str2Uint(c.PostForm("FileID"))
 
 	log.Printf("保存 Buy: %+v\n", Buy)
 

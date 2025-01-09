@@ -92,7 +92,7 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="商户简称" prop="ShortMerc" :required="true">
+            <el-form-item label="商户简称" prop="ShortMerc">
               <el-input v-model="merchantForm.ShortMerc" placeholder="商户简称"></el-input>
             </el-form-item>
           </el-col>
@@ -117,9 +117,13 @@
         </el-row>
 
         <el-row :gutter="20">
+
           <el-col :span="12">
             <el-form-item label="国家" prop="Nation">
-              <el-input v-model="merchantForm.Nation" placeholder="国家"></el-input>
+              <el-select v-model="merchantForm.Nation" placeholder="请选择国家">
+                <el-option v-for="nation in nationData" :key="nation.NationID" :label="nation.Nation"
+                  :value="nation.Nation"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -247,7 +251,7 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="商户简称" prop="ShortMerc" :required="true">
+            <el-form-item label="商户简称" prop="ShortMerc">
               <el-input v-model="merchantForm.ShortMerc" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
@@ -434,15 +438,15 @@ const merchantRules = {
   MercCode: [
     { required: true, validator: validateNotEmpty, message: '请输入商户编码', trigger: 'blur' }
   ],
-  // MercAbbr: [
-  //   { required: true, validator: validateNotEmpty, message: '请输入商户缩写', trigger: 'blur' }
-  // ],
-  ShortMerc: [
-    { required: true, validator: validateNotEmpty, message: '请输入商户简称', trigger: 'blur' }
+  MercAbbr: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户缩写', trigger: 'blur' }
   ],
-  // Merc: [
-  //   { required: true, validator: validateNotEmpty, message: '请输入商户名称', trigger: 'blur' }
-  // ]
+  // ShortMerc: [
+  //   { required: true, validator: validateNotEmpty, message: '请输入商户简称', trigger: 'blur' }
+  // ],
+  Merc: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户名称', trigger: 'blur' }
+  ]
 };
 
 const merchantData = ref([]);
@@ -642,7 +646,19 @@ const fetchMerchantData = async () => {
   }
 };
 
+const nationData = ref([]);
+
+const fetchNationData = async () => {
+  try {
+    const response = await axios.get('/find/nation');
+    nationData.value = response.data.Nation;
+  } catch (error) {
+    console.error('获取国家信息失败:', error);
+    ElMessage.error('获取国家信息失败，请稍后重试');
+  }
+};
 onMounted(() => {
+  fetchNationData();
   fetchMerchantData();
 });
 

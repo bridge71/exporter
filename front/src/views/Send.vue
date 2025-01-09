@@ -12,24 +12,9 @@
       <el-container>
 
 
-        <!-- <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery" -->
-        <!--   @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" /> -->
-        <!-- <el-header height="1px"> -->
-        <!-- </el-header> -->
-
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="toggleMatchMode">
-              {{ isExactMatch ? '完全匹配' : '模糊匹配' }}
-            </el-button>
-            <el-button type="primary" @click="toggleIDMode">
-              {{ onlyID ? '只匹配ID' : '全部匹配' }}
-            </el-button>
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
 
@@ -40,6 +25,31 @@
             <el-table-column prop="Merchant1Name" label="客户" width="220%"></el-table-column>
             <el-table-column prop="Merchant2Name" label="收货人" width="220%"></el-table-column>
             <el-table-column prop="Merchant3Name" label="通知人" width="220%"></el-table-column>
+
+            <el-table-column label="发货人" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Acct.AcctName">{{ scope.row.Acct.AcctName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="收款银行" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.AcctBank.AccName">{{ scope.row.AcctBank.AccName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="付款方式" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PayMentMethod.PayMtdName">{{ scope.row.PayMentMethod.PayMtdName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="包装规格" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PackSpec.SpecName">{{ scope.row.PackSpec.SpecName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="AcctName" label="发货人" width="420%"></el-table-column>
             <el-table-column prop="SrcPlace" label="起运地" width="220%"></el-table-column>
             <el-table-column prop="Des" label="目的地" width="220%"></el-table-column>
@@ -47,7 +57,6 @@
             <el-table-column prop="ShipName" label="船名" width="220%"></el-table-column>
             <el-table-column prop="Voyage" label="航次" width="220%"></el-table-column>
             <el-table-column prop="TotNum" label="总件数" width="220%"></el-table-column>
-            <el-table-column prop="SpecName" label="包装规格" width="220%"></el-table-column>
             <el-table-column prop="TotalNetWeight" label="总净重" width="220%"></el-table-column>
             <el-table-column prop="UnitMeas1" label="单位" width="220%"></el-table-column>
             <el-table-column prop="GrossWt" label="总毛重" width="220%"></el-table-column>
@@ -58,7 +67,6 @@
             <el-table-column prop="DateOfShip" label="发货(开船)日期" width="420%"></el-table-column>
             <el-table-column prop="Note1" label="提单货物描述" width="220%"></el-table-column>
             <el-table-column prop="Note2" label="箱单货物描述" width="220%"></el-table-column>
-            <el-table-column prop="PayMtdName" label="付款方式" width="220%"></el-table-column>
             <el-table-column prop="AccName" label="收款银行" width="220%"></el-table-column>
             <el-table-column label="操作" fixed="right" width="420%">
               <template #default="scope">
@@ -259,7 +267,7 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="客户" prop="Merchants">
+            <el-form-item label="客户" prop="Merchant1ID">
               <el-select v-model="sendForm.Merchant1ID" @change="onMerchantChange" placeholder="请选择客户">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
@@ -278,8 +286,8 @@
         <el-row :gutter="20">
 
           <el-col :span="12">
-            <el-form-item label="收货人" prop="Merchants">
-              <el-select v-model="sendForm.Merchant2ID" @change="onMerchantChange" placeholder="请选择收货人">
+            <el-form-item label="收货人" prop="Merchant2ID">
+              <el-select v-model="sendForm.Merchant2ID" @change="onMerchantChange2" placeholder="请选择收货人">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -287,8 +295,8 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="通知人" prop="Merchants">
-              <el-select v-model="sendForm.Merchant3ID" @change="onMerchantChange" placeholder="请选择通知人">
+            <el-form-item label="通知人" prop="Merchant3ID">
+              <el-select v-model="sendForm.Merchant3ID" @change="onMerchantChange3" placeholder="请选择通知人">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -1597,9 +1605,16 @@ const handleDelete = (index, ID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/send', {
-      "ID": ID,
-    })
+
+    const formData = new FormData();
+    formData.append("ID", ID)
+    axios.post('/delete/send', formData,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+        }
+      },
+    )
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -1623,7 +1638,6 @@ const resetSendForm = () => {
     OrderDate: '',
     AcctID: '',
     AcctName: '',
-    MerchantID: '',
     Merc: '',
     QualStd: '',
     BillValidity: '',
@@ -1696,6 +1710,7 @@ const submitSendForm = async () => {
       formData.append('file2', file2.value);
     }
     // 提交表单
+    console.log(formData)
     const response = await axios.post('/save/send', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -1768,10 +1783,22 @@ const fetchSrcPlaceData = async () => {
 const onMerchantChange = (value) => {
   const selectedMerchant = merchantData.value.find(merchant => merchant.ID === value);
   if (selectedMerchant) {
-    sendForm.value.Merc = selectedMerchant.Merc;
+    sendForm.value.Merchant1Name = selectedMerchant.Merc;
   }
 };
 
+const onMerchantChange2 = (value) => {
+  const selectedMerchant = merchantData.value.find(merchant => merchant.ID === value);
+  if (selectedMerchant) {
+    sendForm.value.Merchant2Name = selectedMerchant.Merc;
+  }
+};
+const onMerchantChange3 = (value) => {
+  const selectedMerchant = merchantData.value.find(merchant => merchant.ID === value);
+  if (selectedMerchant) {
+    sendForm.value.Merchant3Name = selectedMerchant.Merc;
+  }
+};
 // 监听 change 事件并更新 PayMtdName
 const onPayMentMethodChange = (value) => {
   const selectedPayMentMethod = payMentMethodData.value.find(payMentMethod => payMentMethod.ID === value);

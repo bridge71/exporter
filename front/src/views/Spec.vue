@@ -33,8 +33,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.PackSpecID)" type="text"
-                    size="small">删除</el-button>
+                  <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -263,7 +262,10 @@ const handleDelete = (index, PackSpecID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/packSpec', { PackSpecID })
+    axios.post('/delete/packSpec', {
+      ID: PackSpecID,
+      SpecName: "ss",
+    })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -420,7 +422,7 @@ const validateNotEmpty = (rule, value, callback) => {
 
 // 自定义验证函数，检查大于 0
 const validateGreaterThanZero = (rule, value, callback) => {
-  if (value <= 0) {
+  if (value < 0) {
     callback(new Error('净重必须大于 0'));
   } else {
     callback();  // 验证通过
@@ -433,17 +435,7 @@ const packSpecRules = {
   SpecName: [
     { required: true, validator: validateNotEmpty, message: '请输入规格名称', trigger: 'blur' }
   ],
-  SpecEngName: [
-    { required: true, validator: validateNotEmpty, message: '请输入规格英文名称', trigger: 'blur' }
-  ],
-  UnitMeas: [
-    { required: true, validator: validateNotEmpty, message: '请选择单位', trigger: 'blur' }
-  ],
-  PackType: [
-    { required: true, validator: validateNotEmpty, message: '请选择包装类型', trigger: 'blur' }
-  ],
   NetWt: [
-    { required: true, validator: validateNotEmpty, message: '请输入净重', trigger: 'blur' },
     { validator: validateGreaterThanZero, trigger: 'blur' }  // 新增验证，确保大于 0
   ]
 };
