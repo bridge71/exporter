@@ -5,6 +5,10 @@ import (
 )
 
 type Message struct {
+	ShouldOut     []ShouldOut
+	Buy           []Buy
+	Purrec        []Purrec
+	Out           []Out
 	In            []In
 	ShouldIn      []ShouldIn
 	Spot          []Spot
@@ -54,6 +58,45 @@ type Message struct {
 	RetMessage    string
 	User          User
 }
+
+type Buy struct {
+	OrderNum        string      `gorm:"column:orderNum" form:"OrderNum"`               // 订单编号
+	OrderDate       string      `gorm:"column:orderDate" form:"OrderDate"`             // 订单日期
+	AcctId          uint        `gorm:"column:acctId" form:"AcctId"`                   // 销售方,绑定id 查找接口 /find/acct
+	AcctName        string      `gorm:"column:acctName" form:"AcctName"`               // 接口返回一个json，里面有Acct的json数组，选择其中的AcctName
+	MerchantId      uint        `gorm:"column:merchantId" form:"MerchantId"`           // 购买方,绑定id 查找接口 /find/merchant
+	Merc            string      `gorm:"column:merc" form:"Merc"`                       // 接口返回一个json，里面有Merchant的json数组，选择其中的Merc
+	QualStd         string      `gorm:"column:qualStd" form:"QualStd"`                 // 质量标准 从数据字典里选 /find/QualStd 接口返回一个json，里面有QualStd的json数组，选择其中的QualStd
+	BillValidity    string      `gorm:"column:billValidity" form:"BillValidity"`       // 账单有效期
+	BussOrderSta    string      `gorm:"column:bussOrderSta" form:"BussOrderSta"`       // 单据状态，从数据字典里选 /find/BussOrderSta 接口返回一个json，里面有BussOrderSta的json数组，选择其中的BussOrderSta
+	StartShip       string      `gorm:"column:startShip" form:"StartShip"`             // 发货开始日期
+	EndShip         string      `gorm:"column:endShip" form:"EndShip"`                 // 发货截止日期
+	SrcPlace        string      `gorm:"column:srcPlace" form:"SrcPlace"`               // 起运地, 从数据字典里选  /find/SrcPlace 同理
+	Des             string      `gorm:"column:des" form:"Des"`                         // 目的地, 从数据字典里选  /find/SrcPlace 同理
+	PayMentMethodId uint        `gorm:"column:payMentMethodId" form:"PayMentMethodId"` // 付款方式，绑定id，查找接口 /find/PayMentMethod 同理
+	PayMtdName      string      `gorm:"column:payMtdName" form:"PayMtdName"`           // 付款方式名称
+	PrdtInfos       []PrdtInfo  `gorm:"many2many:buyPrdtInfo" `                        // 产品明细，多表关联，  查找接口 /find/PrdtInfos
+	PrdtInfoId      uint        `form:"PrdtInfoId"`
+	DocReq          []DocReq    `gorm:"many2many:buyDocReq"`                 // 单据要求,多选 从数据字典里选 /find/DocReq
+	TotAmt          uint        `gorm:"column:totAmt" form:"TotAmt"`         // 总金额
+	Currency        string      `gorm:"column:currency" form:"Currency"`     // 币种
+	TotNum          uint        `gorm:"column:totNum" form:"TotNum"`         // 总件数
+	PackSpecId      uint        `gorm:"column:packSpecId" form:"PackSpecId"` // 包装规格 从数据字典里选 /find/PackSpec 同理
+	SpecName        string      `gorm:"column:specName;" form:"SpecName"`
+	TotalNetWeight  string      `gorm:"column:totalNetWeight" form:"TotalNetWeight"` // 总净重
+	UnitMeas        string      `gorm:"column:unitMeas" form:"UnitMeas"`             // 单位 从数据字典里选  /find/UnitMeas
+	AcctBankId      uint        `gorm:"column:acctBankId" form:"AcctBankId"`         // 我方银行账户  绑定id，查找接口 /find/acctBank
+	AccName         string      `gorm:"column:accName" form:"AccName"`
+	BankAccountId   uint        `gorm:"column:bankAccountId" form:"BankAccountId"` // 对方银行账户 绑定id，查找接口 /find/bankAccount
+	BankAccName     string      `gorm:"column:bankAccName" form:"BankAccName"`
+	Notes           string      `gorm:"column:notes" form:"Notes"` // 备注
+	FileName        string      `gorm:"column:fileName" form:"FileName"`
+	FileId          uint        `gorm:"column:fileId" form:"FileId"`
+	Purrecs         []Purrec    `gorm:"many2many:buyPurrec" `
+	ShouldOuts      []ShouldOut `gorm:"many2many:shouldOutBuy" `
+	Outs            []Out       `gorm:"many2many:outBuy" `
+	gorm.Model
+}
 type Sale struct {
 	OrderNum        string     `gorm:"column:orderNum" form:"OrderNum"`               // 订单编号
 	OrderDate       string     `gorm:"column:orderDate" form:"OrderDate"`             // 订单日期
@@ -93,6 +136,50 @@ type Sale struct {
 	gorm.Model
 }
 
+type Purrec struct {
+	SaleInvNum      string        `gorm:"column:SaleInvNum" form:"SaleInvNum"`   // 销售发票号
+	SaleInvDate     string        `gorm:"column:SaleInvDate" form:"SaleInvDate"` // 销售发票日期
+	Buys            []Buy         `gorm:"many2many:buyPurrec" `                  // 销售订单 多表关联
+	Merchant1Id     uint          `form:"Merchant1Id"`
+	Merchant2Id     uint          `form:"Merchant2Id"`
+	Merchant3Id     uint          `form:"Merchant3Id"`
+	Merchant1Name   string        `form:"Merchant1Name"`
+	Merchant2Name   string        `form:"Merchant2Name"`
+	Merchant3Name   string        `form:"Merchant3Name"`
+	AcctId          uint          `gorm:"column:AcctId" form:"AcctId"` // 发货人  通过id绑定，查找接口 /find/acct
+	AcctName        string        `gorm:"column:acctName" form:"AcctName"`
+	SrcPlace        string        `gorm:"column:SrcPlace" form:"SrcPlace"`     // 起运地, 从数据字典里选  /find/SrcPlace
+	Des             string        `gorm:"column:Des" form:"Des"`               // 目的地, 从数据字典里选  /find/SrcPlace
+	ShipName        string        `gorm:"column:ShipName" form:"ShipName"`     // 船名
+	Voyage          string        `gorm:"column:Voyage" form:"Voyage"`         // 航次
+	TotNum          uint          `gorm:"column:TotNum" form:"TotNum"`         // 总件数
+	PackSpecId      uint          `gorm:"column:packSpecId" form:"PackSpecId"` // 包装规格 从数据字典里选 /find/PackSpec
+	SpecName        string        `gorm:"column:specName;" form:"SpecName"`
+	TotalNetWeight  uint          `gorm:"column:TotalNetWeight" form:"TotalNetWeight"`   // 总净重
+	UnitMeas1       string        `gorm:"column:UnitMeas1" form:"UnitMeas1"`             // 单位 从数据字典里选  /find/UnitMeas
+	GrossWt         uint          `gorm:"column:GrossWt" form:"GrossWt"`                 // 总毛重
+	UnitMeas2       string        `gorm:"column:UnitMeas2" form:"UnitMeas2"`             // 单位 从数据字典里选  /find/UnitMeas
+	TotVol          string        `gorm:"column:TotVol" form:"TotVol"`                   // 总体积
+	UnitMeas3       string        `gorm:"column:Size" form:"UnitMeas3"`                  // 尺码
+	BillLadNum      string        `gorm:"column:BillLadNum" form:"BillLadNum"`           // 提单号
+	DateOfShip      string        `gorm:"column:DateOfShip" form:"DateOfShip"`           // 发货（开船）日期
+	Note1           string        `gorm:"column:note1" form:"Note1"`                     // 提单货物描述
+	Note2           string        `gorm:"column:note2" form:"Note2"`                     // 箱单货物描述
+	PayMentMethodId uint          `gorm:"column:payMentMethodId" form:"PayMentMethodId"` // 付款方式，绑定id，查找接口 /find/PayMentMethod
+	PayMtdName      string        `gorm:"column:payMtdName" form:"PayMtdName"`           // 付款方式名称
+	AcctBankId      uint          `gorm:"column:acctBankId" form:"AcctBankId"`           // 收款银行  绑定id，查找接口 /find/acctBank
+	AccName         string        `gorm:"column:accName" form:"AccName"`
+	PrdtInfos       []PrdtInfo    `gorm:"many2many:purrecPrdtInfo" ` // 产品明细，多表关联，  查找接口 /find/PrdtInfos
+	PrdtInfoId      uint          `form:"PrdtInfoId"`
+	LoadingInfos    []LoadingInfo `gorm:"many2many:purrecLoadingInfo" ` // 装货明细，多表关联，查找接口 /find/LoadingInfos
+	File1Id         uint          `form:"File1Id"`
+	File2Id         uint          `form:"File2Id"`
+	File1Name       string        `form:"File1Name"`
+	File2Name       string        `form:"File2Name"`
+	ShouldOuts      []ShouldOut   `gorm:"many2many:shouldOutPurrec" ` // 应收账款单
+	Outs            []Out         `gorm:"many2many:outPurrec"`        // 收款单
+	gorm.Model
+}
 type Send struct {
 	SaleInvNum      string        `gorm:"column:SaleInvNum" form:"SaleInvNum"`   // 销售发票号
 	SaleInvDate     string        `gorm:"column:SaleInvDate" form:"SaleInvDate"` // 销售发票日期
@@ -162,6 +249,54 @@ type ShouldIn struct {
 	gorm.Model
 }
 
+type Out struct {
+	ReceNum       string      `gorm:"column:rece_num" form:"ReceNum"`              // 收款单号
+	RealReceDate  string      `gorm:"column:real_rece_date" form:"RealReceDate"`   // 实际收款日期
+	ExpReceDate   string      `gorm:"column:exp_rece_date" form:"ExpReceDate"`     // 预计收款日期
+	FinaDocType   string      `gorm:"column:fina_doc_type" form:"FinaDocType"`     // 财务单据类型
+	FinaDocStatus string      `gorm:"column:fina_doc_status" form:"FinaDocStatus"` // 财务单据状态
+	MerchantId    uint        `gorm:"column:merchantId" form:"MerchantId"`         //  付款方,绑定id 查找接口 /find/merchant
+	Merc          string      `gorm:"column:merc" form:"Merc"`
+	AcctId        uint        `gorm:"column:acctId" form:"AcctId"` // 收款方,绑定id 查找接口 /find/acct
+	AcctName      string      `gorm:"column:acctName" form:"AcctName"`
+	BankAccountId uint        `gorm:"column:bankAccountId" form:"BankAccountId"` // 付款银行账户 绑定id，查找接口 /find/bankAccount
+	BankAccName   string      `gorm:"column:bankAccName" form:"BankAccName"`
+	AcctBankId    uint        `gorm:"column:acctBankId" form:"AcctBankId"` // 收款银行账户 绑定id，查找接口 /find/acctBank
+	AccName       string      `gorm:"column:accName" form:"AccName"`
+	TotAmt        uint        `form:"TotAmt"`   // 总金额
+	Currency      string      `form:"Currency"` // 币种
+	Notes         string      `form:"Notes"`    // 描述
+	Purrecs       []Purrec    `gorm:"many2many:outPurrec"`
+	Buys          []Buy       `gorm:"many2many:outBuy"`
+	ShouldOuts    []ShouldOut `gorm:"many2many:shouldOutOut"`
+	FileId        uint        `form:"FileId"`
+	FileName      string      `form:"FileName"`
+	gorm.Model
+}
+type ShouldOut struct {
+	BillReceNum   string   `gorm:"column:bill_rece_num" form:"BillReceNum" binding:"required"` // 应收账款单号
+	DocDate       string   `gorm:"column:doc_date" form:"DocDate"`                             // 单据日期
+	ExpReceDate   string   `gorm:"column:exp_rece_date" form:"ExpReceDate"`                    // 预计收款日期
+	FinaDocType   string   `gorm:"column:fina_doc_type" form:"FinaDocType"`                    // 财务单据类型
+	FinaDocStatus string   `gorm:"column:fina_doc_status" form:"FinaDocStatus"`                // 财务单据状态
+	MerchantId    uint     `gorm:"column:merchantId" form:"MerchantId"`                        //  付款方,绑定id 查找接口 /find/merchant
+	Merc          string   `gorm:"column:merc" form:"Merc"`
+	AcctId        uint     `gorm:"column:acctId" form:"AcctId"` // 收款方,绑定id 查找接口 /find/acct
+	AcctName      string   `gorm:"column:acctName" form:"AcctName"`
+	BankAccountId uint     `gorm:"column:bankAccountId" form:"BankAccountId"` // 付款银行账户 绑定id，查找接口 /find/bankAccount
+	BankAccName   string   `gorm:"column:bankAccName" form:"BankAccName"`
+	AcctBankId    uint     `gorm:"column:acctBankId" form:"AcctBankId"` // 收款银行账户 绑定id，查找接口 /find/acctBank
+	AccName       string   `gorm:"column:accName" form:"AccName"`
+	TotAmt        uint     `form:"TotAmt"`   // 总金额
+	Currency      string   `form:"Currency"` // 币种
+	Notes         string   `form:"Notes"`    // 描述
+	FileId        uint     `form:"FileId"`
+	FileName      string   `form:"FileName"`
+	Purrecs       []Purrec `gorm:"many2many:shouldOutPurrec"`
+	Buys          []Buy    `gorm:"many2many:shouldOutBuy" `
+	Outs          []Out    `gorm:"many2many:shouldOutOut" `
+	gorm.Model
+}
 type In struct {
 	ReceNum       string     `gorm:"column:rece_num" form:"ReceNum"`              // 收款单号
 	RealReceDate  string     `gorm:"column:real_rece_date" form:"RealReceDate"`   // 实际收款日期
@@ -186,6 +321,7 @@ type In struct {
 	FileName      string     `form:"FileName"`
 	gorm.Model
 }
+
 type PrdtInfo struct {
 	CatEngName   string `gorm:"column:catEngName" form:"CatEngName"`     // 产品
 	BrandEngName string `gorm:"column:brandEngName" form:"BrandEngName"` // 品牌

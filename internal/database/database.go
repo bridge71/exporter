@@ -26,6 +26,50 @@ type Service interface {
 	FindUserById(user *models.User, userId uint)
 	FindUserByEmail(user *models.User, email string)
 
+	FindShouldOuts(ShouldOut *[]models.ShouldOut)
+	FindShouldOutPurrec(ShouldOut *models.ShouldOut)
+	FindShouldOutOut(ShouldOut *models.ShouldOut)
+	FindShouldOutBuy(ShouldOut *models.ShouldOut)
+	SaveShouldOut(ShouldOut *models.ShouldOut) error
+	DeleteShouldOutPurrec(ShouldOut *models.ShouldOut, purrec *models.Purrec) error
+	DeleteShouldOutBuy(ShouldOut *models.ShouldOut, buy *models.Buy) error
+	DeleteShouldOutOut(ShouldOut *models.ShouldOut, out *models.Out) error
+
+	FindOuts(Out *[]models.Out)
+	FindOutPurrec(Out *models.Out)
+	FindOutShouldOut(Out *models.Out)
+	FindOutBuy(Out *models.Out)
+	SaveOut(Out *models.Out) error
+	DeleteOutPurrec(Out *models.Out, purrec *models.Purrec) error
+	DeleteOutBuy(Out *models.Out, buy *models.Buy) error
+	DeleteOutShouldOut(Out *models.Out, shouldOut *models.ShouldOut) error
+
+	SavePurrec(Purrec *models.Purrec) error
+	FindPurrecs(Purrec *[]models.Purrec)
+	FindPurrecPrdtInfo(Purrec *models.Purrec)
+	FindPurrecLoadingInfo(Purrec *models.Purrec)
+	FindPurrecBuy(Purrec *models.Purrec)
+	DeletePurrecPrdtInfo(Purrec *models.Purrec, prdtInfo *models.PrdtInfo) error
+	DeletePurrecBuy(Purrec *models.Purrec, buy *models.Buy) error
+	FindPurrecOuts(Purrec *models.Purrec)
+	FindPurrecShouldOuts(Purrec *models.Purrec)
+	DeletePurrecOuts(Purrec *models.Purrec, out *models.Out) error
+	DeletePurrecShouldOuts(Purrec *models.Purrec, shouldOut *models.ShouldOut) error
+	DeletePurrecLoadingInfo(Purrec *models.Purrec, LoadingInfo *models.LoadingInfo) error
+
+	FindBuys(Buy *[]models.Buy)
+	FindBuyPrdtInfo(Buy *models.Buy)
+	FindBuyPurrec(Buy *models.Buy)
+	DeleteBuyOuts(Buy *models.Buy, Outs *models.Out) error
+	DeleteBuyShouldOuts(Buy *models.Buy, ShouldOuts *models.ShouldOut) error
+	FindBuyOuts(Buy *models.Buy)
+	FindBuyShouldOuts(Buy *models.Buy)
+	SaveBuy(Buy *models.Buy) error
+	DeleteBuyDocReq(Buy *models.Buy, DocReq *[]models.DocReq) error
+	DeleteBuyPrdtInfo(Buy *models.Buy, prdtInfo *models.PrdtInfo) error
+	DeleteBuyPurrec(Buy *models.Buy, Purrec *models.Purrec) error
+	TransBuy(Buy *models.Buy, DocReq *[]models.DocReq) error
+
 	FindShouldIns(ShouldIn *[]models.ShouldIn)
 	FindShouldInSend(ShouldIn *models.ShouldIn)
 	FindShouldInIn(ShouldIn *models.ShouldIn)
@@ -317,6 +361,10 @@ func New() Service {
 		&models.Send{},
 		&models.ShouldIn{},
 		&models.In{},
+		&models.Out{},
+		&models.ShouldOut{},
+		&models.Buy{},
+		&models.Purrec{},
 	)
 
 	dbInstance = &service{

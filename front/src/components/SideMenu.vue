@@ -15,7 +15,7 @@
     <el-menu-item index="1-13" @click="pushLoadingInfo">装货明细</el-menu-item>
     <el-menu-item index="1-14" @click="pushCost">费用明细</el-menu-item>
     <el-menu-item index="1-15" @click="pushSale">销售订单</el-menu-item>
-    <el-menu-item index="1-16" @click="pushBuy">采购收单</el-menu-item>
+    <el-menu-item index="1-16" @click="pushBuy">采购订单</el-menu-item>
     <el-menu-item index="1-17" @click="pushSend">销售发货单</el-menu-item>
     <el-menu-item index="1-18" @click="pushPurrec">采购收货单</el-menu-item>
     <el-menu-item index="1-19" @click="pushShouldIn">应收账款单</el-menu-item>
