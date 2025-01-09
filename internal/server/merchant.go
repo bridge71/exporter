@@ -13,11 +13,11 @@ func (s *Server) FindMerchantHandler(c *gin.Context) {
 	s.db.FindMerchant(&merchants)
 	// for i := range merchants {
 	// 	custs := []models.Cust{}
-	// 	s.db.FindCustById(&custs, merchants[i].MercId)
+	// 	s.db.FindCustByID(&custs, merchants[i].MercID)
 	// 	merchants[i].Custs = append(merchants[i].Custs, custs...)
 	//
 	// 	bankAccounts := []models.BankAccount{}
-	// 	s.db.FindBankAccountById(&bankAccounts, merchants[i].MercId)
+	// 	s.db.FindBankAccountByID(&bankAccounts, merchants[i].MercID)
 	// 	merchants[i].BankAccounts = append(merchants[i].BankAccounts, bankAccounts...)
 	// }
 	c.JSON(http.StatusOK, models.Message{
@@ -36,7 +36,7 @@ func (s *Server) SaveMerchantHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", merchant)
 
-	err, merchant.FileId, merchant.FileName = s.SaveFile(c, "file")
+	err, merchant.FileID, merchant.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save file",

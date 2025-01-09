@@ -1,6 +1,7 @@
 package server
 
 import (
+	"exporter/internal/database"
 	"fmt"
 	"net/http"
 	"os"
@@ -8,8 +9,6 @@ import (
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
-
-	"exporter/internal/database"
 )
 
 type Server struct {

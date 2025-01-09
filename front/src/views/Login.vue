@@ -69,7 +69,7 @@ const handleLogin = () => {
     .then((response) => {
       if (response.status === 200) {
         ElMessage.success('登录成功');
-        sessionStorage.setItem('userToken', response.data.User.UserId);
+        sessionStorage.setItem('userToken', response.data.User.UserID);
         router.push({ name: 'Acct' }); // 跳转到菜单页面
       }
     })

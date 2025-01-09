@@ -40,19 +40,19 @@ func (s *Server) DeleteCatHandler(c *gin.Context) {
 	})
 }
 
-// FindCatByIdHandler 根据 CatId 查询 Cat 记录
-func (s *Server) FindCatByIdHandler(c *gin.Context) {
-	catIdStr := c.PostForm("CatId")
-	catId, err := strconv.Atoi(catIdStr)
+// FindCatByIDHandler 根据 CatID 查询 Cat 记录
+func (s *Server) FindCatByIDHandler(c *gin.Context) {
+	catIDStr := c.PostForm("CatID")
+	catID, err := strconv.Atoi(catIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: "CatId 格式错误",
+			RetMessage: "CatID 格式错误",
 		})
 		return
 	}
 
 	var cat models.Cat
-	if err := s.db.FindCatById(&cat, uint(catId)); err != nil {
+	if err := s.db.FindCatByID(&cat, uint(catID)); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "查询失败",
 		})
@@ -76,14 +76,14 @@ func (s *Server) SaveCatHandler(c *gin.Context) {
 	log.Printf("保存 Cat: %+v\n", cat)
 
 	// 处理文件上传
-	err, fileId, fileName := s.SaveFile(c, "file")
+	err, fileID, fileName := s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "文件上传失败",
 		})
 		return
 	}
-	cat.FileId = fileId
+	cat.FileID = fileID
 	cat.FileName = fileName
 
 	// 保存 Cat 记录

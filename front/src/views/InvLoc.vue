@@ -200,13 +200,13 @@ const handleView = (index, row) => {
   showViewSpotDialog.value = true;
 };
 
-const handleDelete = (index, SpotId) => {
+const handleDelete = (index, SpotID) => {
   ElMessageBox.confirm('确定要删除该支付方式信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/spot', { SpotId })
+    axios.post('/delete/spot', { SpotID })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');

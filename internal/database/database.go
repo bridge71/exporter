@@ -23,7 +23,7 @@ type Service interface {
 	// The keys and values in the map are service-specific.
 	Health() map[string]string
 
-	FindUserById(user *models.User, userId uint)
+	FindUserByID(user *models.User, userID uint)
 	FindUserByEmail(user *models.User, email string)
 
 	FindShouldOuts(ShouldOut *[]models.ShouldOut)
@@ -101,8 +101,8 @@ type Service interface {
 	SaveSale(sale *models.Sale) error
 	TransSale(sale *models.Sale, DocReq *[]models.DocReq) error
 	DeleteSaleDocReq(sale *models.Sale, DocReq *[]models.DocReq) error
-	FindDocReqById(id uint, mercTypes *[]models.DocReq)
-	FindById(id uint, model interface{})
+	FindDocReqByID(id uint, mercTypes *[]models.DocReq)
+	FindByID(id uint, model interface{})
 
 	FindSends(Send *[]models.Send)
 	FindSendPrdtInfo(Send *models.Send)
@@ -136,12 +136,12 @@ type Service interface {
 	DeleteBrand(brand *models.Brand) error
 	SaveBrand(brand *models.Brand) error
 	FindBrand(brands *[]models.Brand)
-	FindBrandById(brand *models.Brand, brandId uint) error
+	FindBrandByID(brand *models.Brand, brandID uint) error
 
 	DeleteCat(cat *models.Cat) error
 	SaveCat(cat *models.Cat) error
 	FindCat(cats *[]models.Cat)
-	FindCatById(cat *models.Cat, catId uint) error
+	FindCatByID(cat *models.Cat, catID uint) error
 
 	DeletePayMentMethod(payMentMethod *models.PayMentMethod) error
 	SavePayMentMethod(payMentMethod *models.PayMentMethod) error
@@ -151,11 +151,11 @@ type Service interface {
 	DeleteBankAccount(bankAccount *models.BankAccount) error
 	SaveBankAccount(bankAccount *models.BankAccount) error
 	FindBankAccount(bankAccounts *[]models.BankAccount)
-	FindBankAccountById(bankAccounts *[]models.BankAccount, mercId uint)
+	FindBankAccountByID(bankAccounts *[]models.BankAccount, mercID uint)
 	DeleteCust(cust *models.Cust) error
 	SaveCust(cust *models.Cust) error
 	FindCust(custs *[]models.Cust)
-	FindCustById(custs *[]models.Cust, mercId uint)
+	FindCustByID(custs *[]models.Cust, mercID uint)
 
 	DeleteMerchant(merchant *models.Merchant) error
 	SaveMerchant(merchant *models.Merchant) error
@@ -171,7 +171,7 @@ type Service interface {
 	FindAcct(accts *[]models.Acct)
 	FirstAcct(id uint, acct *[]models.Acct)
 	FindAcctBank(acctBanks *[]models.AcctBank)
-	FindAcctBankById(acctBanks *[]models.AcctBank, acctId uint)
+	FindAcctBankByID(acctBanks *[]models.AcctBank, acctID uint)
 
 	CreateFile(file *models.File) error
 	// FindFile(file *models.File, MD5 string)

@@ -19,7 +19,7 @@ func (s *Server) DeleteInShouldIn(c *gin.Context) {
 	In := models.In{}
 	In.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldIn models.ShouldIn
-	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInID"))
 	In.ShouldIns = append(In.ShouldIns, ShouldIn)
 
 	if In.ID == 0 || ShouldIn.ID == 0 {
@@ -46,7 +46,7 @@ func (s *Server) DeleteInSend(c *gin.Context) {
 	In := models.In{}
 	In.ID = s.Str2Uint(c.PostForm("ID"))
 	var Send models.Send
-	Send.ID = s.Str2Uint(c.PostForm("SendId"))
+	Send.ID = s.Str2Uint(c.PostForm("SendID"))
 	In.Sends = append(In.Sends, Send)
 
 	if In.ID == 0 || Send.ID == 0 {
@@ -135,7 +135,7 @@ func (s *Server) DeleteInSale(c *gin.Context) {
 	In := models.In{}
 	In.ID = s.Str2Uint(c.PostForm("ID"))
 	var Sale models.Sale
-	Sale.ID = s.Str2Uint(c.PostForm("SaleId"))
+	Sale.ID = s.Str2Uint(c.PostForm("SaleID"))
 	In.Sales = append(In.Sales, Sale)
 
 	if In.ID == 0 || Sale.ID == 0 {
@@ -162,7 +162,7 @@ func (s *Server) AddInSale(c *gin.Context) {
 	In := models.In{}
 	In.ID = s.Str2Uint(c.PostForm("ID"))
 	var Sale models.Sale
-	Sale.ID = s.Str2Uint(c.PostForm("SaleId"))
+	Sale.ID = s.Str2Uint(c.PostForm("SaleID"))
 
 	if In.ID == 0 || Sale.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -171,10 +171,10 @@ func (s *Server) AddInSale(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(In.ID, &In)
-	s.db.FindById(Sale.ID, &Sale)
+	s.db.FindByID(In.ID, &In)
+	s.db.FindByID(Sale.ID, &Sale)
 
-	if Sale.AcctName == "" {
+	if Sale.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
@@ -200,7 +200,7 @@ func (s *Server) AddInShouldIns(c *gin.Context) {
 	In := models.In{}
 	In.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldIn models.ShouldIn
-	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInID"))
 
 	if In.ID == 0 || ShouldIn.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -209,8 +209,8 @@ func (s *Server) AddInShouldIns(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(In.ID, &In)
-	s.db.FindById(ShouldIn.ID, &ShouldIn)
+	s.db.FindByID(In.ID, &In)
+	s.db.FindByID(ShouldIn.ID, &ShouldIn)
 
 	if ShouldIn.BillReceNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -238,7 +238,7 @@ func (s *Server) AddInSends(c *gin.Context) {
 	In := models.In{}
 	In.ID = s.Str2Uint(c.PostForm("ID"))
 	var Send models.Send
-	Send.ID = s.Str2Uint(c.PostForm("SendId"))
+	Send.ID = s.Str2Uint(c.PostForm("SendID"))
 
 	if In.ID == 0 || Send.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -247,8 +247,8 @@ func (s *Server) AddInSends(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(In.ID, &In)
-	s.db.FindById(Send.ID, &Send)
+	s.db.FindByID(In.ID, &In)
+	s.db.FindByID(Send.ID, &Send)
 
 	if Send.SaleInvNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -284,7 +284,7 @@ func (s *Server) SaveInHandler(c *gin.Context) {
 
 	log.Printf("保存 In: %+v\n", In)
 
-	_, In.FileId, In.FileName = s.SaveFile(c, "file")
+	_, In.FileID, In.FileName = s.SaveFile(c, "file")
 	// 保存 In 记录
 	if err := s.db.SaveIn(In); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{

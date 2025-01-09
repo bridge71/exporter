@@ -38,7 +38,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.BankAccId)" type="text"
+                  <el-button @click="handleDelete(scope.$index, scope.row.BankAccID)" type="text"
                     size="small">删除</el-button>
                 </el-row>
               </template>
@@ -123,12 +123,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!bankAccountForm.FileId" ref="bankAccountUploadRef" action="" :limit="1"
+              <el-upload v-if="!bankAccountForm.FileID" ref="bankAccountUploadRef" action="" :limit="1"
                 :on-change="handleBankAccountFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(bankAccountForm.FileId, bankAccountForm.FileName)">下载文件</el-button>
+                @click="downloadFile(bankAccountForm.FileID, bankAccountForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="bankAccountForm.FileName" :readonly="true"></el-input>
@@ -139,8 +139,8 @@
         <!-- 商户信息选择 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="关联商户信息" prop="MerchantId">
-              <el-select v-model="bankAccountForm.MerchantId" @change="onMercChange" placeholder="请选择商户信息">
+            <el-form-item label="关联商户信息" prop="MerchantID">
+              <el-select v-model="bankAccountForm.MerchantID" @change="onMercChange" placeholder="请选择商户信息">
                 <el-option v-for="merc in merchantData" :key="merc.ID" :label="`${merc.Merc} (${merc.MercCode})`"
                   :value="merc.ID"></el-option>
               </el-select>
@@ -229,12 +229,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!bankAccountForm.FileId" ref="bankAccountUploadRef" action="" :limit="1"
+              <el-upload v-if="!bankAccountForm.FileID" ref="bankAccountUploadRef" action="" :limit="1"
                 :on-change="handleBankAccountFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(bankAccountForm.FileId, bankAccountForm.FileName)">下载文件</el-button>
+                @click="downloadFile(bankAccountForm.FileID, bankAccountForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="bankAccountForm.FileName" :readonly="true"></el-input>
@@ -246,9 +246,9 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联商户信息">
-              <el-select v-model="bankAccountForm.MerchantId" @change="onMercChange" placeholder="请选择商户信息">
-                <el-option v-for="merc in merchantData" :key="merc.MerchantId"
-                  :label="`${merc.Merc} (${merc.MercCode})`" :value="merc.MerchantId"></el-option>
+              <el-select v-model="bankAccountForm.MerchantID" @change="onMercChange" placeholder="请选择商户信息">
+                <el-option v-for="merc in merchantData" :key="merc.MerchantID"
+                  :label="`${merc.Merc} (${merc.MercCode})`" :value="merc.MerchantID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -287,8 +287,8 @@ const bankAccountForm = ref({
   BankAddr: '',
   Notes: '',
   FileName: '',
-  FileId: '',
-  MerchantId: '',
+  FileID: '',
+  MerchantID: '',
   Merc: ''
 });
 
@@ -359,17 +359,17 @@ const handleBankAccountFileChange = (uploadFile) => {
 };
 
 // 下载文件
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
     const response = await axios.post(
       '/file',
-      { FileId: fileId },
+      { FileID: fileID },
       { responseType: 'blob' }
     );
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || `file_${fileId}`);
+    link.setAttribute('download', fileName || `file_${fileID}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -400,8 +400,8 @@ const resetBankAccountForm = () => {
     BankAddr: '',
     Notes: '',
     FileName: '',
-    FileId: '',
-    MerchantId: '',
+    FileID: '',
+    MerchantID: '',
     Merc: ''
   };
   bankAccountFile.value = null;
@@ -445,14 +445,14 @@ const submitBankAccountForm = async () => {
 };
 
 // 删除按钮逻辑
-const handleDelete = (index, BankAccId) => {
+const handleDelete = (index, BankAccID) => {
   ElMessageBox.confirm('确定要删除该银行账户信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
     axios.post('/delete/bankAccount', {
-      BankAccId: BankAccId,
+      BankAccID: BankAccID,
       BankAccName: bankAccountData.value[index].BankAccName,
       CompName: bankAccountData.value[index].CompName,
       AcctNum: bankAccountData.value[index].AcctNum
@@ -513,7 +513,7 @@ const fetchMerchantData = async () => {
 
 // 监听商户选择事件
 const onMercChange = (value) => {
-  const selectedMerc = merchantData.value.find(merc => merc.MerchantId === value);
+  const selectedMerc = merchantData.value.find(merc => merc.MerchantID === value);
   if (selectedMerc) {
     bankAccountForm.value.Merc = selectedMerc.Merc;
   }

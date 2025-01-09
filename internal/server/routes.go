@@ -170,12 +170,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/find/brand", s.FindBrandHandler)
 	r.POST("/delete/brand", s.DeleteBrandHandler)
-	r.POST("/find/brand/id", s.FindBrandByIdHandler)
+	r.POST("/find/brand/id", s.FindBrandByIDHandler)
 	r.POST("/save/brand", s.SaveBrandHandler)
 
 	r.GET("/find/cat", s.FindCatHandler)
 	r.POST("/delete/cat", s.DeleteCatHandler)
-	r.POST("/find/cat/id", s.FindCatByIdHandler)
+	r.POST("/find/cat/id", s.FindCatByIDHandler)
 	r.POST("/save/cat", s.SaveCatHandler)
 
 	r.POST("/save/payMentMethod", s.SavePayMentMethodHandler)
@@ -193,17 +193,17 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.POST("/save/acctBank", s.SaveAcctBankHandler)
 	r.POST("/delete/acctBank", s.DeleteAcctBankHandler)
 	r.GET("/find/acctBank", s.FindAcctBankHandler)
-	r.GET("/find/acctBank/id", s.FindAcctBankByIdHandler)
+	r.GET("/find/acctBank/id", s.FindAcctBankByIDHandler)
 
 	r.POST("/save/cust", s.SaveCustHandler)
 	r.POST("/delete/cust", s.DeleteCustHandler)
 	r.GET("/find/cust", s.FindCustHandler)
-	r.GET("/find/cust/id", s.FindCustByIdHandler)
+	r.GET("/find/cust/id", s.FindCustByIDHandler)
 
 	r.POST("/save/bankAccount", s.SaveBankAccountHandler)
 	r.POST("/delete/bankAccount", s.DeleteBankAccountHandler)
 	r.GET("/find/bankAccount", s.FindBankAccountHandler)
-	r.GET("/find/bankAccount/id", s.FindBankAccountByIdHandler)
+	r.GET("/find/bankAccount/id", s.FindBankAccountByIDHandler)
 
 	r.POST("/save/user", s.SaveUserHandler)
 	r.POST("/auth", s.LoginHandler)

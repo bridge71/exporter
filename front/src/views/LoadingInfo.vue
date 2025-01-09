@@ -12,7 +12,7 @@
       <el-container>
 
         <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
-          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIdMode" @add="handleAdd" />
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
         <el-header height="1px">
         </el-header>
 
@@ -259,13 +259,13 @@ import SideMenu from '@/components/SideMenu.vue';
 import { useRoute } from 'vue-router';
 const route = useRoute();
 const isExactMatch = ref(true);
-const onlyId = ref(true);
+const onlyID = ref(true);
 const toggleMatchMode = () => {
   isExactMatch.value = !isExactMatch.value;
 };
 
-const toggleIdMode = () => {
-  onlyId.value = !onlyId.value;
+const toggleIDMode = () => {
+  onlyID.value = !onlyID.value;
 };
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -285,7 +285,7 @@ const loadingForm = ref({
   CnrNum: '',
   SealNum: '',
   VehNum: '',
-  LoadingInfoId: '',
+  LoadingInfoID: '',
 });
 const loadingFormRef = ref(null);
 
@@ -304,7 +304,7 @@ const paginatedLoadingData = computed(() => {
   let filteredData = loadingData.value;
   if (searchQuery.value) {
     if (isExactMatch.value === false) {
-      if (onlyId.value === false) {
+      if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
           item.Product.includes(searchQuery.value) ||
           item.Brand.includes(searchQuery.value) ||
@@ -325,7 +325,7 @@ const paginatedLoadingData = computed(() => {
         );
       }
     } else {
-      if (onlyId.value === false) {
+      if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
           item.Product === searchQuery.value ||
           item.Brand === searchQuery.value ||
@@ -404,7 +404,7 @@ const resetLoadingForm = () => {
     CnrNum: '',
     SealNum: '',
     VehNum: '',
-    LoadingInfoId: '',
+    LoadingInfoID: '',
     CreatedAt: '', // 添加 CreatedAt
     UpdatedAt: '', // 添加 UpdatedAt
   };

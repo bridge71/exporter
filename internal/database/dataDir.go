@@ -6,8 +6,8 @@ func (s *service) FindMercType(mercTypes *[]models.MercType) {
 	s.gormDB.Find(mercTypes)
 }
 
-func (s *service) FindDocReqById(id uint, DocReq *[]models.DocReq) {
-	s.gormDB.Where("DocReqId = ?", id).Find(DocReq)
+func (s *service) FindDocReqByID(id uint, DocReq *[]models.DocReq) {
+	s.gormDB.Where("DocReqID = ?", id).Find(DocReq)
 }
 
 func (s *service) FindSuprType(suprTypes *[]models.SuprType) {

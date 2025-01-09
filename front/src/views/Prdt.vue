@@ -13,7 +13,7 @@
         <!-- 使用 HeaderComponent -->
 
         <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
-          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIdMode" @add="handleAdd" />
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
         <el-header height="1px">
         </el-header>
 
@@ -25,8 +25,8 @@
         <!--     <el-button type="primary" @click="toggleMatchMode"> -->
         <!--       {{ isExactMatch ? '完全匹配' : '模糊匹配' }} -->
         <!--     </el-button> -->
-        <!--     <el-button type="primary" @click="toggleIdMode"> -->
-        <!--       {{ onlyId ? '只匹配ID' : '全部匹配' }} -->
+        <!--     <el-button type="primary" @click="toggleIDMode"> -->
+        <!--       {{ onlyID ? '只匹配ID' : '全部匹配' }} -->
         <!--     </el-button> -->
         <!--     <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button> -->
         <!--   </div> -->
@@ -313,13 +313,13 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 // 匹配模式（默认是模糊匹配）
 const isExactMatch = ref(true);
-const onlyId = ref(true);
+const onlyID = ref(true);
 const toggleMatchMode = () => {
   isExactMatch.value = !isExactMatch.value;
 };
 
-const toggleIdMode = () => {
-  onlyId.value = !onlyId.value;
+const toggleIDMode = () => {
+  onlyID.value = !onlyID.value;
 };
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -341,7 +341,7 @@ const prdtForm = ref({
   WeightUnit: '',
   TradeTerm: '',
   DeliveryLoc: '',
-  PrdtId: '',
+  PrdtID: '',
 });
 const prdtFormRef = ref(null);
 
@@ -363,8 +363,8 @@ const paginatedPrdtData = computed(() => {
   let filteredData = prdtData.value;
   if (searchQuery.value) {
     if (isExactMatch.value === false) {
-      if (onlyId.value === false) {
-        console.log("sss", onlyId.value)
+      if (onlyID.value === false) {
+        console.log("sss", onlyID.value)
         filteredData = filteredData.filter(item =>
           item.CatEngName.includes(searchQuery.value) ||
           item.BrandEngName.includes(searchQuery.value) ||
@@ -388,7 +388,7 @@ const paginatedPrdtData = computed(() => {
       }
     } else {
 
-      if (onlyId.value === false) {
+      if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
           item.CatEngName === searchQuery.value ||
           item.BrandEngName === searchQuery.value ||
@@ -471,7 +471,7 @@ const resetPrdtForm = () => {
     WeightUnit: '',
     TradeTerm: '',
     DeliveryLoc: '',
-    PrdtId: '',
+    PrdtID: '',
   };
 };
 

@@ -36,7 +36,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.CatId)" type="text"
+                  <el-button @click="handleDelete(scope.$index, scope.row.CatID)" type="text"
                     size="small">删除</el-button>
                 </el-row>
               </template>
@@ -117,11 +117,11 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!catForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+              <el-upload v-if="!catForm.FileID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
-              <el-button v-else type="success" @click="downloadFile(catForm.FileId, catForm.FileName)">下载文件</el-button>
+              <el-button v-else type="success" @click="downloadFile(catForm.FileID, catForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="catForm.FileName" :readonly="true"></el-input>
@@ -206,8 +206,8 @@
           <el-col :span="24">
             <el-form-item label="文件">
               <el-input v-model="catForm.FileName" :readonly="true"></el-input>
-              <el-button v-if="catForm.FileId" type="success" style="margin-top: 10px;"
-                @click="downloadFile(catForm.FileId, catForm.FileName)">下载文件</el-button>
+              <el-button v-if="catForm.FileID" type="success" style="margin-top: 10px;"
+                @click="downloadFile(catForm.FileID, catForm.FileName)">下载文件</el-button>
               <span v-else style="color: #999;">无文件</span>
             </el-form-item>
           </el-col>
@@ -254,9 +254,9 @@ const catForm = ref({
   GB: '',
   StdDoc: '',
   Notes: '',
-  FileId: '',
+  FileID: '',
   FileName: '',
-  CatId: '',
+  CatID: '',
 });
 
 // 自定义验证函数
@@ -337,13 +337,13 @@ const handleView = (index, row) => {
 };
 
 // 删除按钮点击事件
-const handleDelete = (index, CatId) => {
+const handleDelete = (index, CatID) => {
   ElMessageBox.confirm('确定要删除该品类吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/cat', { CatId })
+    axios.post('/delete/cat', { CatID })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -410,9 +410,9 @@ const resetCatForm = () => {
     GB: '',
     StdDoc: '',
     Notes: '',
-    FileId: '',
+    FileID: '',
     FileName: '',
-    CatId: '',
+    CatID: '',
   };
   file.value = null;
   if (uploadRef.value) {
@@ -433,18 +433,18 @@ const handleFileChange = (uploadFile) => {
   file.value = uploadFile.raw;
 };
 
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
     const response = await axios.post(
       '/file',
-      { FileId: fileId },
+      { FileID: fileID },
       { responseType: 'blob' }
     );
 
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || `file_${fileId}`);
+    link.setAttribute('download', fileName || `file_${fileID}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -12,14 +12,6 @@ import (
 func (s *Server) FindAcctBankHandler(c *gin.Context) {
 	acctBanks := []models.AcctBank{}
 	s.db.FindAcctBank(&acctBanks)
-	length := len(acctBanks)
-	var acct []models.Acct
-	for i := 0; i < length; i++ {
-		s.db.FirstAcct(acctBanks[i].AcctId, &acct)
-		if len(acct) > 0 {
-			acctBanks[i].AcctName = acct[0].AcctName
-		}
-	}
 	c.JSON(http.StatusOK, models.Message{AcctBank: acctBanks})
 }
 
@@ -46,12 +38,12 @@ func (s *Server) DeleteAcctBankHandler(c *gin.Context) {
 	}
 }
 
-func (s *Server) FindAcctBankByIdHandler(c *gin.Context) {
+func (s *Server) FindAcctBankByIDHandler(c *gin.Context) {
 	acctBanks := &[]models.AcctBank{}
-	acctId := c.PostForm("AcctId")
-	idStr, _ := strconv.Atoi(acctId)
+	acctID := c.PostForm("AcctID")
+	idStr, _ := strconv.Atoi(acctID)
 	id := uint(idStr)
-	s.db.FindAcctBankById(acctBanks, id)
+	s.db.FindAcctBankByID(acctBanks, id)
 	c.JSON(http.StatusOK, models.Message{AcctBank: *acctBanks})
 }
 
@@ -66,13 +58,32 @@ func (s *Server) SaveAcctBankHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", acctBank)
 
-	err, acctBank.FileId, acctBank.FileName = s.SaveFile(c, "file")
+	err, acctBank.FileID, acctBank.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save file",
 		})
 	}
-	err = s.db.SaveAcctBank(acctBank)
+	// Acct := models.Acct{}
+	// log.Printf("sss %d\n", acctBank.AcctID)
+	// s.db.FindByID(acctBank.AcctID, &Acct)
+	acctBank.Acct.ID = acctBank.AcctID
+	// log.Printf("??? %v\n", Acct)
+	// log.Printf(" 23123  %d\n", Acct.ID)
+	if acctBank.AcctID != 0 {
+		err = s.db.Save(acctBank)
+		if err != nil {
+			c.JSON(http.StatusForbidden, models.Message{
+				RetMessage: "请添加会计实体",
+			})
+			return
+		}
+	} else {
+		c.JSON(http.StatusForbidden, models.Message{
+			RetMessage: "请添加会计实体",
+		})
+		return
+	}
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save acctBank",

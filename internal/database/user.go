@@ -18,6 +18,6 @@ func (s *service) FindUserByEmail(user *models.User, email string) {
 	s.gormDB.First(user, "email = ?", email)
 }
 
-func (s *service) FindUserById(user *models.User, userId uint) {
-	s.gormDB.First(user, "userId = ?", userId)
+func (s *service) FindUserByID(user *models.User, userID uint) {
+	s.gormDB.First(user, "userID = ?", userID)
 }

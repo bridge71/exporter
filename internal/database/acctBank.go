@@ -11,9 +11,9 @@ func (s *service) SaveAcctBank(acctBank *models.AcctBank) error {
 }
 
 func (s *service) FindAcctBank(acctBanks *[]models.AcctBank) {
-	s.gormDB.Find(acctBanks)
+	s.gormDB.Preload("Acct").Find(acctBanks)
 }
 
-func (s *service) FindAcctBankById(acctBanks *[]models.AcctBank, acctId uint) {
-	s.gormDB.Where("acctId = ?", acctId).Find(acctBanks)
+func (s *service) FindAcctBankByID(acctBanks *[]models.AcctBank, acctID uint) {
+	s.gormDB.Where("acctID = ?", acctID).Find(acctBanks)
 }

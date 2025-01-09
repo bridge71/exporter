@@ -38,12 +38,12 @@ func (s *Server) DeleteBankAccountHandler(c *gin.Context) {
 	}
 }
 
-func (s *Server) FindBankAccountByIdHandler(c *gin.Context) {
+func (s *Server) FindBankAccountByIDHandler(c *gin.Context) {
 	bankAccounts := &[]models.BankAccount{}
-	mercId := c.PostForm("MercId")
-	idStr, _ := strconv.Atoi(mercId)
+	mercID := c.PostForm("MercID")
+	idStr, _ := strconv.Atoi(mercID)
 	id := uint(idStr)
-	s.db.FindBankAccountById(bankAccounts, id)
+	s.db.FindBankAccountByID(bankAccounts, id)
 	c.JSON(http.StatusOK, models.Message{BankAccount: *bankAccounts})
 }
 
@@ -58,7 +58,7 @@ func (s *Server) SaveBankAccountHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", bankAccount)
 
-	err, bankAccount.FileId, bankAccount.FileName = s.SaveFile(c, "file")
+	err, bankAccount.FileID, bankAccount.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save file",

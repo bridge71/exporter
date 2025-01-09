@@ -14,7 +14,7 @@ func (s *Server) FindAcctHandler(c *gin.Context) {
 	s.db.FindAcct(&accts)
 	// for i := range accts {
 	// 	acctBank := []models.AcctBank{}
-	// 	s.db.FindAcctBankById(&acctBank, accts[i].ID)
+	// 	s.db.FindAcctBankByID(&acctBank, accts[i].ID)
 	// 	accts[i].AcctBanks = append(accts[i].AcctBanks, acctBank...)
 	// }
 	c.JSON(http.StatusOK, models.Message{
@@ -33,13 +33,13 @@ func (s *Server) SaveAcctHandler(c *gin.Context) {
 	}
 	log.Printf("%v\n", acct)
 
-	err, acct.FileId, acct.FileName = s.SaveFile(c, "file")
+	err, acct.FileID, acct.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: err.Error(),
 		})
 	}
-	err = s.db.SaveAcct(acct)
+	err = s.db.Save(acct)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: err.Error(),

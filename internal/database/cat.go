@@ -17,7 +17,7 @@ func (s *service) FindCat(cats *[]models.Cat) {
 	s.gormDB.Find(cats)
 }
 
-// FindCatById 根据 CatId 查询 Cat 记录
-func (s *service) FindCatById(cat *models.Cat, catId uint) error {
-	return s.gormDB.First(cat, catId).Error
+// FindCatByID 根据 CatID 查询 Cat 记录
+func (s *service) FindCatByID(cat *models.Cat, catID uint) error {
+	return s.gormDB.First(cat, catID).Error
 }

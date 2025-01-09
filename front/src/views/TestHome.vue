@@ -8,7 +8,7 @@
     <el-main class="dictionary-container">
       <el-row :gutter="20">
         <!-- 动态生成多个表格 -->
-        <el-col :span="8" v-for="(dict, index) in dictionaryData" :key="dict.dictId">
+        <el-col :span="8" v-for="(dict, index) in dictionaryData" :key="dict.dictID">
           <el-card class="custom-card">
             <div class="card-header">
               <h4>{{ dict.dictName }} ({{ dict.items.length }})</h4>
@@ -19,7 +19,7 @@
             </div>
             <div class="card-body">
               <ul class="scrollable-list">
-                <li v-for="item in dict.items" :key="item.itemId" class="dictionary-item">
+                <li v-for="item in dict.items" :key="item.itemID" class="dictionary-item">
                   <el-tag effect="plain" size="medium" class="dictionary-tag">{{ item.itemName }}</el-tag>
                 </li>
               </ul>
@@ -65,13 +65,13 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 
 interface DictionaryItem {
-  itemId: number;
+  itemID: number;
   itemName: string;
   color: string;
 }
 
 interface Dictionary {
-  dictId: number;
+  dictID: number;
   dictName: string;
   items: DictionaryItem[];
 }
@@ -82,96 +82,96 @@ const router = useRouter();
 // 示例数据（增加7-8个表格）
 const defaultDictionaryData: Dictionary[] = [
   {
-    dictId: 1,
+    dictID: 1,
     dictName: '客户类型',
     items: [
-      { itemId: 1, itemName: '国外终端', color: 'blue' },
-      { itemId: 2, itemName: '国外贸易商', color: 'yellow' },
-      { itemId: 3, itemName: '国内贸易商', color: 'orange' },
-      { itemId: 4, itemName: '国内终端', color: 'red' },
-      { itemId: 5, itemName: '外贸离岸公司', color: 'pink' },
-      { itemId: 6, itemName: '其他分类', color: 'green' },
+      { itemID: 1, itemName: '国外终端', color: 'blue' },
+      { itemID: 2, itemName: '国外贸易商', color: 'yellow' },
+      { itemID: 3, itemName: '国内贸易商', color: 'orange' },
+      { itemID: 4, itemName: '国内终端', color: 'red' },
+      { itemID: 5, itemName: '外贸离岸公司', color: 'pink' },
+      { itemID: 6, itemName: '其他分类', color: 'green' },
     ],
   },
   {
-    dictId: 2,
+    dictID: 2,
     dictName: '供应商类型',
     items: [
-      { itemId: 7, itemName: '电子产品', color: 'blue' },
-      { itemId: 8, itemName: '机械设备', color: 'yellow' },
-      { itemId: 9, itemName: '服装', color: 'orange' },
-      { itemId: 10, itemName: '食品', color: 'red' },
-      { itemId: 11, itemName: '家居', color: 'pink' },
-      { itemId: 12, itemName: '其他', color: 'green' },
+      { itemID: 7, itemName: '电子产品', color: 'blue' },
+      { itemID: 8, itemName: '机械设备', color: 'yellow' },
+      { itemID: 9, itemName: '服装', color: 'orange' },
+      { itemID: 10, itemName: '食品', color: 'red' },
+      { itemID: 11, itemName: '家居', color: 'pink' },
+      { itemID: 12, itemName: '其他', color: 'green' },
     ],
   },
   {
-    dictId: 3,
+    dictID: 3,
     dictName: '产品类别',
     items: [
-      { itemId: 13, itemName: '物流', color: 'blue' },
-      { itemId: 14, itemName: '咨询', color: 'yellow' },
-      { itemId: 15, itemName: '维修', color: 'orange' },
-      { itemId: 16, itemName: '安装', color: 'red' },
-      { itemId: 17, itemName: '培训', color: 'pink' },
-      { itemId: 18, itemName: '其他', color: 'green' },
+      { itemID: 13, itemName: '物流', color: 'blue' },
+      { itemID: 14, itemName: '咨询', color: 'yellow' },
+      { itemID: 15, itemName: '维修', color: 'orange' },
+      { itemID: 16, itemName: '安装', color: 'red' },
+      { itemID: 17, itemName: '培训', color: 'pink' },
+      { itemID: 18, itemName: '其他', color: 'green' },
     ],
   },
   {
-    dictId: 4,
+    dictID: 4,
     dictName: '食品添加剂类别',
     items: [
-      { itemId: 19, itemName: '制造业', color: 'blue' },
-      { itemId: 20, itemName: '零售业', color: 'yellow' },
-      { itemId: 21, itemName: '服务业', color: 'orange' },
-      { itemId: 22, itemName: '金融业', color: 'red' },
-      { itemId: 23, itemName: '教育行业', color: 'pink' },
-      { itemId: 24, itemName: '其他', color: 'green' },
+      { itemID: 19, itemName: '制造业', color: 'blue' },
+      { itemID: 20, itemName: '零售业', color: 'yellow' },
+      { itemID: 21, itemName: '服务业', color: 'orange' },
+      { itemID: 22, itemName: '金融业', color: 'red' },
+      { itemID: 23, itemName: '教育行业', color: 'pink' },
+      { itemID: 24, itemName: '其他', color: 'green' },
     ],
   },
   {
-    dictId: 5,
+    dictID: 5,
     dictName: '饲料添加剂类别',
     items: [
-      { itemId: 25, itemName: '华北', color: 'blue' },
-      { itemId: 26, itemName: '华东', color: 'yellow' },
-      { itemId: 27, itemName: '华南', color: 'orange' },
-      { itemId: 28, itemName: '西南', color: 'red' },
-      { itemId: 29, itemName: '西北', color: 'pink' },
-      { itemId: 30, itemName: '其他', color: 'green' },
+      { itemID: 25, itemName: '华北', color: 'blue' },
+      { itemID: 26, itemName: '华东', color: 'yellow' },
+      { itemID: 27, itemName: '华南', color: 'orange' },
+      { itemID: 28, itemName: '西南', color: 'red' },
+      { itemID: 29, itemName: '西北', color: 'pink' },
+      { itemID: 30, itemName: '其他', color: 'green' },
     ],
   },
   {
-    dictId: 6,
+    dictID: 6,
     dictName: '计量单位',
     items: [
-      { itemId: 31, itemName: '中文', color: 'blue' },
-      { itemId: 32, itemName: '英文', color: 'yellow' },
-      { itemId: 33, itemName: '法文', color: 'orange' },
-      { itemId: 34, itemName: '德文', color: 'red' },
-      { itemId: 35, itemName: '西班牙文', color: 'pink' },
-      { itemId: 36, itemName: '其他', color: 'green' },
+      { itemID: 31, itemName: '中文', color: 'blue' },
+      { itemID: 32, itemName: '英文', color: 'yellow' },
+      { itemID: 33, itemName: '法文', color: 'orange' },
+      { itemID: 34, itemName: '德文', color: 'red' },
+      { itemID: 35, itemName: '西班牙文', color: 'pink' },
+      { itemID: 36, itemName: '其他', color: 'green' },
     ],
   },
   {
-    dictId: 7,
+    dictID: 7,
     dictName: '包装类型',
     items: [
-      { itemId: 37, itemName: '小学', color: 'blue' },
-      { itemId: 38, itemName: '初中', color: 'yellow' },
-      { itemId: 39, itemName: '高中', color: 'orange' },
-      { itemId: 40, itemName: '本科', color: 'red' },
-      { itemId: 41, itemName: '研究生', color: 'pink' },
-      { itemId: 42, itemName: '其他', color: 'green' },
+      { itemID: 37, itemName: '小学', color: 'blue' },
+      { itemID: 38, itemName: '初中', color: 'yellow' },
+      { itemID: 39, itemName: '高中', color: 'orange' },
+      { itemID: 40, itemName: '本科', color: 'red' },
+      { itemID: 41, itemName: '研究生', color: 'pink' },
+      { itemID: 42, itemName: '其他', color: 'green' },
     ],
   },
   {
-    dictId: 8,
+    dictID: 8,
     dictName: '集装箱类型',
     items: [
-      { itemId: 43, itemName: '小型', color: 'blue' },
-      { itemId: 44, itemName: '中型', color: 'yellow' },
-      { itemId: 45, itemName: '大型', color: 'orange' },
+      { itemID: 43, itemName: '小型', color: 'blue' },
+      { itemID: 44, itemName: '中型', color: 'yellow' },
+      { itemID: 45, itemName: '大型', color: 'orange' },
     ],
   },
 ];
@@ -181,7 +181,7 @@ const dictionaryData = ref<Dictionary[]>(defaultDictionaryData);
 
 const showEditDialog = ref(false);
 const dictForm = ref<Dictionary>({
-  dictId: 0,
+  dictID: 0,
   dictName: '',
   items: [],
 });
@@ -195,12 +195,12 @@ const goBack = () => {
 
 // 添加字典项
 const addItem = async () => {
-  const newItem = { itemId: Date.now(), itemName: '', color: 'blue' };
+  const newItem = { itemID: Date.now(), itemName: '', color: 'blue' };
   dictForm.value.items.push(newItem);
 
   try {
     // 发送新添加的字典项到后端
-    await axios.post(`/api/dictionaries/${dictForm.value.dictId}/items`, newItem); // 替换为你的后端 API 地址
+    await axios.post(`/api/dictionaries/${dictForm.value.dictID}/items`, newItem); // 替换为你的后端 API 地址
   } catch (error) {
     console.error('添加字典项失败:', error);
     // 如果后端未实现，使用默认数据
@@ -210,12 +210,12 @@ const addItem = async () => {
 
 // 删除字典项
 const removeItem = async (index: number) => {
-  const itemId = dictForm.value.items[index].itemId;
+  const itemID = dictForm.value.items[index].itemID;
   dictForm.value.items.splice(index, 1);
 
   try {
     // 发送要删除的字典项到后端
-    await axios.delete(`/api/dictionaries/${dictForm.value.dictId}/items/${itemId}`); // 替换为你的后端 API 地址
+    await axios.delete(`/api/dictionaries/${dictForm.value.dictID}/items/${itemID}`); // 替换为你的后端 API 地址
   } catch (error) {
     console.error('删除字典项失败:', error);
     // 如果后端未实现，使用默认数据
@@ -228,12 +228,12 @@ const saveDictionary = async () => {
   try {
     if (currentIndex.value !== null) {
       // 更新字典
-      await axios.put(`/api/dictionaries/${dictForm.value.dictId}`, dictForm.value); // 替换为你的后端 API 地址
+      await axios.put(`/api/dictionaries/${dictForm.value.dictID}`, dictForm.value); // 替换为你的后端 API 地址
       dictionaryData.value[currentIndex.value] = { ...dictForm.value };
     } else {
       // 添加新字典
       const response = await axios.post('/api/dictionaries', dictForm.value); // 替换为你的后端 API 地址
-      dictForm.value.dictId = response.data.dictId; // 假设后端返回新的 dictId
+      dictForm.value.dictID = response.data.dictID; // 假设后端返回新的 dictID
       dictionaryData.value.push({ ...dictForm.value });
     }
     showEditDialog.value = false;
@@ -243,7 +243,7 @@ const saveDictionary = async () => {
     if (currentIndex.value !== null) {
       dictionaryData.value[currentIndex.value] = { ...dictForm.value };
     } else {
-      dictForm.value.dictId = Date.now();
+      dictForm.value.dictID = Date.now();
       dictionaryData.value.push({ ...dictForm.value });
     }
     showEditDialog.value = false;
@@ -256,7 +256,7 @@ const editDictionary = async (dict: Dictionary, index: number) => {
 
   try {
     // 尝试从后端获取最新的字典数据
-    const response = await axios.get(`/api/dictionaries/${dict.dictId}`); // 替换为你的后端 API 地址
+    const response = await axios.get(`/api/dictionaries/${dict.dictID}`); // 替换为你的后端 API 地址
     dictForm.value = JSON.parse(JSON.stringify(response.data));
   } catch (error) {
     console.error('获取字典数据失败:', error);
@@ -270,7 +270,7 @@ const editDictionary = async (dict: Dictionary, index: number) => {
 // 删除字典
 const deleteDictionary = async (index: number) => {
   try {
-    await axios.delete(`/api/dictionaries/${dictionaryData.value[index].dictId}`); // 替换为你的后端 API 地址
+    await axios.delete(`/api/dictionaries/${dictionaryData.value[index].dictID}`); // 替换为你的后端 API 地址
     dictionaryData.value.splice(index, 1);
   } catch (error) {
     console.error('删除字典失败:', error);

@@ -19,7 +19,7 @@ func (s *Server) DeleteOutShouldOut(c *gin.Context) {
 	Out := models.Out{}
 	Out.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldOut models.ShouldOut
-	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutId"))
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutID"))
 	Out.ShouldOuts = append(Out.ShouldOuts, ShouldOut)
 
 	if Out.ID == 0 || ShouldOut.ID == 0 {
@@ -46,7 +46,7 @@ func (s *Server) DeleteOutPurrec(c *gin.Context) {
 	Out := models.Out{}
 	Out.ID = s.Str2Uint(c.PostForm("ID"))
 	var Purrec models.Purrec
-	Purrec.ID = s.Str2Uint(c.PostForm("PurrecId"))
+	Purrec.ID = s.Str2Uint(c.PostForm("PurrecID"))
 	Out.Purrecs = append(Out.Purrecs, Purrec)
 
 	if Out.ID == 0 || Purrec.ID == 0 {
@@ -135,7 +135,7 @@ func (s *Server) DeleteOutBuy(c *gin.Context) {
 	Out := models.Out{}
 	Out.ID = s.Str2Uint(c.PostForm("ID"))
 	var Buy models.Buy
-	Buy.ID = s.Str2Uint(c.PostForm("BuyId"))
+	Buy.ID = s.Str2Uint(c.PostForm("BuyID"))
 	Out.Buys = append(Out.Buys, Buy)
 
 	if Out.ID == 0 || Buy.ID == 0 {
@@ -162,7 +162,7 @@ func (s *Server) AddOutBuy(c *gin.Context) {
 	Out := models.Out{}
 	Out.ID = s.Str2Uint(c.PostForm("ID"))
 	var Buy models.Buy
-	Buy.ID = s.Str2Uint(c.PostForm("BuyId"))
+	Buy.ID = s.Str2Uint(c.PostForm("BuyID"))
 
 	if Out.ID == 0 || Buy.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -171,10 +171,10 @@ func (s *Server) AddOutBuy(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Out.ID, &Out)
-	s.db.FindById(Buy.ID, &Buy)
+	s.db.FindByID(Out.ID, &Out)
+	s.db.FindByID(Buy.ID, &Buy)
 
-	if Buy.AcctName == "" {
+	if Buy.OrderNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
@@ -200,7 +200,7 @@ func (s *Server) AddOutShouldOuts(c *gin.Context) {
 	Out := models.Out{}
 	Out.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldOut models.ShouldOut
-	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutId"))
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutID"))
 
 	if Out.ID == 0 || ShouldOut.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -209,8 +209,8 @@ func (s *Server) AddOutShouldOuts(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Out.ID, &Out)
-	s.db.FindById(ShouldOut.ID, &ShouldOut)
+	s.db.FindByID(Out.ID, &Out)
+	s.db.FindByID(ShouldOut.ID, &ShouldOut)
 
 	if ShouldOut.BillReceNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -238,7 +238,7 @@ func (s *Server) AddOutPurrecs(c *gin.Context) {
 	Out := models.Out{}
 	Out.ID = s.Str2Uint(c.PostForm("ID"))
 	var Purrec models.Purrec
-	Purrec.ID = s.Str2Uint(c.PostForm("PurrecId"))
+	Purrec.ID = s.Str2Uint(c.PostForm("PurrecID"))
 
 	if Out.ID == 0 || Purrec.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -247,8 +247,8 @@ func (s *Server) AddOutPurrecs(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Out.ID, &Out)
-	s.db.FindById(Purrec.ID, &Purrec)
+	s.db.FindByID(Out.ID, &Out)
+	s.db.FindByID(Purrec.ID, &Purrec)
 
 	if Purrec.SaleInvNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -284,7 +284,7 @@ func (s *Server) SaveOutHandler(c *gin.Context) {
 
 	log.Printf("保存 Out: %+v\n", Out)
 
-	_, Out.FileId, Out.FileName = s.SaveFile(c, "file")
+	_, Out.FileID, Out.FileName = s.SaveFile(c, "file")
 	// 保存 Out 记录
 	if err := s.db.SaveOut(Out); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{

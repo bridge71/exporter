@@ -38,12 +38,12 @@ func (s *Server) DeleteCustHandler(c *gin.Context) {
 	}
 }
 
-func (s *Server) FindCustByIdHandler(c *gin.Context) {
+func (s *Server) FindCustByIDHandler(c *gin.Context) {
 	custs := &[]models.Cust{}
-	mercId := c.PostForm("MercId")
-	idStr, _ := strconv.Atoi(mercId)
+	mercID := c.PostForm("MercID")
+	idStr, _ := strconv.Atoi(mercID)
 	id := uint(idStr)
-	s.db.FindCustById(custs, id)
+	s.db.FindCustByID(custs, id)
 	c.JSON(http.StatusOK, models.Message{Cust: *custs})
 }
 
@@ -52,18 +52,19 @@ func (s *Server) SaveCustHandler(c *gin.Context) {
 	err := c.ShouldBind(cust)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
-			RetMessage: "error in bind of cust",
+			RetMessage: err.Error(),
 		})
 		return
 	}
 	log.Printf("%v\n", cust)
 
-	err, cust.FileId, cust.FileName = s.SaveFile(c, "file")
+	err, cust.FileID, cust.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "failed to save file",
 		})
 	}
+	cust.Merchant.ID = cust.MerchantID
 	err = s.db.SaveCust(cust)
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{

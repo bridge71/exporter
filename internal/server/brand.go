@@ -38,18 +38,18 @@ func (s *Server) DeleteBrandHandler(c *gin.Context) {
 	})
 }
 
-func (s *Server) FindBrandByIdHandler(c *gin.Context) {
-	brandIdStr := c.PostForm("BrandId")
-	brandId, err := strconv.Atoi(brandIdStr)
+func (s *Server) FindBrandByIDHandler(c *gin.Context) {
+	brandIDStr := c.PostForm("BrandID")
+	brandID, err := strconv.Atoi(brandIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: "brandId 格式错误",
+			RetMessage: "brandID 格式错误",
 		})
 		return
 	}
 
 	var brand models.Brand
-	if err := s.db.FindBrandById(&brand, uint(brandId)); err != nil {
+	if err := s.db.FindBrandByID(&brand, uint(brandID)); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "查询失败",
 		})
@@ -72,14 +72,14 @@ func (s *Server) SaveBrandHandler(c *gin.Context) {
 	log.Printf("保存 brand: %+v\n", brand)
 
 	// 处理文件上传
-	err, fileId, fileName := s.SaveFile(c, "file")
+	err, fileID, fileName := s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "文件上传失败",
 		})
 		return
 	}
-	brand.FileId = fileId
+	brand.FileID = fileID
 	brand.FileName = fileName
 
 	// 保存 brand 记录

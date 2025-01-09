@@ -266,22 +266,22 @@ func (s *Server) AddDicData(c *gin.Context) {
 	Acct2 := models.Acct{AcctCode: "FG", AcctAbbr: "G", EtyAbbr: "简称3", AcctName: "实体3"}
 	_ = s.db.SaveAcct(&Acct2)
 
-	AcctBank := models.AcctBank{AcctId: 1, AccName: "11", AccNum: "3424"}
+	AcctBank := models.AcctBank{AcctID: 1, AccName: "11", AccNum: "3424"}
 	_ = s.db.Save(&AcctBank)
 
-	AcctBank1 := models.AcctBank{AcctId: 2, AccName: "22", AccNum: "343424"}
+	AcctBank1 := models.AcctBank{AcctID: 2, AccName: "22", AccNum: "343424"}
 	_ = s.db.Save(&AcctBank1)
 
-	AcctBank2 := models.AcctBank{AcctId: 3, AccName: "33", AccNum: "354424"}
+	AcctBank2 := models.AcctBank{AcctID: 3, AccName: "33", AccNum: "354424"}
 	_ = s.db.Save(&AcctBank2)
 
-	AcctBank3 := models.AcctBank{AcctId: 1, AccName: "44", AccNum: "3490824"}
+	AcctBank3 := models.AcctBank{AcctID: 1, AccName: "44", AccNum: "3490824"}
 	_ = s.db.Save(&AcctBank3)
 
-	AcctBank4 := models.AcctBank{AcctId: 1, AccName: "55", AccNum: "3321332"}
+	AcctBank4 := models.AcctBank{AcctID: 1, AccName: "55", AccNum: "3321332"}
 	_ = s.db.Save(&AcctBank4)
 
-	AcctBank5 := models.AcctBank{AcctId: 3, AccName: "66", AccNum: "7983424"}
+	AcctBank5 := models.AcctBank{AcctID: 3, AccName: "66", AccNum: "7983424"}
 	_ = s.db.Save(&AcctBank5)
 
 	Merchant := models.Merchant{MercCode: "ldaf", ShortMerc: "erer"}
@@ -290,13 +290,13 @@ func (s *Server) AddDicData(c *gin.Context) {
 	Merchant1 := models.Merchant{MercCode: "dfsde", ShortMerc: "dfs"}
 	_ = s.db.SaveMerchant(&Merchant1)
 
-	BankAccount := models.BankAccount{BankAccName: "yourAccount", CompName: "sof", AcctNum: "7896", BankName: "sf", MerchantId: 1}
+	BankAccount := models.BankAccount{BankAccName: "yourAccount", CompName: "sof", AcctNum: "7896", BankName: "sf", MerchantID: 1}
 	_ = s.db.Save(&BankAccount)
 
-	BankAccount1 := models.BankAccount{BankAccName: "myAccount", CompName: "ersf", AcctNum: "j77896", BankName: "s9ujf", MerchantId: 1}
+	BankAccount1 := models.BankAccount{BankAccName: "myAccount", CompName: "ersf", AcctNum: "j77896", BankName: "s9ujf", MerchantID: 1}
 	_ = s.db.Save(&BankAccount1)
 
-	BankAccount2 := models.BankAccount{BankAccName: "ourAccount", CompName: "hhersf", AcctNum: "92386", BankName: "jdjd", MerchantId: 2}
+	BankAccount2 := models.BankAccount{BankAccName: "ourAccount", CompName: "hhersf", AcctNum: "92386", BankName: "jdjd", MerchantID: 2}
 	_ = s.db.Save(&BankAccount2)
 
 	Spot := models.Spot{InvLocName: "QINGDAO"}

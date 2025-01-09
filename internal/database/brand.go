@@ -14,6 +14,6 @@ func (s *service) FindBrand(brands *[]models.Brand) {
 	s.gormDB.Find(brands)
 }
 
-func (s *service) FindBrandById(brand *models.Brand, brandId uint) error {
-	return s.gormDB.First(brand, brandId).Error
+func (s *service) FindBrandByID(brand *models.Brand, brandID uint) error {
+	return s.gormDB.First(brand, brandID).Error
 }

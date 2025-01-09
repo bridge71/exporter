@@ -20,7 +20,7 @@ func EncryptPassword(password string) (string, error) {
 
 func (s *Server) CreateRootHandler(c *gin.Context) {
 	user := &models.User{}
-	user.UserId = 1
+	user.UserID = 1
 	user.UserName = "root"
 	user.Email = os.Getenv("rootEmail")
 	user.Password = os.Getenv("rootPasswd")
@@ -29,7 +29,7 @@ func (s *Server) CreateRootHandler(c *gin.Context) {
 	user.Password, err = EncryptPassword(user.Password)
 
 	isUser := &models.User{}
-	s.db.FindUserById(isUser, 1)
+	s.db.FindUserByID(isUser, 1)
 	if isUser.Email != "" {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: "there is a first root",

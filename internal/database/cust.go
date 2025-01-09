@@ -14,10 +14,10 @@ func (s *service) SaveCust(cust *models.Cust) error {
 
 // FindCust 查询所有 Cust 记录
 func (s *service) FindCust(custs *[]models.Cust) {
-	s.gormDB.Find(custs)
+	s.gormDB.Preload("Merchant").Find(custs)
 }
 
-// FindCustById 根据 MercId 查询 Cust 记录
-func (s *service) FindCustById(custs *[]models.Cust, mercId uint) {
-	s.gormDB.Where("mercId = ?", mercId).Find(custs)
+// FindCustByID 根据 MercID 查询 Cust 记录
+func (s *service) FindCustByID(custs *[]models.Cust, mercID uint) {
+	s.gormDB.Where("mercID = ?", mercID).Find(custs)
 }

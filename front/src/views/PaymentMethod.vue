@@ -31,7 +31,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.PayMentMethodId)" type="text"
+                  <el-button @click="handleDelete(scope.$index, scope.row.PayMentMethodID)" type="text"
                     size="small">删除</el-button>
                 </el-row>
               </template>
@@ -171,7 +171,7 @@ const payMentMethodForm = ref({
   PayMth: '',
   PayLimit: '',
   Notes: '',
-  PayMentMethodId: '',
+  PayMentMethodID: '',
 });
 
 
@@ -234,13 +234,13 @@ const handleView = (index, row) => {
   showViewPayMentMethodDialog.value = true;
 };
 
-const handleDelete = (index, PayMentMethodId) => {
+const handleDelete = (index, PayMentMethodID) => {
   ElMessageBox.confirm('确定要删除该支付方式信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/payMentMethod', { PayMentMethodId })
+    axios.post('/delete/payMentMethod', { PayMentMethodID })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -264,7 +264,7 @@ const resetPayMentMethodForm = () => {
     PayMth: '',
     PayLimit: '',
     Notes: '',
-    PayMentMethodId: '',
+    PayMentMethodID: '',
   };
 };
 
@@ -293,7 +293,7 @@ const submitPayMentMethodForm = async () => {
     }
 
     payMentMethodForm.value.PayRat = parseInt(payMentMethodForm.value.PayRat, 10)
-    payMentMethodForm.value.PayMentMethodId = parseInt(payMentMethodForm.value.PayMentMethodId, 10)
+    payMentMethodForm.value.PayMentMethodID = parseInt(payMentMethodForm.value.PayMentMethodID, 10)
     const response = await axios.post('/save/payMentMethod', payMentMethodForm.value);
     if (response.status === 200) {
       ElMessage.success('支付方式信息保存成功');

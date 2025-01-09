@@ -21,6 +21,8 @@
         <el-main>
           <!-- 会计实体信息表格 -->
           <el-table :data="paginatedAcctData" style="width: 100%" max-height="450">
+
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="AcctCode" label="会计实体编码" width="160%"></el-table-column>
             <el-table-column prop="AcctAbbr" label="会计实体缩写" width="160%"></el-table-column>
             <el-table-column prop="EtyAbbr" label="实体简称" width="160%"></el-table-column>
@@ -165,13 +167,13 @@
         <!-- 上传文件或下载文件 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="文件">
-              <el-upload v-if="!acctForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+            <el-form-item label="营业执照">
+              <el-upload v-if="!acctForm.FileID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(acctForm.FileId, acctForm.FileName)">下载文件</el-button>
+                @click="downloadFile(acctForm.FileID, acctForm.FileName)">下载文件</el-button>
             </el-form-item>
 
             <el-form-item label="文件名" prop="FileName">
@@ -299,13 +301,13 @@
         <!-- 上传文件或下载文件 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="文件">
-              <el-upload v-if="!acctForm.FileId" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+            <el-form-item label="营业执照">
+              <el-upload v-if="!acctForm.FileID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(acctForm.FileId, acctForm.FileName)">下载文件</el-button>
+                @click="downloadFile(acctForm.FileID, acctForm.FileName)">下载文件</el-button>
             </el-form-item>
 
             <el-form-item label="文件名" prop="FileName">
@@ -361,11 +363,11 @@ const navigateToDictionaryManager = () => {
 const searchQuery = ref(''); // 添加搜索查询字段
 const acctFormRef = ref(null);
 
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
     const response = await axios.post(
       '/file',
-      { FileId: fileId }, // 提供 FileId 表单
+      { FileID: fileID }, // 提供 FileID 表单
       {
         responseType: 'blob', // 指定响应类型为二进制数据
       }
@@ -375,8 +377,8 @@ const downloadFile = async (fileId, fileName) => {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    // link.setAttribute('download', `file_${fileId}`); // 设置下载文件名
-    link.setAttribute('download', `${fileName}` || `file_${fileId}`); // 使用 fileName 作为文件名，如果不存在则使用默认文件名
+    // link.setAttribute('download', `file_${fileID}`); // 设置下载文件名
+    link.setAttribute('download', `${fileName}` || `file_${fileID}`); // 使用 fileName 作为文件名，如果不存在则使用默认文件名
     document.body.appendChild(link);
     link.click(); // 触发下载
     document.body.removeChild(link); // 移除链接
@@ -406,9 +408,9 @@ const handleView = (index, row) => {
     : '无';
   showshowAcctDialog.value = true; // 打开会计实体信息对话框
   // 检查是否已上传文件
-  if (row.FileId) {
-    acctForm.value.FileId = row.FileId; // 保存 FileId
-    acctForm.value.FileName = row.FileName; // 保存 FileId
+  if (row.FileID) {
+    acctForm.value.FileID = row.FileID; // 保存 FileID
+    acctForm.value.FileName = row.FileName; // 保存 FileID
   }
 };
 // 重置会计实体信息表单
@@ -442,13 +444,13 @@ const resetAcctForm = () => {
 const submitAcctForm = async () => {
   try {
     const isValid = await acctFormRef.value.validate();
-    
+
     if (!isValid) {
       ElMessage.error('请填写所有必填字段');
       console.log('验证不通过');
       return; // 如果验证不通过，阻止提交
     }
-    
+
     // 如果验证通过，继续执行提交逻辑
     const formData = new FormData(); // 创建 FormData 对象
     acctForm.value.AcctBanks = null;
@@ -622,7 +624,7 @@ const acctRules = {
   ]
 };
 
- 
+
 // 表格数据（初始值为空数组）
 const acctData = ref([]); // 会计实体信息
 

@@ -19,7 +19,7 @@ func (s *Server) DeletePurrecOut(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var Out models.Out
-	Out.ID = s.Str2Uint(c.PostForm("OutId"))
+	Out.ID = s.Str2Uint(c.PostForm("OutID"))
 	Purrec.Outs = append(Purrec.Outs, Out)
 
 	if Purrec.ID == 0 || Out.ID == 0 {
@@ -46,7 +46,7 @@ func (s *Server) DeletePurrecShouldOut(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldOut models.ShouldOut
-	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutId"))
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutID"))
 	Purrec.ShouldOuts = append(Purrec.ShouldOuts, ShouldOut)
 
 	if Purrec.ID == 0 || ShouldOut.ID == 0 {
@@ -165,7 +165,7 @@ func (s *Server) DeletePurrecPrdtInfo(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoID"))
 	if Purrec.ID == 0 || PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非数字",
@@ -191,7 +191,7 @@ func (s *Server) DeletePurrecBuy(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var Buy models.Buy
-	Buy.ID = s.Str2Uint(c.PostForm("BuyId"))
+	Buy.ID = s.Str2Uint(c.PostForm("BuyID"))
 	Purrec.Buys = append(Purrec.Buys, Buy)
 
 	if Purrec.ID == 0 || Buy.ID == 0 {
@@ -218,7 +218,7 @@ func (s *Server) AddPurrecLoadingInfo(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var LoadingInfo models.LoadingInfo
-	LoadingInfo.ID = s.Str2Uint(c.PostForm("LoadingInfoId"))
+	LoadingInfo.ID = s.Str2Uint(c.PostForm("LoadingInfoID"))
 
 	if Purrec.ID == 0 || LoadingInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -227,16 +227,16 @@ func (s *Server) AddPurrecLoadingInfo(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(LoadingInfo.ID, &LoadingInfo)
+	s.db.FindByID(LoadingInfo.ID, &LoadingInfo)
 
-	if LoadingInfo.PackSpec == "" {
+	if LoadingInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
 		})
 		return
 	}
-	s.db.FindById(Purrec.ID, &Purrec)
+	s.db.FindByID(Purrec.ID, &Purrec)
 	log.Printf("%d\n", LoadingInfo.ID)
 	Purrec.LoadingInfos = append(Purrec.LoadingInfos, LoadingInfo)
 
@@ -257,7 +257,7 @@ func (s *Server) AddPurrecPrdtInfo(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoID"))
 
 	if Purrec.ID == 0 || PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -266,16 +266,16 @@ func (s *Server) AddPurrecPrdtInfo(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(PrdtInfo.ID, &PrdtInfo)
+	s.db.FindByID(PrdtInfo.ID, &PrdtInfo)
 
-	if PrdtInfo.CatEngName == "" {
+	if PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
 		})
 		return
 	}
-	s.db.FindById(Purrec.ID, &Purrec)
+	s.db.FindByID(Purrec.ID, &Purrec)
 	log.Printf("%d\n", PrdtInfo.ID)
 	Purrec.PrdtInfos = append(Purrec.PrdtInfos, PrdtInfo)
 
@@ -296,7 +296,7 @@ func (s *Server) AddPurrecBuy(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var Buy models.Buy
-	Buy.ID = s.Str2Uint(c.PostForm("BuyId"))
+	Buy.ID = s.Str2Uint(c.PostForm("BuyID"))
 
 	if Purrec.ID == 0 || Buy.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -305,10 +305,10 @@ func (s *Server) AddPurrecBuy(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Purrec.ID, &Purrec)
-	s.db.FindById(Buy.ID, &Buy)
+	s.db.FindByID(Purrec.ID, &Purrec)
+	s.db.FindByID(Buy.ID, &Buy)
 
-	if Buy.AcctName == "" {
+	if Buy.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
@@ -334,7 +334,7 @@ func (s *Server) AddPurrecOuts(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var Out models.Out
-	Out.ID = s.Str2Uint(c.PostForm("OutId"))
+	Out.ID = s.Str2Uint(c.PostForm("OutID"))
 
 	if Purrec.ID == 0 || Out.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -343,8 +343,8 @@ func (s *Server) AddPurrecOuts(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Purrec.ID, &Purrec)
-	s.db.FindById(Out.ID, &Out)
+	s.db.FindByID(Purrec.ID, &Purrec)
+	s.db.FindByID(Out.ID, &Out)
 
 	if Out.ReceNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -372,7 +372,7 @@ func (s *Server) AddPurrecShouldOuts(c *gin.Context) {
 	Purrec := models.Purrec{}
 	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldOut models.ShouldOut
-	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutId"))
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutID"))
 
 	if Purrec.ID == 0 || ShouldOut.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -381,8 +381,8 @@ func (s *Server) AddPurrecShouldOuts(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Purrec.ID, &Purrec)
-	s.db.FindById(ShouldOut.ID, &ShouldOut)
+	s.db.FindByID(Purrec.ID, &Purrec)
+	s.db.FindByID(ShouldOut.ID, &ShouldOut)
 
 	if ShouldOut.BillReceNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -419,8 +419,8 @@ func (s *Server) SavePurrecHandler(c *gin.Context) {
 	log.Printf("保存 Purrec: %+v\n", Purrec)
 	var err error
 
-	err, Purrec.File1Id, Purrec.File1Name = s.SaveFile(c, "file1")
-	err, Purrec.File2Id, Purrec.File2Name = s.SaveFile(c, "file2")
+	err, Purrec.File1ID, Purrec.File1Name = s.SaveFile(c, "file1")
+	err, Purrec.File2ID, Purrec.File2Name = s.SaveFile(c, "file2")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: err.Error(),

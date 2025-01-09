@@ -438,7 +438,6 @@ type AcctBank struct {
 	SwiftCode string `gorm:"column:swiftCode" form:"SwiftCode"`
 	BankAddr  string `gorm:"column:bankAddr" form:"BankAddr"`
 	Notes     string `gorm:"column:notes" form:"Notes"`
-	AcctName  string `gorm:"column:acctName" `
 	FileName  string `gorm:"column:fileName" form:"FileName"`
 	FileID    uint   `gorm:"column:fileID" form:"FileID"`
 	AcctID    uint   `gorm:"column:acctID" form:"AcctID"`
@@ -481,7 +480,7 @@ type Cust struct {
 	Post       string `gorm:"column:post;" form:"Post"`
 	Notes      string `gorm:"column:notes;" form:"Notes"`
 	FileName   string `gorm:"column:fileName" form:"FileName"`
-	MerchantID uint   `gorm:"column:merchantID;" form:"MerchantID"` // 外键，关联到 Merchant 表的 MercID
+	MerchantID uint   `gorm:"column:merchantID;" form:"MerchantID" binding:"required"` // 外键，关联到 Merchant 表的 MercID
 	Merchant   Merchant
 	FileID     uint `gorm:"column:fileID" form:"FileID"`
 	gorm.Model

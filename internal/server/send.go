@@ -19,7 +19,7 @@ func (s *Server) DeleteSendIn(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var In models.In
-	In.ID = s.Str2Uint(c.PostForm("InId"))
+	In.ID = s.Str2Uint(c.PostForm("InID"))
 	Send.Ins = append(Send.Ins, In)
 
 	if Send.ID == 0 || In.ID == 0 {
@@ -46,7 +46,7 @@ func (s *Server) DeleteSendShouldIn(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldIn models.ShouldIn
-	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInID"))
 	Send.ShouldIns = append(Send.ShouldIns, ShouldIn)
 
 	if Send.ID == 0 || ShouldIn.ID == 0 {
@@ -165,7 +165,7 @@ func (s *Server) DeleteSendPrdtInfo(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoID"))
 	if Send.ID == 0 || PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非数字",
@@ -191,7 +191,7 @@ func (s *Server) DeleteSendSale(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var Sale models.Sale
-	Sale.ID = s.Str2Uint(c.PostForm("SaleId"))
+	Sale.ID = s.Str2Uint(c.PostForm("SaleID"))
 	Send.Sales = append(Send.Sales, Sale)
 
 	if Send.ID == 0 || Sale.ID == 0 {
@@ -218,7 +218,7 @@ func (s *Server) AddSendLoadingInfo(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var LoadingInfo models.LoadingInfo
-	LoadingInfo.ID = s.Str2Uint(c.PostForm("LoadingInfoId"))
+	LoadingInfo.ID = s.Str2Uint(c.PostForm("LoadingInfoID"))
 
 	if Send.ID == 0 || LoadingInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -227,16 +227,16 @@ func (s *Server) AddSendLoadingInfo(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(LoadingInfo.ID, &LoadingInfo)
+	s.db.FindByID(LoadingInfo.ID, &LoadingInfo)
 
-	if LoadingInfo.PackSpec == "" {
+	if LoadingInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
 		})
 		return
 	}
-	s.db.FindById(Send.ID, &Send)
+	s.db.FindByID(Send.ID, &Send)
 	log.Printf("%d\n", LoadingInfo.ID)
 	Send.LoadingInfos = append(Send.LoadingInfos, LoadingInfo)
 
@@ -257,7 +257,7 @@ func (s *Server) AddSendPrdtInfo(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoID"))
 
 	if Send.ID == 0 || PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -266,16 +266,16 @@ func (s *Server) AddSendPrdtInfo(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(PrdtInfo.ID, &PrdtInfo)
+	s.db.FindByID(PrdtInfo.ID, &PrdtInfo)
 
-	if PrdtInfo.CatEngName == "" {
+	if PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
 		})
 		return
 	}
-	s.db.FindById(Send.ID, &Send)
+	s.db.FindByID(Send.ID, &Send)
 	log.Printf("%d\n", PrdtInfo.ID)
 	Send.PrdtInfos = append(Send.PrdtInfos, PrdtInfo)
 
@@ -296,7 +296,7 @@ func (s *Server) AddSendSale(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var Sale models.Sale
-	Sale.ID = s.Str2Uint(c.PostForm("SaleId"))
+	Sale.ID = s.Str2Uint(c.PostForm("SaleID"))
 
 	if Send.ID == 0 || Sale.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -305,10 +305,10 @@ func (s *Server) AddSendSale(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Send.ID, &Send)
-	s.db.FindById(Sale.ID, &Sale)
+	s.db.FindByID(Send.ID, &Send)
+	s.db.FindByID(Sale.ID, &Sale)
 
-	if Sale.AcctName == "" {
+	if Sale.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
@@ -334,7 +334,7 @@ func (s *Server) AddSendIns(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var In models.In
-	In.ID = s.Str2Uint(c.PostForm("InId"))
+	In.ID = s.Str2Uint(c.PostForm("InID"))
 
 	if Send.ID == 0 || In.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -343,8 +343,8 @@ func (s *Server) AddSendIns(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Send.ID, &Send)
-	s.db.FindById(In.ID, &In)
+	s.db.FindByID(Send.ID, &Send)
+	s.db.FindByID(In.ID, &In)
 
 	if In.ReceNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -372,7 +372,7 @@ func (s *Server) AddSendShouldIns(c *gin.Context) {
 	Send := models.Send{}
 	Send.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldIn models.ShouldIn
-	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInID"))
 
 	if Send.ID == 0 || ShouldIn.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -381,8 +381,8 @@ func (s *Server) AddSendShouldIns(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Send.ID, &Send)
-	s.db.FindById(ShouldIn.ID, &ShouldIn)
+	s.db.FindByID(Send.ID, &Send)
+	s.db.FindByID(ShouldIn.ID, &ShouldIn)
 
 	if ShouldIn.BillReceNum == "" {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -419,8 +419,8 @@ func (s *Server) SaveSendHandler(c *gin.Context) {
 	log.Printf("保存 Send: %+v\n", Send)
 	var err error
 
-	err, Send.File1Id, Send.File1Name = s.SaveFile(c, "file1")
-	err, Send.File2Id, Send.File2Name = s.SaveFile(c, "file2")
+	err, Send.File1ID, Send.File1Name = s.SaveFile(c, "file1")
+	err, Send.File2ID, Send.File2Name = s.SaveFile(c, "file2")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: err.Error(),

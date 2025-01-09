@@ -20,7 +20,7 @@ func (s *Server) DeleteBuyOut(c *gin.Context) {
 	Buy := models.Buy{}
 	Buy.ID = s.Str2Uint(c.PostForm("ID"))
 	var Out models.Out
-	Out.ID = s.Str2Uint(c.PostForm("OutId"))
+	Out.ID = s.Str2Uint(c.PostForm("OutID"))
 	Buy.Outs = append(Buy.Outs, Out)
 
 	if Buy.ID == 0 || Out.ID == 0 {
@@ -47,7 +47,7 @@ func (s *Server) DeleteBuyShouldOut(c *gin.Context) {
 	Buy := models.Buy{}
 	Buy.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldOut models.ShouldOut
-	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutId"))
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutID"))
 	Buy.ShouldOuts = append(Buy.ShouldOuts, ShouldOut)
 
 	if Buy.ID == 0 || ShouldOut.ID == 0 {
@@ -74,7 +74,7 @@ func (s *Server) AddBuyShouldOut(c *gin.Context) {
 	Buy := models.Buy{}
 	Buy.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldOut models.ShouldOut
-	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutId"))
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ShouldOutID"))
 
 	if Buy.ID == 0 || ShouldOut.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -83,8 +83,8 @@ func (s *Server) AddBuyShouldOut(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(ShouldOut.ID, &ShouldOut)
-	s.db.FindById(Buy.ID, &Buy)
+	s.db.FindByID(ShouldOut.ID, &ShouldOut)
+	s.db.FindByID(Buy.ID, &Buy)
 	Buy.ShouldOuts = append(Buy.ShouldOuts, ShouldOut)
 
 	if ShouldOut.BillReceNum == "" {
@@ -111,7 +111,7 @@ func (s *Server) AddBuyOut(c *gin.Context) {
 	Buy := models.Buy{}
 	Buy.ID = s.Str2Uint(c.PostForm("ID"))
 	var Out models.Out
-	Out.ID = s.Str2Uint(c.PostForm("OutId"))
+	Out.ID = s.Str2Uint(c.PostForm("OutID"))
 
 	if Buy.ID == 0 || Out.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -120,8 +120,8 @@ func (s *Server) AddBuyOut(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Out.ID, &Out)
-	s.db.FindById(Buy.ID, &Buy)
+	s.db.FindByID(Out.ID, &Out)
+	s.db.FindByID(Buy.ID, &Buy)
 	Buy.Outs = append(Buy.Outs, Out)
 
 	if Out.ReceNum == "" {
@@ -231,11 +231,11 @@ func (s *Server) DeleteBuyPrdtInfo(c *gin.Context) {
 	// 	return
 	// }
 	// PrdtInfo := models.PrdtInfo{}
-	// PrdtInfo.ID = Buy.PrdtInfoId
+	// PrdtInfo.ID = Buy.PrdtInfoID
 	Buy := models.Buy{}
 	Buy.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoID"))
 	if Buy.ID == 0 || PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非数字",
@@ -261,7 +261,7 @@ func (s *Server) DeleteBuyPurrec(c *gin.Context) {
 	Buy := models.Buy{}
 	Buy.ID = s.Str2Uint(c.PostForm("ID"))
 	var Purrec models.Purrec
-	Purrec.ID = s.Str2Uint(c.PostForm("PurrecId"))
+	Purrec.ID = s.Str2Uint(c.PostForm("PurrecID"))
 	Buy.Purrecs = append(Buy.Purrecs, Purrec)
 
 	if Buy.ID == 0 || Purrec.ID == 0 {
@@ -288,7 +288,7 @@ func (s *Server) AddBuyPrdtInfo(c *gin.Context) {
 	Buy := models.Buy{}
 	Buy.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoID"))
 
 	if Buy.ID == 0 || PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -297,9 +297,9 @@ func (s *Server) AddBuyPrdtInfo(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(PrdtInfo.ID, &PrdtInfo)
-	s.db.FindById(Buy.ID, &Buy)
-	if PrdtInfo.CatEngName == "" {
+	s.db.FindByID(PrdtInfo.ID, &PrdtInfo)
+	s.db.FindByID(Buy.ID, &Buy)
+	if PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
@@ -325,7 +325,7 @@ func (s *Server) AddBuyPurrec(c *gin.Context) {
 	Buy := models.Buy{}
 	Buy.ID = s.Str2Uint(c.PostForm("ID"))
 	var Purrec models.Purrec
-	Purrec.ID = s.Str2Uint(c.PostForm("PurrecId"))
+	Purrec.ID = s.Str2Uint(c.PostForm("PurrecID"))
 
 	if Buy.ID == 0 || Purrec.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -334,8 +334,8 @@ func (s *Server) AddBuyPurrec(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Purrec.ID, &Purrec)
-	s.db.FindById(Buy.ID, &Buy)
+	s.db.FindByID(Purrec.ID, &Purrec)
+	s.db.FindByID(Buy.ID, &Buy)
 	Buy.Purrecs = append(Buy.Purrecs, Purrec)
 
 	if Purrec.SaleInvNum == "" {
@@ -379,7 +379,7 @@ func (s *Server) SaveBuyHandler(c *gin.Context) {
 			if Buys[j].ID == Buy.ID {
 				l2 := len(Buys[j].DocReq)
 				for k := 0; k < l2; k++ {
-					idExitSlice = append(idExitSlice, Buys[j].DocReq[k].DocReqId)
+					idExitSlice = append(idExitSlice, Buys[j].DocReq[k].DocReqID)
 				}
 				break
 
@@ -390,7 +390,7 @@ func (s *Server) SaveBuyHandler(c *gin.Context) {
 
 	idSlice := make([]uint, 0)
 	for {
-		idStr := c.PostForm("DocReq[" + strconv.Itoa(i) + "][DocReqId]")
+		idStr := c.PostForm("DocReq[" + strconv.Itoa(i) + "][DocReqID]")
 		if idStr == "" {
 			break // 如果没有更多数据，退出循环
 		}
@@ -400,7 +400,7 @@ func (s *Server) SaveBuyHandler(c *gin.Context) {
 		}
 		idSlice = append(idSlice, id_)
 		doc := []models.DocReq{}
-		s.db.FindDocReqById(id_, &doc)
+		s.db.FindDocReqByID(id_, &doc)
 		Buy.DocReq = append(Buy.DocReq, doc[0])
 		i++
 	}
@@ -438,11 +438,11 @@ func (s *Server) SaveBuyHandler(c *gin.Context) {
 
 	shouldDelDocReq := []models.DocReq{}
 	for i := 0; i < len(diffOutFirst); i++ {
-		shouldDelDocReq = append(shouldDelDocReq, models.DocReq{DocReqId: diffOutFirst[i]})
+		shouldDelDocReq = append(shouldDelDocReq, models.DocReq{DocReqID: diffOutFirst[i]})
 	}
 	// s.db.DeleteBuyDocReq(Buy, &shouldDelDocReq)
 	var err error
-	err, Buy.FileId, Buy.FileName = s.SaveFile(c, "file")
+	err, Buy.FileID, Buy.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: err.Error(),

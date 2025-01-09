@@ -20,7 +20,7 @@ func (s *Server) DeleteSaleIn(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var In models.In
-	In.ID = s.Str2Uint(c.PostForm("InId"))
+	In.ID = s.Str2Uint(c.PostForm("InID"))
 	Sale.Ins = append(Sale.Ins, In)
 
 	if Sale.ID == 0 || In.ID == 0 {
@@ -47,7 +47,7 @@ func (s *Server) DeleteSaleShouldIn(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldIn models.ShouldIn
-	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInID"))
 	Sale.ShouldIns = append(Sale.ShouldIns, ShouldIn)
 
 	if Sale.ID == 0 || ShouldIn.ID == 0 {
@@ -74,7 +74,7 @@ func (s *Server) AddSaleShouldIn(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var ShouldIn models.ShouldIn
-	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInId"))
+	ShouldIn.ID = s.Str2Uint(c.PostForm("ShouldInID"))
 
 	if Sale.ID == 0 || ShouldIn.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -83,8 +83,8 @@ func (s *Server) AddSaleShouldIn(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(ShouldIn.ID, &ShouldIn)
-	s.db.FindById(Sale.ID, &Sale)
+	s.db.FindByID(ShouldIn.ID, &ShouldIn)
+	s.db.FindByID(Sale.ID, &Sale)
 	Sale.ShouldIns = append(Sale.ShouldIns, ShouldIn)
 
 	if ShouldIn.BillReceNum == "" {
@@ -111,7 +111,7 @@ func (s *Server) AddSaleIn(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var In models.In
-	In.ID = s.Str2Uint(c.PostForm("InId"))
+	In.ID = s.Str2Uint(c.PostForm("InID"))
 
 	if Sale.ID == 0 || In.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -120,8 +120,8 @@ func (s *Server) AddSaleIn(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(In.ID, &In)
-	s.db.FindById(Sale.ID, &Sale)
+	s.db.FindByID(In.ID, &In)
+	s.db.FindByID(Sale.ID, &Sale)
 	Sale.Ins = append(Sale.Ins, In)
 
 	if In.ReceNum == "" {
@@ -231,11 +231,11 @@ func (s *Server) DeleteSalePrdtInfo(c *gin.Context) {
 	// 	return
 	// }
 	// PrdtInfo := models.PrdtInfo{}
-	// PrdtInfo.ID = Sale.PrdtInfoId
+	// PrdtInfo.ID = Sale.PrdtInfoID
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoID"))
 	if Sale.ID == 0 || PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非数字",
@@ -261,7 +261,7 @@ func (s *Server) DeleteSaleSend(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var send models.Send
-	send.ID = s.Str2Uint(c.PostForm("SendId"))
+	send.ID = s.Str2Uint(c.PostForm("SendID"))
 	Sale.Sends = append(Sale.Sends, send)
 
 	if Sale.ID == 0 || send.ID == 0 {
@@ -288,7 +288,7 @@ func (s *Server) AddSalePrdtInfo(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var PrdtInfo models.PrdtInfo
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoId"))
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("PrdtInfoID"))
 
 	if Sale.ID == 0 || PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -297,9 +297,9 @@ func (s *Server) AddSalePrdtInfo(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(PrdtInfo.ID, &PrdtInfo)
-	s.db.FindById(Sale.ID, &Sale)
-	if PrdtInfo.CatEngName == "" {
+	s.db.FindByID(PrdtInfo.ID, &PrdtInfo)
+	s.db.FindByID(Sale.ID, &Sale)
+	if PrdtInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "非法ID",
 			// RetMessage: "绑定数据失败",
@@ -325,7 +325,7 @@ func (s *Server) AddSaleSend(c *gin.Context) {
 	Sale := models.Sale{}
 	Sale.ID = s.Str2Uint(c.PostForm("ID"))
 	var Send models.Send
-	Send.ID = s.Str2Uint(c.PostForm("SendId"))
+	Send.ID = s.Str2Uint(c.PostForm("SendID"))
 
 	if Sale.ID == 0 || Send.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -334,8 +334,8 @@ func (s *Server) AddSaleSend(c *gin.Context) {
 		})
 		return
 	}
-	s.db.FindById(Send.ID, &Send)
-	s.db.FindById(Sale.ID, &Sale)
+	s.db.FindByID(Send.ID, &Send)
+	s.db.FindByID(Sale.ID, &Sale)
 	Sale.Sends = append(Sale.Sends, Send)
 
 	if Send.SaleInvNum == "" {
@@ -379,7 +379,7 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 			if Sales[j].ID == Sale.ID {
 				l2 := len(Sales[j].DocReq)
 				for k := 0; k < l2; k++ {
-					idExitSlice = append(idExitSlice, Sales[j].DocReq[k].DocReqId)
+					idExitSlice = append(idExitSlice, Sales[j].DocReq[k].DocReqID)
 				}
 				break
 
@@ -390,7 +390,7 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 
 	idSlice := make([]uint, 0)
 	for {
-		idStr := c.PostForm("DocReq[" + strconv.Itoa(i) + "][DocReqId]")
+		idStr := c.PostForm("DocReq[" + strconv.Itoa(i) + "][DocReqID]")
 		if idStr == "" {
 			break // 如果没有更多数据，退出循环
 		}
@@ -400,7 +400,7 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 		}
 		idSlice = append(idSlice, id_)
 		doc := []models.DocReq{}
-		s.db.FindDocReqById(id_, &doc)
+		s.db.FindDocReqByID(id_, &doc)
 		Sale.DocReq = append(Sale.DocReq, doc[0])
 		i++
 	}
@@ -438,11 +438,11 @@ func (s *Server) SaveSaleHandler(c *gin.Context) {
 
 	shouldDelDocReq := []models.DocReq{}
 	for i := 0; i < len(diffInFirst); i++ {
-		shouldDelDocReq = append(shouldDelDocReq, models.DocReq{DocReqId: diffInFirst[i]})
+		shouldDelDocReq = append(shouldDelDocReq, models.DocReq{DocReqID: diffInFirst[i]})
 	}
 	// s.db.DeleteSaleDocReq(Sale, &shouldDelDocReq)
 	var err error
-	err, Sale.FileId, Sale.FileName = s.SaveFile(c, "file")
+	err, Sale.FileID, Sale.FileName = s.SaveFile(c, "file")
 	if err != nil {
 		c.JSON(http.StatusForbidden, models.Message{
 			RetMessage: err.Error(),

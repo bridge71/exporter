@@ -16,6 +16,6 @@ func (s *service) Find(model interface{}) {
 	s.gormDB.Order("id desc").Find(model)
 }
 
-func (s *service) FindById(id uint, model interface{}) {
+func (s *service) FindByID(id uint, model interface{}) {
 	s.gormDB.Where("id = ?", id).Find(model)
 }

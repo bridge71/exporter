@@ -13,7 +13,7 @@
 
 
         <!-- <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery" -->
-        <!--   @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIdMode" @add="handleAdd" /> -->
+        <!--   @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" /> -->
         <!-- <el-header height="1px"> -->
         <!-- </el-header> -->
 
@@ -25,8 +25,8 @@
             <el-button type="primary" @click="toggleMatchMode">
               {{ isExactMatch ? '完全匹配' : '模糊匹配' }}
             </el-button>
-            <el-button type="primary" @click="toggleIdMode">
-              {{ onlyId ? '只匹配ID' : '全部匹配' }}
+            <el-button type="primary" @click="toggleIDMode">
+              {{ onlyID ? '只匹配ID' : '全部匹配' }}
             </el-button>
             <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
           </div>
@@ -87,8 +87,8 @@
     <el-dialog v-model="InVisible" title="收款单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
-        <el-input v-model="InId" placeholder="请输入收款单ID" style="width: 200px; margin-right: 10px;" />
-        <el-button type="primary" @click="addIn(nowId)">添加</el-button>
+        <el-input v-model="InID" placeholder="请输入收款单ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addIn(nowID)">添加</el-button>
       </div>
       <el-table :data="InData" style="width: 100%" max-height="450">
         <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
@@ -109,7 +109,7 @@
         <el-table-column label="操作" fixed="right" width="160%">
           <template #default="scope">
             <el-row type="flex" justify="space-between">
-              <el-button type="text" size="small" @click="DeleteIn(scope.$index, nowId, scope.row.ID)">删除</el-button>
+              <el-button type="text" size="small" @click="DeleteIn(scope.$index, nowID, scope.row.ID)">删除</el-button>
               <el-button type="text" size="small" @click="CheckIn(scope.row.ID)">跳转</el-button>
             </el-row>
           </template>
@@ -121,8 +121,8 @@
     <el-dialog v-model="ShouldInVisible" title="应收账款单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
-        <el-input v-model="ShouldInId" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />
-        <el-button type="primary" @click="addShouldIn(nowId)">添加</el-button>
+        <el-input v-model="ShouldInID" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addShouldIn(nowID)">添加</el-button>
       </div>
 
       <!-- 产品明细表格 -->
@@ -147,7 +147,7 @@
 
             <el-button type="text" size="small" @click="CheckShouldIn(scope.row.ID)">跳转</el-button>
             <el-button type="text" size="small"
-              @click="DeleteShouldIn(scope.$index, nowId, scope.row.ID)">删除</el-button>
+              @click="DeleteShouldIn(scope.$index, nowID, scope.row.ID)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -156,8 +156,8 @@
     <el-dialog v-model="SaleVisible" title="销售订单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
-        <el-input v-model="SaleId" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />
-        <el-button type="primary" @click="addSale(nowId)">添加</el-button>
+        <el-input v-model="SaleID" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addSale(nowID)">添加</el-button>
       </div>
 
       <!-- 产品明细表格 -->
@@ -174,7 +174,7 @@
             <!-- <el-button type="text" size="small" @click="viewProduct(scope.row)">查看</el-button> -->
 
             <el-button type="text" size="small" @click="CheckSale(scope.row.ID)">跳转</el-button>
-            <el-button type="text" size="small" @click="DeleteSale(scope.$index, nowId, scope.row.ID)">删除</el-button>
+            <el-button type="text" size="small" @click="DeleteSale(scope.$index, nowID, scope.row.ID)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -182,8 +182,8 @@
     <el-dialog v-model="prdtInfoVisible" title="产品明细" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
-        <el-input v-model="prdtInfoId" placeholder="请输入产品ID" style="width: 200px; margin-right: 10px;" />
-        <el-button type="primary" @click="addPrdtInfo(nowId)">添加</el-button>
+        <el-input v-model="prdtInfoID" placeholder="请输入产品ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addPrdtInfo(nowID)">添加</el-button>
       </div>
 
       <!-- 产品明细表格 -->
@@ -210,7 +210,7 @@
 
             <el-button type="text" size="small" @click="CheckPrdtInfo(scope.row.ID)">跳转</el-button>
             <!-- <el-button type="text" size="small" -->
-            <!--   @click="DeletePrdtInfo(scope.$index, nowId, scope.row.ID)">删除</el-button> -->
+            <!--   @click="DeletePrdtInfo(scope.$index, nowID, scope.row.ID)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -220,8 +220,8 @@
     <el-dialog v-model="LoadingInfoVisible" title="装货明细" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
-        <el-input v-model="LoadingInfoId" placeholder="请输入装货明细ID" style="width: 200px; margin-right: 10px;" />
-        <el-button type="primary" @click="addLoadingInfo(nowId)">添加</el-button>
+        <el-input v-model="LoadingInfoID" placeholder="请输入装货明细ID" style="width: 200px; margin-right: 10px;" />
+        <el-button type="primary" @click="addLoadingInfo(nowID)">添加</el-button>
       </div>
 
       <el-table :data="LoadingInfoData" height="400" style="width: 100%">
@@ -260,7 +260,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="客户" prop="Merchants">
-              <el-select v-model="sendForm.Merchant1Id" @change="onMerchantChange" placeholder="请选择客户">
+              <el-select v-model="sendForm.Merchant1ID" @change="onMerchantChange" placeholder="请选择客户">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -268,8 +268,8 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="发货人" prop="AcctId">
-              <el-select v-model="sendForm.AcctId" @change="onAcctChange" placeholder="请选择发货人">
+            <el-form-item label="发货人" prop="AcctID">
+              <el-select v-model="sendForm.AcctID" @change="onAcctChange" placeholder="请选择发货人">
                 <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
@@ -279,7 +279,7 @@
 
           <el-col :span="12">
             <el-form-item label="收货人" prop="Merchants">
-              <el-select v-model="sendForm.Merchant2Id" @change="onMerchantChange" placeholder="请选择收货人">
+              <el-select v-model="sendForm.Merchant2ID" @change="onMerchantChange" placeholder="请选择收货人">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -288,7 +288,7 @@
 
           <el-col :span="12">
             <el-form-item label="通知人" prop="Merchants">
-              <el-select v-model="sendForm.Merchant3Id" @change="onMerchantChange" placeholder="请选择通知人">
+              <el-select v-model="sendForm.Merchant3ID" @change="onMerchantChange" placeholder="请选择通知人">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -334,8 +334,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="包装规格" prop="PackSpecId">
-              <el-select v-model="sendForm.PackSpecId" @change="onPackSpecChange" placeholder="请选择包装规格">
+            <el-form-item label="包装规格" prop="PackSpecID">
+              <el-select v-model="sendForm.PackSpecID" @change="onPackSpecChange" placeholder="请选择包装规格">
                 <el-option v-for="packSpec in packSpecData" :key="packSpec.ID" :label="packSpec.SpecName"
                   :value="packSpec.ID"></el-option>
               </el-select>
@@ -352,7 +352,7 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas1">
               <el-select v-model="sendForm.UnitMeas1" placeholder="请选择单位">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
@@ -369,7 +369,7 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas2">
               <el-select v-model="sendForm.UnitMeas2" placeholder="请选择单位">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
@@ -386,7 +386,7 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas3">
               <el-select v-model="sendForm.UnitMeas3" placeholder="请选择单位">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
@@ -424,16 +424,16 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="付款方式" prop="PayMentMethodId">
-              <el-select v-model="sendForm.PayMentMethodId" @change="onPayMentMethodChange" placeholder="请选择付款方式">
+            <el-form-item label="付款方式" prop="PayMentMethodID">
+              <el-select v-model="sendForm.PayMentMethodID" @change="onPayMentMethodChange" placeholder="请选择付款方式">
                 <el-option v-for="payMentMethod in payMentMethodData" :key="payMentMethod.ID"
                   :label="payMentMethod.PayMtdName" :value="payMentMethod.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="收款银行" prop="AcctBankId">
-              <el-select v-model="sendForm.AcctBankId" @change="onAcctBankChange" placeholder="请选择收款银行">
+            <el-form-item label="收款银行" prop="AcctBankID">
+              <el-select v-model="sendForm.AcctBankID" @change="onAcctBankChange" placeholder="请选择收款银行">
                 <el-option v-for="acctBank in acctBankData" :key="acctBank.ID" :label="acctBank.AccName"
                   :value="acctBank.ID"></el-option>
               </el-select>
@@ -444,11 +444,11 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="提单">
-              <el-upload v-if="!sendForm.File1Id" ref="upload1Ref" action="" :limit="1" :on-change="handleFile1Change"
+              <el-upload v-if="!sendForm.File1ID" ref="upload1Ref" action="" :limit="1" :on-change="handleFile1Change"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
-              <el-button v-else type="success" @click="downloadFile(sendForm.File1Id, sendForm.File1Name)">
+              <el-button v-else type="success" @click="downloadFile(sendForm.File1ID, sendForm.File1Name)">
                 下载文件
               </el-button>
             </el-form-item>
@@ -461,11 +461,11 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="其他单据">
-              <el-upload v-if="!sendForm.File2Id" ref="upload2Ref" action="" :limit="1" :on-change="handleFile2Change"
+              <el-upload v-if="!sendForm.File2ID" ref="upload2Ref" action="" :limit="1" :on-change="handleFile2Change"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
-              <el-button v-else type="success" @click="downloadFile(sendForm.File2Id, sendForm.File2Name)">
+              <el-button v-else type="success" @click="downloadFile(sendForm.File2ID, sendForm.File2Name)">
                 下载文件
               </el-button>
             </el-form-item>
@@ -503,7 +503,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="客户" prop="Merchants">
-              <el-select v-model="sendForm.Merchant1Id" @change="onMerchantChange" placeholder="请选择客户" :disabled="true">
+              <el-select v-model="sendForm.Merchant1ID" @change="onMerchantChange" placeholder="请选择客户" :disabled="true">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -511,8 +511,8 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="发货人" prop="AcctId">
-              <el-select v-model="sendForm.AcctId" @change="onAcctChange" placeholder="请选择发货人" :disabled="true">
+            <el-form-item label="发货人" prop="AcctID">
+              <el-select v-model="sendForm.AcctID" @change="onAcctChange" placeholder="请选择发货人" :disabled="true">
                 <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
@@ -522,7 +522,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="收货人" prop="Merchants">
-              <el-select v-model="sendForm.Merchant2Id" @change="onMerchantChange" placeholder="请选择收货人"
+              <el-select v-model="sendForm.Merchant2ID" @change="onMerchantChange" placeholder="请选择收货人"
                 :disabled="true">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
@@ -532,7 +532,7 @@
 
           <el-col :span="12">
             <el-form-item label="通知人" prop="Merchants">
-              <el-select v-model="sendForm.Merchant3Id" @change="onMerchantChange" placeholder="请选择通知人"
+              <el-select v-model="sendForm.Merchant3ID" @change="onMerchantChange" placeholder="请选择通知人"
                 :disabled="true">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
@@ -579,8 +579,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="包装规格" prop="PackSpecId">
-              <el-select v-model="sendForm.PackSpecId" @change="onPackSpecChange" placeholder="请选择包装规格"
+            <el-form-item label="包装规格" prop="PackSpecID">
+              <el-select v-model="sendForm.PackSpecID" @change="onPackSpecChange" placeholder="请选择包装规格"
                 :disabled="true">
                 <el-option v-for="packSpec in packSpecData" :key="packSpec.ID" :label="packSpec.SpecName"
                   :value="packSpec.ID"></el-option>
@@ -598,7 +598,7 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas1">
               <el-select v-model="sendForm.UnitMeas1" placeholder="请选择单位" :disabled="true">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
@@ -615,7 +615,7 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas2">
               <el-select v-model="sendForm.UnitMeas2" placeholder="请选择单位" :disabled="true">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
@@ -632,7 +632,7 @@
           <el-col :span="12">
             <el-form-item label="单位" prop="UnitMeas3">
               <el-select v-model="sendForm.UnitMeas3" placeholder="请选择单位" :disabled="true">
-                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasId" :label="unitMeas.UnitMeas"
+                <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
               </el-select>
             </el-form-item>
@@ -671,8 +671,8 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="付款方式" prop="PayMentMethodId">
-              <el-select v-model="sendForm.PayMentMethodId" @change="onPayMentMethodChange" placeholder="请选择付款方式"
+            <el-form-item label="付款方式" prop="PayMentMethodID">
+              <el-select v-model="sendForm.PayMentMethodID" @change="onPayMentMethodChange" placeholder="请选择付款方式"
                 :disabled="true">
                 <el-option v-for="payMentMethod in payMentMethodData" :key="payMentMethod.ID"
                   :label="payMentMethod.PayMtdName" :value="payMentMethod.ID"></el-option>
@@ -680,8 +680,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="收款银行" prop="AcctBankId">
-              <el-select v-model="sendForm.AcctBankId" @change="onAcctBankChange" placeholder="请选择收款银行"
+            <el-form-item label="收款银行" prop="AcctBankID">
+              <el-select v-model="sendForm.AcctBankID" @change="onAcctBankChange" placeholder="请选择收款银行"
                 :disabled="true">
                 <el-option v-for="acctBank in acctBankData" :key="acctBank.ID" :label="acctBank.AccName"
                   :value="acctBank.ID"></el-option>
@@ -693,8 +693,8 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="提单">
-              <el-button v-if="sendForm.File1Id" type="success"
-                @click="downloadFile(sendForm.File1Id, sendForm.File1Name)">
+              <el-button v-if="sendForm.File1ID" type="success"
+                @click="downloadFile(sendForm.File1ID, sendForm.File1Name)">
                 下载文件
               </el-button>
             </el-form-item>
@@ -707,8 +707,8 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="其他单据">
-              <el-button v-if="sendForm.File2Id" type="success"
-                @click="downloadFile(sendForm.File2Id, sendForm.File2Name)">
+              <el-button v-if="sendForm.File2ID" type="success"
+                @click="downloadFile(sendForm.File2ID, sendForm.File2Name)">
                 下载文件
               </el-button>
             </el-form-item>
@@ -740,7 +740,7 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const InVisible = ref(false)
-const InId = ref(null)
+const InID = ref(null)
 const InData = ref([])
 
 const fetchInData = async (ID) => {
@@ -755,14 +755,14 @@ const fetchInData = async (ID) => {
       },
     })
     InData.value = response.data.In; // 假设返回的数据结构中有 PrdtInfo 字段
-    nowId.value = ID
+    nowID.value = ID
     InVisible.value = true;
   } catch (error) {
     console.error('获取失败:', error);
     ElMessage.error('获取失败');
   }
 };
-const DeleteIn = (index, ID, InId) => {
+const DeleteIn = (index, ID, InID) => {
   // console.log('Delete button clicked', index, row); // 添加调试信息
   ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
     confirmButtonText: '确定',
@@ -773,7 +773,7 @@ const DeleteIn = (index, ID, InId) => {
 
     const params = new URLSearchParams();
     params.append('ID', ID); // 添加表单字段
-    params.append("InId", InId)
+    params.append("InID", InID)
 
     axios.post('/delete/send/in', params, {
       headers: {
@@ -783,12 +783,12 @@ const DeleteIn = (index, ID, InId) => {
 
       // axios.post('/delete/sale/prdtInfo', {
       //   "ID": ID,
-      //   "PrdtInfoId": PrdtInfoId.value
+      //   "PrdtInfoID": PrdtInfoID.value
       // })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
-          fetchInData(nowId.value); // 重新获取会计实体信息数据
+          fetchInData(nowID.value); // 重新获取会计实体信息数据
         } else {
           ElMessage.error(response.data.RetMessage || '删除失败');
         }
@@ -802,12 +802,12 @@ const DeleteIn = (index, ID, InId) => {
 };
 const addIn = async (ID) => {
 
-  console.log(nowId.value)
+  console.log(nowID.value)
   try {
 
     const params = new URLSearchParams();
     params.append('ID', ID); // 添加表单字段
-    params.append("InId", InId.value)
+    params.append("InID", InID.value)
 
     const response = await axios.post('/add/send/in', params, {
       headers: {
@@ -815,7 +815,7 @@ const addIn = async (ID) => {
       },
     })
     ElMessage.success("添加成功");
-    fetchInData(nowId.value)
+    fetchInData(nowID.value)
     InVisible.value = ''
   } catch (error) {
     console.error('添加失败:', error);
@@ -894,17 +894,17 @@ const CheckPrdtInfo = (ID) => {
   }
 };
 const isExactMatch = ref(true);
-const onlyId = ref(true);
+const onlyID = ref(true);
 const toggleMatchMode = () => {
   isExactMatch.value = !isExactMatch.value;
   console.log("isExactMatch", isExactMatch.value)
 };
 
-const toggleIdMode = () => {
-  onlyId.value = !onlyId.value;
+const toggleIDMode = () => {
+  onlyID.value = !onlyID.value;
 };
 const LoadingInfoVisible = ref(false)
-const LoadingInfoId = ref(null)
+const LoadingInfoID = ref(null)
 const LoadingInfoData = ref([])
 
 const fetchLoadingInfoData = async (ID) => {
@@ -923,8 +923,8 @@ const fetchLoadingInfoData = async (ID) => {
     // prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
 
     LoadingInfoData.value = Object.assign([], response.data.LoadingInfo); // 强制更新
-    nowId.value = ID
-    console.log("nowid", nowId.value)
+    nowID.value = ID
+    console.log("nowid", nowID.value)
   } catch (error) {
     console.error('获取产品明细失败:', error);
     ElMessage.error('获取失败');
@@ -932,12 +932,12 @@ const fetchLoadingInfoData = async (ID) => {
 };
 const addLoadingInfo = async (ID) => {
 
-  console.log(nowId.value)
+  console.log(nowID.value)
   try {
 
     const params = new URLSearchParams();
     params.append('ID', ID); // 添加表单字段
-    params.append("LoadingInfoId", LoadingInfoId.value)
+    params.append("LoadingInfoID", LoadingInfoID.value)
 
     const response = await axios.post('/add/send/loadingInfo', params, {
       headers: {
@@ -945,7 +945,7 @@ const addLoadingInfo = async (ID) => {
       },
     })
     ElMessage.success("添加成功");
-    fetchLoadingInfoData(nowId.value)
+    fetchLoadingInfoData(nowID.value)
     LoadingInfoVisible.value = ''
   } catch (error) {
     console.error('添加失败:', error);
@@ -954,7 +954,7 @@ const addLoadingInfo = async (ID) => {
 };
 
 const SaleVisible = ref(false)
-const SaleId = ref(null)
+const SaleID = ref(null)
 const SaleData = ref([])
 
 const fetchSaleData = async (ID) => {
@@ -973,8 +973,8 @@ const fetchSaleData = async (ID) => {
     // prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
 
     SaleData.value = Object.assign([], response.data.Sale); // 强制更新
-    nowId.value = ID
-    console.log("nowid", nowId.value)
+    nowID.value = ID
+    console.log("nowid", nowID.value)
   } catch (error) {
     console.error('获取失败:', error);
     ElMessage.error('获取失败');
@@ -982,12 +982,12 @@ const fetchSaleData = async (ID) => {
 };
 const addSale = async (ID) => {
 
-  console.log(nowId.value)
+  console.log(nowID.value)
   try {
 
     const params = new URLSearchParams();
     params.append('ID', ID); // 添加表单字段
-    params.append("SaleId", SaleId.value)
+    params.append("SaleID", SaleID.value)
 
     const response = await axios.post('/add/send/sale', params, {
       headers: {
@@ -995,7 +995,7 @@ const addSale = async (ID) => {
       },
     })
     ElMessage.success("添加成功");
-    fetchSaleData(nowId.value)
+    fetchSaleData(nowID.value)
     SaleVisible.value = ''
   } catch (error) {
     console.error('添加失败:', error);
@@ -1023,7 +1023,7 @@ const CheckShouldIn = (ID) => {
   }
 };
 const ShouldInVisible = ref(false)
-const ShouldInId = ref(null)
+const ShouldInID = ref(null)
 const ShouldInData = ref([])
 
 const fetchShouldInData = async (ID) => {
@@ -1041,8 +1041,8 @@ const fetchShouldInData = async (ID) => {
     ShouldInVisible.value = true;
 
     ShouldInData.value = Object.assign([], response.data.ShouldIn); // 强制更新
-    nowId.value = ID
-    console.log("nowid", nowId.value)
+    nowID.value = ID
+    console.log("nowid", nowID.value)
   } catch (error) {
     console.error('获取失败:', error);
     ElMessage.error('获取失败');
@@ -1050,12 +1050,12 @@ const fetchShouldInData = async (ID) => {
 };
 const addShouldIn = async (ID) => {
 
-  console.log(nowId.value)
+  console.log(nowID.value)
   try {
 
     const params = new URLSearchParams();
     params.append('ID', ID); // 添加表单字段
-    params.append("ShouldInId", ShouldInId.value)
+    params.append("ShouldInID", ShouldInID.value)
 
     const response = await axios.post('/add/send/shouldIn', params, {
       headers: {
@@ -1063,7 +1063,7 @@ const addShouldIn = async (ID) => {
       },
     })
     ElMessage.success("添加成功");
-    fetchShouldInData(nowId.value)
+    fetchShouldInData(nowID.value)
     ShouldInVisible.value = ''
   } catch (error) {
     console.error('添加失败:', error);
@@ -1082,7 +1082,7 @@ const DeleteShouldIn = (index, ID, id) => {
 
     const params = new URLSearchParams();
     params.append('ID', ID); // 添加表单字段
-    params.append("ShouldInId", id)
+    params.append("ShouldInID", id)
 
     axios.post('/delete/send/shouldIn', params, {
       headers: {
@@ -1092,7 +1092,7 @@ const DeleteShouldIn = (index, ID, id) => {
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
-          fetchShouldInData(nowId.value); // 重新获取会计实体信息数据
+          fetchShouldInData(nowID.value); // 重新获取会计实体信息数据
         } else {
           ElMessage.error(response.data.RetMessage || '删除失败');
         }
@@ -1106,14 +1106,14 @@ const DeleteShouldIn = (index, ID, id) => {
 };
 // 控制主弹窗显示
 const prdtInfoVisible = ref(false);
-const nowId = ref(null);
+const nowID = ref(null);
 
-const prdtInfoId = ref(null);
+const prdtInfoID = ref(null);
 
 const prdtInfoData = ref([]); // 存储产品明细数据
 
 // 删除按钮逻辑
-const DeleteSale = (index, ID, SaleId) => {
+const DeleteSale = (index, ID, SaleID) => {
   // console.log('Delete button clicked', index, row); // 添加调试信息
   ElMessageBox.confirm('确定要删除该产品信息吗?', '提示', {
     confirmButtonText: '确定',
@@ -1124,7 +1124,7 @@ const DeleteSale = (index, ID, SaleId) => {
 
     const params = new URLSearchParams();
     params.append('ID', ID); // 添加表单字段
-    params.append("SaleId", SaleId)
+    params.append("SaleID", SaleID)
 
     axios.post('/delete/send/sale', params, {
       headers: {
@@ -1134,12 +1134,12 @@ const DeleteSale = (index, ID, SaleId) => {
 
       // axios.post('/delete/sale/prdtInfo', {
       //   "ID": ID,
-      //   "PrdtInfoId": PrdtInfoId.value
+      //   "PrdtInfoID": PrdtInfoID.value
       // })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
-          fetchSaleData(nowId.value); // 重新获取会计实体信息数据
+          fetchSaleData(nowID.value); // 重新获取会计实体信息数据
         } else {
           ElMessage.error(response.data.RetMessage || '删除失败');
         }
@@ -1167,8 +1167,8 @@ const fetchPrdtInfoData = async (ID) => {
     // prdtInfoData.value = response.data.PrdtInfo; // 假设返回的数据结构中有 PrdtInfo 字段
 
     prdtInfoData.value = Object.assign([], response.data.PrdtInfo); // 强制更新
-    nowId.value = ID
-    console.log("nowid", nowId.value)
+    nowID.value = ID
+    console.log("nowid", nowID.value)
   } catch (error) {
     console.error('获取产品明细失败:', error);
     ElMessage.error('获取产品明细失败');
@@ -1176,12 +1176,12 @@ const fetchPrdtInfoData = async (ID) => {
 };
 const addPrdtInfo = async (ID) => {
 
-  console.log(nowId.value)
+  console.log(nowID.value)
   try {
 
     const params = new URLSearchParams();
     params.append('ID', ID); // 添加表单字段
-    params.append("PrdtInfoId", prdtInfoId.value)
+    params.append("PrdtInfoID", prdtInfoID.value)
 
     const response = await axios.post('/add/send/prdtInfo', params, {
       headers: {
@@ -1189,8 +1189,8 @@ const addPrdtInfo = async (ID) => {
       },
     })
     ElMessage.success("添加成功");
-    fetchPrdtInfoData(nowId.value)
-    prdtInfoId.value = ''
+    fetchPrdtInfoData(nowID.value)
+    prdtInfoID.value = ''
   } catch (error) {
     console.error('添加产品明细失败:', error);
     ElMessage.error(error.response.data.RetMessage);
@@ -1208,7 +1208,7 @@ const paginatedSendData = computed(() => {
   console.log(sendData.value);
   if (searchQuery.value) {
     if (isExactMatch.value === false) {
-      if (onlyId.value === false) {
+      if (onlyID.value === false) {
         console.log("打印了");
         filteredData = filteredData.filter(item =>
           item.ID.toString().includes(searchQuery.value) ||
@@ -1243,7 +1243,7 @@ const paginatedSendData = computed(() => {
         );
       }
     } else {
-      if (onlyId.value === false) {
+      if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
           item.ID.toString() === searchQuery.value ||
           item.SaleInvNum === searchQuery.value ||
@@ -1435,14 +1435,14 @@ const sendForm = ref({
   SaleInvNum: '', // 销售发票号
   SaleInvDate: '', // 销售发票日期
   // Sales: [], // 销售订单，多表关联
-  AcctId: '', // 发货人 ID
+  AcctID: '', // 发货人 ID
   AcctName: '', // 发货人名称
   SrcPlace: '', // 起运地
   Des: '', // 目的地
   ShipName: '', // 船名
   Voyage: '', // 航次
   TotNum: '', // 总件数
-  PackSpecId: '', // 包装规格 ID
+  PackSpecID: '', // 包装规格 ID
   SpecName: '', // 包装规格名称
   TotalNetWeight: '', // 总净重
   UnitMeas1: '', // 单位 1
@@ -1454,19 +1454,19 @@ const sendForm = ref({
   DateOfShip: '', // 发货（开船）日期
   Note1: '', // 提单货物描述
   Note2: '', // 箱单货物描述
-  PayMentMethodId: '', // 付款方式 ID
+  PayMentMethodID: '', // 付款方式 ID
   PayMtdName: '', // 付款方式名称
-  AcctBankId: '', // 收款银行 ID
+  AcctBankID: '', // 收款银行 ID
   AccName: '', // 收款银行名称
   // PrdtInfos: [], // 产品明细，多表关联
   // LoadingInfos: [], // 装货明细，多表关联
   File1Name: '',
-  File1Id: '',
+  File1ID: '',
   File2Name: '',
-  File2Id: '',
-  Merchant1Id: '',
-  Merchant2Id: '',
-  Merchant3Id: '',
+  File2ID: '',
+  Merchant1ID: '',
+  Merchant2ID: '',
+  Merchant3ID: '',
   Merchant1Name: '',
   Merchant2Name: '',
   Merchant3Name: '',
@@ -1508,8 +1508,8 @@ const validateGreaterThanZero = (rule, value, callback) => {
 const sendRules = {
   OrderNum: [{ required: true, message: '请输入订单编号', trigger: 'blur' }],
   OrderDate: [{ required: true, message: '请选择订单日期', trigger: 'blur' }],
-  AcctId: [{ required: true, message: '请选择销售方', trigger: 'blur' }],
-  MerchantId: [{ required: true, message: '请选择购买方', trigger: 'blur' }],
+  AcctID: [{ required: true, message: '请选择销售方', trigger: 'blur' }],
+  MerchantID: [{ required: true, message: '请选择购买方', trigger: 'blur' }],
   QualStd: [{ required: true, message: '请选择质量标准', trigger: 'blur' }],
   BillValidity: [{ required: true, message: '请选择账单有效期', trigger: 'blur' }],
   BussOrderSta: [{ required: true, message: '请选择单据状态', trigger: 'blur' }],
@@ -1517,21 +1517,21 @@ const sendRules = {
   EndShip: [{ required: true, message: '请选择发货截止日期', trigger: 'blur' }],
   SrcPlace: [{ required: true, message: '请选择起运地', trigger: 'blur' }],
   Des: [{ required: true, message: '请选择目的地', trigger: 'blur' }],
-  PayMentMethodId: [{ required: true, message: '请选择付款方式', trigger: 'blur' }],
+  PayMentMethodID: [{ required: true, message: '请选择付款方式', trigger: 'blur' }],
   TotAmt: [{ required: true, message: '请输入总金额', trigger: 'blur' }],
   Currency: [{ required: true, message: '请输入币种', trigger: 'blur' }],
   TotNum: [
     { required: true, validator: validateNotEmpty, message: '请输入总件数', trigger: 'blur' },
     { validator: validateGreaterThanZero, message: '总件数必须大于 0', trigger: 'blur' }  // 新增验证：总件数大于 0
   ],
-  PackSpecId: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
+  PackSpecID: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
   TotalNetWeight: [
     { required: true, validator: validateNotEmpty, message: '请输入总净重', trigger: 'blur' },
     { validator: validateGreaterThanZero, message: '总净重必须大于 0', trigger: 'blur' }  // 新增验证：总净重大于 0
   ],
   UnitMeas: [{ required: true, message: '请选择单位', trigger: 'blur' }],
-  AcctBankId: [{ required: true, message: '请选择我方银行账户', trigger: 'blur' }],
-  BankAccountId: [{ required: true, message: '请选择对方银行账户', trigger: 'blur' }]
+  AcctBankID: [{ required: true, message: '请选择我方银行账户', trigger: 'blur' }],
+  BankAccountID: [{ required: true, message: '请选择对方银行账户', trigger: 'blur' }]
 };
 
 
@@ -1573,11 +1573,11 @@ const handleEdit = (index, row) => {
   }
 
   if (row.DocReq && Array.isArray(row.DocReq)) {
-    sendForm.value.DocReq = row.DocReq.map(item => item.DocReqId);
+    sendForm.value.DocReq = row.DocReq.map(item => item.DocReqID);
   }
   // // 检查是否已上传文件
-  // if (row.FileId) {
-  //   sendForm.value.FileId = row.FileId; // 保存 FileId
+  // if (row.FileID) {
+  //   sendForm.value.FileID = row.FileID; // 保存 FileID
   //   sendForm.value.FileName = row.FileName; // 保存文件名
   // }
 
@@ -1621,9 +1621,9 @@ const resetSendForm = () => {
   sendForm.value = {
     OrderNum: '',
     OrderDate: '',
-    AcctId: '',
+    AcctID: '',
     AcctName: '',
-    MerchantId: '',
+    MerchantID: '',
     Merc: '',
     QualStd: '',
     BillValidity: '',
@@ -1632,29 +1632,29 @@ const resetSendForm = () => {
     EndShip: '',
     SrcPlace: '',
     Des: '',
-    PayMentMethodId: '',
+    PayMentMethodID: '',
     PayMtdName: '',
     TotAmt: 0,
     Currency: '',
     TotNum: 0,
-    PackSpecId: '',
+    PackSpecID: '',
     SpecName: '',
     TotalNetWeight: '',
     UnitMeas: '',
-    AcctBankId: '',
+    AcctBankID: '',
     AccName: '',
-    BankAccountId: '',
+    BankAccountID: '',
     BankAccName: '',
     Notes: '',
-    FileId: '', // 重置文件 ID
+    FileID: '', // 重置文件 ID
     FileName: '', // 重置文件名
     File1Name: '',
-    File1Id: '',
+    File1ID: '',
     File2Name: '',
-    File2Id: '',
-    Merchant1Id: '',
-    Merchant2Id: '',
-    Merchant3Id: '',
+    File2ID: '',
+    Merchant1ID: '',
+    Merchant2ID: '',
+    Merchant3ID: '',
     Merchant1Name: '',
     Merchant2Name: '',
     Merchant3Name: '',
@@ -1722,11 +1722,11 @@ const onAcctChange = (value) => {
   }
 };
 
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
     const response = await axios.post(
       '/file',
-      { FileId: fileId },
+      { FileID: fileID },
       {
         responseType: 'blob',
       }
@@ -1735,7 +1735,7 @@ const downloadFile = async (fileId, fileName) => {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || `file_${fileId}`);
+    link.setAttribute('download', fileName || `file_${fileID}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

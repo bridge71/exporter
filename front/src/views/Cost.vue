@@ -191,7 +191,7 @@ const costForm = ref({
   Number: 0,
   Amount: 0,
   Currency: '',
-  CostId: '',
+  CostID: '',
 });
 const costFormRef = ref(null);
 
@@ -267,7 +267,7 @@ const resetCostForm = () => {
     Number: 0,
     Amount: 0,
     Currency: '',
-    CostId: '',
+    CostID: '',
   };
 };
 

@@ -173,164 +173,164 @@ export default {
       if (activeMenu.value === 'customer') {
         tableData.value = response.data.MercType.map(item => ({
           type: item.MercType,
-          id: item.MercTypeId,
+          id: item.MercTypeID,
         }));
       }
       else if (activeMenu.value === 'supplier') {
         tableData.value = response.data.SuprType.map(item => ({
           type: item.SuprType,
-          id: item.SuprTypeId,
+          id: item.SuprTypeID,
         }));
       }
 
       else if (activeMenu.value === 'PrdtType') {
         tableData.value = response.data.PrdtType.map(item => ({
           type: item.PrdtType,
-          id: item.PrdtTypeId,
+          id: item.PrdtTypeID,
         }));
       }
       else if (activeMenu.value === 'FoodAddType') {
         tableData.value = response.data.FoodAddType.map(item => ({
           type: item.FoodAddType,
-          id: item.FoodAddTypeId,
+          id: item.FoodAddTypeID,
         }));
       }
       else if (activeMenu.value === 'FeedAddType') {
         tableData.value = response.data.FeedAddType.map(item => ({
           type: item.FeedAddType,
-          id: item.FeedAddTypeId,
+          id: item.FeedAddTypeID,
         }));
       }
       else if (activeMenu.value === 'UnitMeas') {
         tableData.value = response.data.UnitMeas.map(item => ({
           type: item.UnitMeas,
-          id: item.UnitMeasId,
+          id: item.UnitMeasID,
         }));
       }
       else if (activeMenu.value === 'PackType') {
         tableData.value = response.data.PackType.map(item => ({
           type: item.PackType,
-          id: item.PackTypeId,
+          id: item.PackTypeID,
         }));
       }
       else if (activeMenu.value === 'ConType') {
         tableData.value = response.data.ConType.map(item => ({
           type: item.ConType,
-          id: item.ConTypeId,
+          id: item.ConTypeID,
         }));
       }
       else if (activeMenu.value === 'Currency') {
         tableData.value = response.data.Currency.map(item => ({
           type: item.Currency,
-          id: item.CurrencyId,
+          id: item.CurrencyID,
         }));
       }
       else if (activeMenu.value === 'TradeTerm') {
         tableData.value = response.data.TradeTerm.map(item => ({
           type: item.TradeTerm,
-          id: item.TradeTermId,
+          id: item.TradeTermID,
         }));
       }
       else if (activeMenu.value === 'Nation') {
         tableData.value = response.data.Nation.map(item => ({
           type: item.Nation,
-          id: item.NationId,
+          id: item.NationID,
         }));
       }
       else if (activeMenu.value === 'Port') {
         tableData.value = response.data.Port.map(item => ({
           type: item.Port,
-          id: item.PortId,
+          id: item.PortID,
         }));
       }
       else if (activeMenu.value === 'TaxType') {
         tableData.value = response.data.TaxType.map(item => ({
           type: item.TaxType,
-          id: item.TaxTypeId,
+          id: item.TaxTypeID,
         }));
       }
       else if (activeMenu.value === 'BrandType') {
         tableData.value = response.data.BrandType.map(item => ({
           type: item.BrandType,
-          id: item.BrandTypeId,
+          id: item.BrandTypeID,
         }));
       }
       else if (activeMenu.value === 'EduLevel') {
         tableData.value = response.data.EduLevel.map(item => ({
           type: item.EduLevel,
-          id: item.EduLevelId,
+          id: item.EduLevelID,
         }));
       }
       else if (activeMenu.value === 'Dept') {
         tableData.value = response.data.Dept.map(item => ({
           type: item.Dept,
-          id: item.DeptId,
+          id: item.DeptID,
         }));
       }
       else if (activeMenu.value === 'Position') {
         tableData.value = response.data.Position.map(item => ({
           type: item.Position,
-          id: item.PositionId,
+          id: item.PositionID,
         }));
       }
       else if (activeMenu.value === 'QualStd') {
         tableData.value = response.data.QualStd.map(item => ({
           type: item.QualStd,
-          id: item.QualStdId,
+          id: item.QualStdID,
         }));
       }
       else if (activeMenu.value === 'InvLoc') {
         tableData.value = response.data.InvLoc.map(item => ({
           type: item.InvLoc,
-          id: item.InvLocId,
+          id: item.InvLocID,
         }));
       }
       else if (activeMenu.value === 'DocReq') {
         tableData.value = response.data.DocReq.map(item => ({
           type: item.DocReq,
-          id: item.DocReqId,
+          id: item.DocReqID,
         }));
       }
       else if (activeMenu.value === 'PayMth') {
         tableData.value = response.data.PayMth.map(item => ({
           type: item.PayMth,
-          id: item.PayMthId,
+          id: item.PayMthID,
         }));
       }
       else if (activeMenu.value === 'PayLimit') {
         tableData.value = response.data.PayLimit.map(item => ({
           type: item.PayLimit,
-          id: item.PayLimitId,
+          id: item.PayLimitID,
         }));
       }
       else if (activeMenu.value === 'FinaDocStatus') {
         tableData.value = response.data.FinaDocStatus.map(item => ({
           type: item.FinaDocStatus,
-          id: item.FinaDocStatusId,
+          id: item.FinaDocStatusID,
         }));
       }
       else if (activeMenu.value === 'FinaDocType') {
         tableData.value = response.data.FinaDocType.map(item => ({
           type: item.FinaDocType,
-          id: item.FinaDocTypeId,
+          id: item.FinaDocTypeID,
         }));
       }
       else if (activeMenu.value === 'ExpType') {
         tableData.value = response.data.ExpType.map(item => ({
           type: item.ExpType,
-          id: item.ExpTypeId,
+          id: item.ExpTypeID,
         }));
       }
       else if (activeMenu.value === 'Rates') {
         tableData.value = response.data.Rates.map(item => ({
           type: item.Rates,
-          id: item.RatesId,
+          id: item.RatesID,
         }));
       }
       else if (activeMenu.value === 'BussOrderSta') {
         tableData.value = response.data.BussOrderSta.map(item => ({
           type: item.BussOrderSta,
-          id: item.BussOrderStaId,
+          id: item.BussOrderStaID,
         }));
       }
     };
@@ -444,88 +444,88 @@ export default {
 
       let data = {};
       if (activeMenu.value === 'customer') {
-        data = { MercTypeId: row.id }; // 如果是客户类型，传递 MercTypeId
+        data = { MercTypeID: row.id }; // 如果是客户类型，传递 MercTypeID
       }
       else if (activeMenu.value === 'supplier') {
-        data = { SuprTypeId: row.id }; // 如果是供应商类型，传递 SuprTypeId
+        data = { SuprTypeID: row.id }; // 如果是供应商类型，传递 SuprTypeID
       }
       else if (activeMenu.value === 'PrdtType') {
-        data = { PrdtTypeId: row.id }; // 如果是产品类型，传递 PrdtTypeId
+        data = { PrdtTypeID: row.id }; // 如果是产品类型，传递 PrdtTypeID
       }
       else if (activeMenu.value === 'FoodAddType') {
-        data = { FoodAddTypeId: row.id }; // 如果是食品添加剂类型，传递 FoodAddTypeId
+        data = { FoodAddTypeID: row.id }; // 如果是食品添加剂类型，传递 FoodAddTypeID
       }
       else if (activeMenu.value === 'FeedAddType') {
-        data = { FeedAddTypeId: row.id }; // 如果是饲料添加剂类型，传递 FeedAddTypeId
+        data = { FeedAddTypeID: row.id }; // 如果是饲料添加剂类型，传递 FeedAddTypeID
       }
       else if (activeMenu.value === 'UnitMeas') {
-        data = { UnitMeasId: row.id }; // 如果是计量单位，传递 UnitMeasId
+        data = { UnitMeasID: row.id }; // 如果是计量单位，传递 UnitMeasID
       }
       else if (activeMenu.value === 'PackType') {
-        data = { PackTypeId: row.id }; // 如果是包装类型，传递 PackTypeId
+        data = { PackTypeID: row.id }; // 如果是包装类型，传递 PackTypeID
       }
       else if (activeMenu.value === 'ConType') {
-        data = { ConTypeId: row.id }; // 如果是集装箱类型，传递 ConTypeId
+        data = { ConTypeID: row.id }; // 如果是集装箱类型，传递 ConTypeID
       }
       else if (activeMenu.value === 'Currency') {
-        data = { CurrencyId: row.id }; // 如果是币种，传递 CurrencyId
+        data = { CurrencyID: row.id }; // 如果是币种，传递 CurrencyID
       }
       else if (activeMenu.value === 'TradeTerm') {
-        data = { TradeTermId: row.id }; // 如果是贸易条款，传递 TradeTermId
+        data = { TradeTermID: row.id }; // 如果是贸易条款，传递 TradeTermID
       }
       else if (activeMenu.value === 'Nation') {
-        data = { NationId: row.id }; // 如果是国家，传递 NationId
+        data = { NationID: row.id }; // 如果是国家，传递 NationID
       }
       else if (activeMenu.value === 'Port') {
-        data = { PortId: row.id }; // 如果是港口，传递 PortId
+        data = { PortID: row.id }; // 如果是港口，传递 PortID
       }
       else if (activeMenu.value === 'TaxType') {
-        data = { TaxTypeId: row.id }; // 如果是税号类型，传递 TaxTypeId
+        data = { TaxTypeID: row.id }; // 如果是税号类型，传递 TaxTypeID
       }
       else if (activeMenu.value === 'BrandType') {
-        data = { BrandTypeId: row.id }; // 如果是品牌类型，传递 BrandTypeId
+        data = { BrandTypeID: row.id }; // 如果是品牌类型，传递 BrandTypeID
       }
       else if (activeMenu.value === 'EduLevel') {
-        data = { EduLevelId: row.id }; // 如果是学历，传递 EduLevelId
+        data = { EduLevelID: row.id }; // 如果是学历，传递 EduLevelID
       }
       else if (activeMenu.value === 'Dept') {
-        data = { DeptId: row.id }; // 如果是公司部门，传递 DeptId
+        data = { DeptID: row.id }; // 如果是公司部门，传递 DeptID
       }
       else if (activeMenu.value === 'Position') {
-        data = { PositionId: row.id }; // 如果是公司岗位，传递 PositionId
+        data = { PositionID: row.id }; // 如果是公司岗位，传递 PositionID
       }
       else if (activeMenu.value === 'QualStd') {
-        data = { QualStdId: row.id }; // 如果是质量标准，传递 QualStdId
+        data = { QualStdID: row.id }; // 如果是质量标准，传递 QualStdID
       }
       else if (activeMenu.value === 'InvLoc') {
-        data = { InvLocId: row.id }; // 如果是库存地点位置，传递 InvLocId
+        data = { InvLocID: row.id }; // 如果是库存地点位置，传递 InvLocID
       }
       else if (activeMenu.value === 'DocReq') {
-        data = { DocReqId: row.id }; // 如果是单据要求，传递 DocReqId
+        data = { DocReqID: row.id }; // 如果是单据要求，传递 DocReqID
       }
       else if (activeMenu.value === 'PayMth') {
-        data = { PayMthId: row.id }; // 如果是转账方式，传递 PayMthId
+        data = { PayMthID: row.id }; // 如果是转账方式，传递 PayMthID
       }
       else if (activeMenu.value === 'PayLimit') {
-        data = { PayLimitId: row.id }; // 如果是后付款转账期限，传递 PayLimitId
+        data = { PayLimitID: row.id }; // 如果是后付款转账期限，传递 PayLimitID
       }
       else if (activeMenu.value === 'FinaDocStatus') {
-        data = { FinaDocStatusId: row.id }; // 如果是财务单据状态，传递 FinaDocStatusId
+        data = { FinaDocStatusID: row.id }; // 如果是财务单据状态，传递 FinaDocStatusID
       }
       else if (activeMenu.value === 'FinaDocType') {
-        data = { FinaDocTypeId: row.id }; // 如果是财务单据类型，传递 FinaDocTypeId
+        data = { FinaDocTypeID: row.id }; // 如果是财务单据类型，传递 FinaDocTypeID
       }
       else if (activeMenu.value === 'ExpType') {
-        data = { ExpTypeId: row.id }; // 如果是费用类型，传递 ExpTypeId
+        data = { ExpTypeID: row.id }; // 如果是费用类型，传递 ExpTypeID
       }
       else if (activeMenu.value === 'Rates') {
-        data = { RatesId: row.id }; // 如果是收费标准，传递 RatesId
+        data = { RatesID: row.id }; // 如果是收费标准，传递 RatesID
       }
       else if (activeMenu.value === 'BussOrderSta') {
-        data = { BussOrderStaId: row.id }; // 如果是业务单据状态，传递 BussOrderStaId
+        data = { BussOrderStaID: row.id }; // 如果是业务单据状态，传递 BussOrderStaID
       }
       await axios.post(url, data);
-      // await axios.post(url, { MercTypeId: row.id, SuprTypeId: row.id });
+      // await axios.post(url, { MercTypeID: row.id, SuprTypeID: row.id });
       fetchData();
     };
 
@@ -537,7 +537,7 @@ export default {
         if (activeMenu.value === 'customer') {
           url = '/save/mercType';
           if (isEdit.value) {
-            data = { MercType: form.value.type, MercTypeId: form.value.id }; // 编辑时传递 MercType 和 MercTypeId
+            data = { MercType: form.value.type, MercTypeID: form.value.id }; // 编辑时传递 MercType 和 MercTypeID
           } else {
             data = { MercType: form.value.type }; // 添加时只传递 MercType
           }
@@ -545,7 +545,7 @@ export default {
         else if (activeMenu.value === 'supplier') {
           url = '/save/suprType';
           if (isEdit.value) {
-            data = { SuprType: form.value.type, SuprTypeId: form.value.id }; // 编辑时传递 SuprType 和 SuprTypeId
+            data = { SuprType: form.value.type, SuprTypeID: form.value.id }; // 编辑时传递 SuprType 和 SuprTypeID
           } else {
             data = { SuprType: form.value.type }; // 添加时只传递 SuprType
           }
@@ -554,7 +554,7 @@ export default {
         else if (activeMenu.value === 'PrdtType') {
           url = '/save/prdtType';
           if (isEdit.value) {
-            data = { PrdtType: form.value.type, PrdtTypeId: form.value.id }; // 编辑时传递 PrdtType 和 PrdtTypeId
+            data = { PrdtType: form.value.type, PrdtTypeID: form.value.id }; // 编辑时传递 PrdtType 和 PrdtTypeID
           } else {
             data = { PrdtType: form.value.type }; // 添加时只传递 PrdtType
           }
@@ -562,7 +562,7 @@ export default {
         else if (activeMenu.value === 'FoodAddType') {
           url = '/save/foodAddType';
           if (isEdit.value) {
-            data = { FoodAddType: form.value.type, FoodAddTypeId: form.value.id }; // 编辑时传递 FoodAddType 和 FoodAddTypeId
+            data = { FoodAddType: form.value.type, FoodAddTypeID: form.value.id }; // 编辑时传递 FoodAddType 和 FoodAddTypeID
           } else {
             data = { FoodAddType: form.value.type }; // 添加时只传递 FoodAddType
           }
@@ -570,7 +570,7 @@ export default {
         else if (activeMenu.value === 'FeedAddType') {
           url = '/save/feedAddType';
           if (isEdit.value) {
-            data = { FeedAddType: form.value.type, FeedAddTypeId: form.value.id }; // 编辑时传递 FeedAddType 和 FeedAddTypeId
+            data = { FeedAddType: form.value.type, FeedAddTypeID: form.value.id }; // 编辑时传递 FeedAddType 和 FeedAddTypeID
           } else {
             data = { FeedAddType: form.value.type }; // 添加时只传递 FeedAddType
           }
@@ -578,7 +578,7 @@ export default {
         else if (activeMenu.value === 'UnitMeas') {
           url = '/save/unitMeas';
           if (isEdit.value) {
-            data = { UnitMeas: form.value.type, UnitMeasId: form.value.id }; // 编辑时传递 UnitMeas 和 UnitMeasId
+            data = { UnitMeas: form.value.type, UnitMeasID: form.value.id }; // 编辑时传递 UnitMeas 和 UnitMeasID
           } else {
             data = { UnitMeas: form.value.type }; // 添加时只传递 UnitMeas
           }
@@ -586,7 +586,7 @@ export default {
         else if (activeMenu.value === 'PackType') {
           url = '/save/packType';
           if (isEdit.value) {
-            data = { PackType: form.value.type, PackTypeId: form.value.id }; // 编辑时传递 PackType 和 PackTypeId
+            data = { PackType: form.value.type, PackTypeID: form.value.id }; // 编辑时传递 PackType 和 PackTypeID
           } else {
             data = { PackType: form.value.type }; // 添加时只传递 PackType
           }
@@ -594,7 +594,7 @@ export default {
         else if (activeMenu.value === 'ConType') {
           url = '/save/conType';
           if (isEdit.value) {
-            data = { ConType: form.value.type, ConTypeId: form.value.id }; // 编辑时传递 ConType 和 ConTypeId
+            data = { ConType: form.value.type, ConTypeID: form.value.id }; // 编辑时传递 ConType 和 ConTypeID
           } else {
             data = { ConType: form.value.type }; // 添加时只传递 ConType
           }
@@ -602,7 +602,7 @@ export default {
         else if (activeMenu.value === 'Currency') {
           url = '/save/currency';
           if (isEdit.value) {
-            data = { Currency: form.value.type, CurrencyId: form.value.id }; // 编辑时传递 Currency 和 CurrencyId
+            data = { Currency: form.value.type, CurrencyID: form.value.id }; // 编辑时传递 Currency 和 CurrencyID
           } else {
             data = { Currency: form.value.type }; // 添加时只传递 Currency
           }
@@ -610,7 +610,7 @@ export default {
         else if (activeMenu.value === 'TradeTerm') {
           url = '/save/tradeTerm';
           if (isEdit.value) {
-            data = { TradeTerm: form.value.type, TradeTermId: form.value.id }; // 编辑时传递 TradeTerm 和 TradeTermId
+            data = { TradeTerm: form.value.type, TradeTermID: form.value.id }; // 编辑时传递 TradeTerm 和 TradeTermID
           } else {
             data = { TradeTerm: form.value.type }; // 添加时只传递 TradeTerm
           }
@@ -618,7 +618,7 @@ export default {
         else if (activeMenu.value === 'Nation') {
           url = '/save/nation';
           if (isEdit.value) {
-            data = { Nation: form.value.type, NationId: form.value.id }; // 编辑时传递 Nation 和 NationId
+            data = { Nation: form.value.type, NationID: form.value.id }; // 编辑时传递 Nation 和 NationID
           } else {
             data = { Nation: form.value.type }; // 添加时只传递 Nation
           }
@@ -626,7 +626,7 @@ export default {
         else if (activeMenu.value === 'Port') {
           url = '/save/port';
           if (isEdit.value) {
-            data = { Port: form.value.type, PortId: form.value.id }; // 编辑时传递 Port 和 PortId
+            data = { Port: form.value.type, PortID: form.value.id }; // 编辑时传递 Port 和 PortID
           } else {
             data = { Port: form.value.type }; // 添加时只传递 Port
           }
@@ -634,7 +634,7 @@ export default {
         else if (activeMenu.value === 'TaxType') {
           url = '/save/taxType';
           if (isEdit.value) {
-            data = { TaxType: form.value.type, TaxTypeId: form.value.id }; // 编辑时传递 TaxType 和 TaxTypeId
+            data = { TaxType: form.value.type, TaxTypeID: form.value.id }; // 编辑时传递 TaxType 和 TaxTypeID
           } else {
             data = { TaxType: form.value.type }; // 添加时只传递 TaxType
           }
@@ -642,7 +642,7 @@ export default {
         else if (activeMenu.value === 'BrandType') {
           url = '/save/brandType';
           if (isEdit.value) {
-            data = { BrandType: form.value.type, BrandTypeId: form.value.id }; // 编辑时传递 BrandType 和 BrandTypeId
+            data = { BrandType: form.value.type, BrandTypeID: form.value.id }; // 编辑时传递 BrandType 和 BrandTypeID
           } else {
             data = { BrandType: form.value.type }; // 添加时只传递 BrandType
           }
@@ -650,7 +650,7 @@ export default {
         else if (activeMenu.value === 'EduLevel') {
           url = '/save/eduLevel';
           if (isEdit.value) {
-            data = { EduLevel: form.value.type, EduLevelId: form.value.id }; // 编辑时传递 EduLevel 和 EduLevelId
+            data = { EduLevel: form.value.type, EduLevelID: form.value.id }; // 编辑时传递 EduLevel 和 EduLevelID
           } else {
             data = { EduLevel: form.value.type }; // 添加时只传递 EduLevel
           }
@@ -658,7 +658,7 @@ export default {
         else if (activeMenu.value === 'Dept') {
           url = '/save/dept';
           if (isEdit.value) {
-            data = { Dept: form.value.type, DeptId: form.value.id }; // 编辑时传递 Dept 和 DeptId
+            data = { Dept: form.value.type, DeptID: form.value.id }; // 编辑时传递 Dept 和 DeptID
           } else {
             data = { Dept: form.value.type }; // 添加时只传递 Dept
           }
@@ -666,7 +666,7 @@ export default {
         else if (activeMenu.value === 'Position') {
           url = '/save/position';
           if (isEdit.value) {
-            data = { Position: form.value.type, PositionId: form.value.id }; // 编辑时传递 Position 和 PositionId
+            data = { Position: form.value.type, PositionID: form.value.id }; // 编辑时传递 Position 和 PositionID
           } else {
             data = { Position: form.value.type }; // 添加时只传递 Position
           }
@@ -674,7 +674,7 @@ export default {
         else if (activeMenu.value === 'QualStd') {
           url = '/save/qualStd';
           if (isEdit.value) {
-            data = { QualStd: form.value.type, QualStdId: form.value.id }; // 编辑时传递 QualStd 和 QualStdId
+            data = { QualStd: form.value.type, QualStdID: form.value.id }; // 编辑时传递 QualStd 和 QualStdID
           } else {
             data = { QualStd: form.value.type }; // 添加时只传递 QualStd
           }
@@ -682,7 +682,7 @@ export default {
         else if (activeMenu.value === 'InvLoc') {
           url = '/save/invLoc';
           if (isEdit.value) {
-            data = { InvLoc: form.value.type, InvLocId: form.value.id }; // 编辑时传递 InvLoc 和 InvLocId
+            data = { InvLoc: form.value.type, InvLocID: form.value.id }; // 编辑时传递 InvLoc 和 InvLocID
           } else {
             data = { InvLoc: form.value.type }; // 添加时只传递 InvLoc
           }
@@ -690,7 +690,7 @@ export default {
         else if (activeMenu.value === 'DocReq') {
           url = '/save/docReq';
           if (isEdit.value) {
-            data = { DocReq: form.value.type, DocReqId: form.value.id }; // 编辑时传递 DocReq 和 DocReqId
+            data = { DocReq: form.value.type, DocReqID: form.value.id }; // 编辑时传递 DocReq 和 DocReqID
           } else {
             data = { DocReq: form.value.type }; // 添加时只传递 DocReq
           }
@@ -698,7 +698,7 @@ export default {
         else if (activeMenu.value === 'PayMth') {
           url = '/save/payMth';
           if (isEdit.value) {
-            data = { PayMth: form.value.type, PayMthId: form.value.id }; // 编辑时传递 PayMth 和 PayMthId
+            data = { PayMth: form.value.type, PayMthID: form.value.id }; // 编辑时传递 PayMth 和 PayMthID
           } else {
             data = { PayMth: form.value.type }; // 添加时只传递 PayMth
           }
@@ -706,7 +706,7 @@ export default {
         else if (activeMenu.value === 'PayLimit') {
           url = '/save/payLimit';
           if (isEdit.value) {
-            data = { PayLimit: form.value.type, PayLimitId: form.value.id }; // 编辑时传递 PayLimit 和 PayLimitId
+            data = { PayLimit: form.value.type, PayLimitID: form.value.id }; // 编辑时传递 PayLimit 和 PayLimitID
           } else {
             data = { PayLimit: form.value.type }; // 添加时只传递 PayLimit
           }
@@ -714,7 +714,7 @@ export default {
         else if (activeMenu.value === 'FinaDocStatus') {
           url = '/save/finaDocStatus';
           if (isEdit.value) {
-            data = { FinaDocStatus: form.value.type, FinaDocStatusId: form.value.id }; // 编辑时传递 FinaDocStatus 和 FinaDocStatusId
+            data = { FinaDocStatus: form.value.type, FinaDocStatusID: form.value.id }; // 编辑时传递 FinaDocStatus 和 FinaDocStatusID
           } else {
             data = { FinaDocStatus: form.value.type }; // 添加时只传递 FinaDocStatus
           }
@@ -722,7 +722,7 @@ export default {
         else if (activeMenu.value === 'FinaDocType') {
           url = '/save/finaDocType';
           if (isEdit.value) {
-            data = { FinaDocType: form.value.type, FinaDocTypeId: form.value.id }; // 编辑时传递 FinaDocType 和 FinaDocTypeId
+            data = { FinaDocType: form.value.type, FinaDocTypeID: form.value.id }; // 编辑时传递 FinaDocType 和 FinaDocTypeID
           } else {
             data = { FinaDocType: form.value.type }; // 添加时只传递 FinaDocType
           }
@@ -730,7 +730,7 @@ export default {
         else if (activeMenu.value === 'ExpType') {
           url = '/save/expType';
           if (isEdit.value) {
-            data = { ExpType: form.value.type, ExpTypeId: form.value.id }; // 编辑时传递 ExpType 和 ExpTypeId
+            data = { ExpType: form.value.type, ExpTypeID: form.value.id }; // 编辑时传递 ExpType 和 ExpTypeID
           } else {
             data = { ExpType: form.value.type }; // 添加时只传递 ExpType
           }
@@ -738,7 +738,7 @@ export default {
         else if (activeMenu.value === 'Rates') {
           url = '/save/rates';
           if (isEdit.value) {
-            data = { Rates: form.value.type, RatesId: form.value.id }; // 编辑时传递 Rates 和 RatesId
+            data = { Rates: form.value.type, RatesID: form.value.id }; // 编辑时传递 Rates 和 RatesID
           } else {
             data = { Rates: form.value.type }; // 添加时只传递 Rates
           }
@@ -746,7 +746,7 @@ export default {
         else if (activeMenu.value === 'BussOrderSta') {
           url = '/save/bussOrderSta';
           if (isEdit.value) {
-            data = { BussOrderSta: form.value.type, BussOrderStaId: form.value.id }; // 编辑时传递 BussOrderSta 和 BussOrderStaId
+            data = { BussOrderSta: form.value.type, BussOrderStaID: form.value.id }; // 编辑时传递 BussOrderSta 和 BussOrderStaID
           } else {
             data = { BussOrderSta: form.value.type }; // 添加时只传递 BussOrderSta
           }

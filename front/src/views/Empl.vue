@@ -36,7 +36,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.EmplId)" type="text"
+                  <el-button @click="handleDelete(scope.$index, scope.row.EmplID)" type="text"
                     size="small">删除</el-button>
                   <el-button @click="handleRegister(scope.row)" type="text" size="small">注册</el-button>
                 </el-row>
@@ -185,12 +185,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!emplForm.FileId" ref="emplUploadRef" action="" :limit="1"
+              <el-upload v-if="!emplForm.FileID" ref="emplUploadRef" action="" :limit="1"
                 :on-change="handleEmplFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(emplForm.FileId, emplForm.FileName)">下载文件</el-button>
+                @click="downloadFile(emplForm.FileID, emplForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="emplForm.FileName" :readonly="true"></el-input>
@@ -343,8 +343,8 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-button v-if="emplForm.FileId" type="success"
-                @click="downloadFile(emplForm.FileId, emplForm.FileName)">下载文件</el-button>
+              <el-button v-if="emplForm.FileID" type="success"
+                @click="downloadFile(emplForm.FileID, emplForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="emplForm.FileName" :readonly="true"></el-input>
@@ -383,7 +383,7 @@ const handleRegister = async (row) => {
     const userData = {
       Email: row.EmailAddr,
       UserName: row.EmpName,
-      EmplId: row.EmplId,
+      EmplID: row.EmplID,
     };
 
     const response = await axios.post('/save/user', userData);
@@ -398,7 +398,7 @@ const handleRegister = async (row) => {
   }
 };
 const emplForm = ref({
-  EmplId: '',
+  EmplID: '',
   EmpName: '',
   EmpEngName: '',
   Dept: '',
@@ -417,7 +417,7 @@ const emplForm = ref({
   EmergContact: '',
   EmergContactInfo: '',
   Notes: '',
-  FileId: '',
+  FileID: '',
   FileName: '',
 });
 const emplUploadRef = ref(null);
@@ -462,13 +462,13 @@ const handleView = (index, row) => {
   showViewEmplDialog.value = true;
 };
 
-const handleDelete = (index, EmplId) => {
+const handleDelete = (index, EmplID) => {
   ElMessageBox.confirm('确定要删除该员工信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/empl', { EmplId })
+    axios.post('/delete/empl', { EmplID })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -487,7 +487,7 @@ const handleDelete = (index, EmplId) => {
 
 const resetEmplForm = () => {
   emplForm.value = {
-    EmplId: '',
+    EmplID: '',
     EmpName: '',
     EmpEngName: '',
     Dept: '',
@@ -506,7 +506,7 @@ const resetEmplForm = () => {
     EmergContact: '',
     EmergContactInfo: '',
     Notes: '',
-    FileId: '',
+    FileID: '',
     FileName: '',
   };
   emplFile.value = null;
@@ -575,13 +575,13 @@ const handleEmplFileChange = (uploadFile) => {
   emplFile.value = uploadFile.raw;
 };
 
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
-    const response = await axios.post('/file', { FileId: fileId }, { responseType: 'blob' });
+    const response = await axios.post('/file', { FileID: fileID }, { responseType: 'blob' });
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || `file_${fileId}`);
+    link.setAttribute('download', fileName || `file_${fileID}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

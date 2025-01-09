@@ -25,23 +25,23 @@
             <el-table-column prop="ShortMerc" label="商户简称" width="160%"></el-table-column>
             <el-table-column prop="Merc" label="商户名称" width="220%"></el-table-column>
 
-            <el-table-column label="绑定的客户信息" width="220%">
-              <template #default="scope">
-                <span v-if="scope.row.Custs && scope.row.Custs.length > 0">
-                  {{ scope.row.Custs.map(cust => cust.Name).join(', ') }}
-                </span>
-                <span v-else>无</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="绑定的银行账户信息" width="220%">
-              <template #default="scope">
-                <span v-if="scope.row.BankAccounts && scope.row.BankAccounts.length > 0">
-                  {{ scope.row.BankAccounts.map(account => account.AcctNum).join(', ') }}
-                </span>
-                <span v-else>无</span>
-              </template>
-            </el-table-column>
+            <!-- <el-table-column label="绑定的客户信息" width="220%"> -->
+            <!--   <template #default="scope"> -->
+            <!--     <span v-if="scope.row.Custs && scope.row.Custs.length > 0"> -->
+            <!--       {{ scope.row.Custs.map(cust => cust.Name).join(', ') }} -->
+            <!--     </span> -->
+            <!--     <span v-else>无</span> -->
+            <!--   </template> -->
+            <!-- </el-table-column> -->
+            <!---->
+            <!-- <el-table-column label="绑定的银行账户信息" width="220%"> -->
+            <!--   <template #default="scope"> -->
+            <!--     <span v-if="scope.row.BankAccounts && scope.row.BankAccounts.length > 0"> -->
+            <!--       {{ scope.row.BankAccounts.map(account => account.AcctNum).join(', ') }} -->
+            <!--     </span> -->
+            <!--     <span v-else>无</span> -->
+            <!--   </template> -->
+            <!-- </el-table-column> -->
 
             <el-table-column prop="EngName" label="商户英文名称" width="220%"></el-table-column>
             <el-table-column prop="Address" label="商户地址" width="220%"></el-table-column>
@@ -187,13 +187,13 @@
         <!-- 上传文件或下载文件 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="文件">
-              <el-upload v-if="!merchantForm.ID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+            <el-form-item label="营业执照">
+              <el-upload v-if="!merchantForm.FileID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(merchantForm.ID, merchantForm.FileName)">下载文件</el-button>
+                @click="downloadFile(merchantForm.FileID, merchantForm.FileName)">下载文件</el-button>
             </el-form-item>
 
             <el-form-item label="文件名" prop="FileName">
@@ -203,22 +203,22 @@
         </el-row>
 
         <!-- 关联客户信息 -->
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="关联客户信息">
-              <el-input v-model="merchantForm.CustsDisplay" :readonly="true"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <!-- 关联银行账户信息 -->
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="关联银行账户信息">
-              <el-input v-model="merchantForm.BankAccountsDisplay" :readonly="true"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <!-- <el-row :gutter="20"> -->
+        <!--   <el-col :span="24"> -->
+        <!--     <el-form-item label="关联客户信息"> -->
+        <!--       <el-input v-model="merchantForm.CustsDisplay" :readonly="true"></el-input> -->
+        <!--     </el-form-item> -->
+        <!--   </el-col> -->
+        <!-- </el-row> -->
+        <!---->
+        <!-- <!-- 关联银行账户信息 -->
+        <!-- <el-row :gutter="20"> -->
+        <!--   <el-col :span="24"> -->
+        <!--     <el-form-item label="关联银行账户信息"> -->
+        <!--       <el-input v-model="merchantForm.BankAccountsDisplay" :readonly="true"></el-input> -->
+        <!--     </el-form-item> -->
+        <!--   </el-col> -->
+        <!-- </el-row> -->
 
         <el-row :gutter="20">
           <el-col :span="24" style="text-align: right;">
@@ -339,13 +339,13 @@
         <!-- 上传文件或下载文件 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="文件">
-              <el-upload v-if="!merchantForm.ID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
+            <el-form-item label="营业执照">
+              <el-upload v-if="!merchantForm.FileID" ref="uploadRef" action="" :limit="1" :on-change="handleFileChange"
                 :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(merchantForm.ID, merchantForm.FileName)">下载文件</el-button>
+                @click="downloadFile(merchantForm.FileID, merchantForm.FileName)">下载文件</el-button>
             </el-form-item>
 
             <el-form-item label="文件名" prop="FileName">
@@ -434,15 +434,15 @@ const merchantRules = {
   MercCode: [
     { required: true, validator: validateNotEmpty, message: '请输入商户编码', trigger: 'blur' }
   ],
-  MercAbbr: [
-    { required: true, validator: validateNotEmpty, message: '请输入商户缩写', trigger: 'blur' }
-  ],
+  // MercAbbr: [
+  //   { required: true, validator: validateNotEmpty, message: '请输入商户缩写', trigger: 'blur' }
+  // ],
   ShortMerc: [
     { required: true, validator: validateNotEmpty, message: '请输入商户简称', trigger: 'blur' }
   ],
-  Merc: [
-    { required: true, validator: validateNotEmpty, message: '请输入商户名称', trigger: 'blur' }
-  ]
+  // Merc: [
+  //   { required: true, validator: validateNotEmpty, message: '请输入商户名称', trigger: 'blur' }
+  // ]
 };
 
 const merchantData = ref([]);
@@ -470,6 +470,7 @@ const paginatedMerchantData = computed(() => {
       item.MercType.includes(searchQuery.value) ||
       item.RegCap.includes(searchQuery.value) ||
       item.Notes.includes(searchQuery.value) ||
+      item.FileName.includes(searchQuery.value) ||
       (item.Custs && item.Custs.some(cust => cust.Name.includes(searchQuery.value))) ||
       (item.BankAccounts && item.BankAccounts.some(account => account.AcctNum.includes(searchQuery.value)))
     );

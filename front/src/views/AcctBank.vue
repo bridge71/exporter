@@ -28,7 +28,7 @@
 
             <el-table-column label="对应的会计实体信息" width="320%">
               <template #default="scope">
-                <span v-if="scope.row.AcctName">{{ scope.row.AcctName }}</span>
+                <span v-if="scope.row.Acct.AcctName">{{ scope.row.Acct.AcctName }}</span>
                 <span v-else>无</span>
               </template>
             </el-table-column>
@@ -116,13 +116,13 @@
         <!-- 上传文件或下载文件 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="文件">
-              <el-upload v-if="!bankForm.FileId" ref="bankUploadRef" action="" :limit="1"
+            <el-form-item label="附件">
+              <el-upload v-if="!bankForm.FileID" ref="bankUploadRef" action="" :limit="1"
                 :on-change="handleBankFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(bankForm.FileId, bankForm.FileName)">下载文件</el-button>
+                @click="downloadFile(bankForm.FileID, bankForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="bankForm.FileName" :readonly="true"></el-input>
@@ -135,7 +135,7 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联会计实体信息">
-              <el-select v-model="bankForm.AcctId" @change=onAcctChange placeholder="请选择会计实体信息">
+              <el-select v-model="bankForm.AcctID" @change=onAcctChange placeholder="请选择会计实体信息">
                 <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} (${acct.AcctCode})`"
                   :value="acct.ID"></el-option>
               </el-select>
@@ -211,13 +211,13 @@
         <!-- 上传文件或下载文件 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="文件">
-              <el-upload v-if="!bankForm.FileId" ref="bankUploadRef" action="" :limit="1"
+            <el-form-item label="附件">
+              <el-upload v-if="!bankForm.FileID" ref="bankUploadRef" action="" :limit="1"
                 :on-change="handleBankFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(bankForm.FileId, bankForm.FileName)">下载文件</el-button>
+                @click="downloadFile(bankForm.FileID, bankForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="bankForm.FileName" :readonly="true"></el-input>
@@ -229,7 +229,7 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="关联会计实体信息">
-              <el-select v-model="bankForm.AcctId" @change=onAcctChange placeholder="请选择会计实体信息">
+              <el-select v-model="bankForm.AcctID" @change=onAcctChange placeholder="请选择会计实体信息">
                 <el-option v-for="acct in acctData" :key="acct.AcctCode" :label="`${acct.AcctName} (${acct.AcctCode})`"
                   :value="acct.ID"></el-option>
               </el-select>
@@ -256,11 +256,11 @@ import axios from 'axios'; // 引入 axios
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
 const bankFormRef = ref(null);
 const searchQuery = ref(''); // 添加搜索查询字段
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
     const response = await axios.post(
       '/file',
-      { FileId: fileId }, // 提供 FileId 表单
+      { FileID: fileID }, // 提供 FileID 表单
       {
         responseType: 'blob', // 指定响应类型为二进制数据
       }
@@ -270,8 +270,8 @@ const downloadFile = async (fileId, fileName) => {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    // link.setAttribute('download', `file_${fileId}`); // 设置下载文件名
-    link.setAttribute('download', `${fileName}` || `file_${fileId}`); // 使用 fileName 作为文件名，如果不存在则使用默认文件名
+    // link.setAttribute('download', `file_${fileID}`); // 设置下载文件名
+    link.setAttribute('download', `${fileName}` || `file_${fileID}`); // 使用 fileName 作为文件名，如果不存在则使用默认文件名
     document.body.appendChild(link);
     link.click(); // 触发下载
     document.body.removeChild(link); // 移除链接
@@ -322,12 +322,12 @@ const handleBankFileChange = (uploadFile) => {
 const handleView = (index, row) => {
   // 填充会计实体银行账户信息表单
   bankForm.value = { ...row }; // 将当前行的数据赋值给 bankForm
-  selectedAcct.value = { AcctId: row.ID, AcctName: row.AcctName }; // 填充关联的会计实体信息
+  selectedAcct.value = { AcctID: row.ID, AcctName: row.AcctName }; // 填充关联的会计实体信息
   showshowBankDialog.value = true; // 打开会计实体银行账户信息对话框
   // 检查是否已上传文件
-  if (row.FileId) {
-    bankForm.value.FileId = row.FileId; // 保存 FileId
-    bankForm.value.FileName = row.FileName; // 保存 FileId
+  if (row.FileID) {
+    bankForm.value.FileID = row.FileID; // 保存 FileID
+    bankForm.value.FileName = row.FileName; // 保存 FileID
   }
 };
 // 获取 el-upload 组件的引用（会计实体银行账户信息）
@@ -344,8 +344,8 @@ const resetBankForm = () => {
     BankAddr: '',
     Notes: '',
     File: '',
-    AcctId: '', // 关联的会计实体 ID
-    AcctName: '' // 关联的会计实体名称
+    AcctID: '', // 关联的会计实体 ID
+
   };
   selectedAcct.value = null; // 重置选择的会计实体信息
   bankFile.value = null; // 重置文件数据
@@ -356,18 +356,12 @@ const resetBankForm = () => {
 // 监听 change 事件并更新 AcctName
 function onAcctChange(value) {
   const selectedAcct = acctData.value.find(acct => acct.ID === value);
-  if (selectedAcct) {
-    bankForm.value.AcctName = selectedAcct.AcctName;
-    // bankData.value.AcctName = selectedAcct.AcctName;
-    // console.log('Selected Acct:', selectedAcct.AcctName);
-    // console.log('bankData Acct:', bankData.value.AcctName);
-  }
 }
-const selectedAcct = ref({ AcctId: '', AcctName: '' }); // 默认值为空对象
+const selectedAcct = ref({ AcctID: '', AcctName: '' }); // 默认值为空对象
 
 // 会计实体银行账户信息表单提交逻辑
 const submitBankForm = async () => {
-  
+
   try {
     const isValid = await bankFormRef.value.validate();
     if (!isValid) {
@@ -377,10 +371,12 @@ const submitBankForm = async () => {
     }
 
     const formData = new FormData(); // 创建 FormData 对象
-    
-    // 添加表单数据
+    console.log(bankForm.value)
+
     Object.keys(bankForm.value).forEach((key) => {
-      formData.append(key, bankForm.value[key]);
+      if (key != 'Acct') {
+        formData.append(key, bankForm.value[key]);
+      }
     });
 
     // 添加文件
@@ -388,11 +384,19 @@ const submitBankForm = async () => {
       formData.append('file', bankFile.value);
     }
 
+    formData.append("AcctCode", '23')
+    formData.append("EtyAbbr", '23')
+    formData.append("AcctName", '23')
+    formData.append("AcctAbbr", '23')
+
+    console.log(formData)
+
     const response = await axios.post('/save/acctBank', formData, {
       headers: {
         'Content-Type': 'multipart/form-data', // 设置请求头
       },
     });
+
     // 将选择的会计实体信息赋值给 bankForm
     // const response = await axios.post('/save/acctBank', bankForm.value); // 调用保存会计实体银行账户信息接口
     if (response.status === 200) {
@@ -420,7 +424,7 @@ const paginatedBankData = computed(() => {
     filteredData = filteredData.filter(item =>
       item.AccName.includes(searchQuery.value) ||
       item.AccNum.includes(searchQuery.value) ||
-      item.AcctName.includes(searchQuery.value) ||
+      item.Acct.AcctName.includes(searchQuery.value) ||
       item.Currency.includes(searchQuery.value) ||
       item.BankName.includes(searchQuery.value) ||
       item.BankNum.includes(searchQuery.value) ||
@@ -494,11 +498,9 @@ const bankForm = ref({
   BankAddr: '',
   Notes: '',
   File: '',
-  AcctId: '',
-  FileId: '', // 添加 FileName 字段
+  AcctID: '',
+  FileID: '', // 添加 FileName 字段
   FileName: '', // 添加 FileName 字段
-  AcctName: '',
-  ID: '',
 });
 
 
@@ -544,7 +546,7 @@ const handleAdd = () => {
 const handleEdit = (index, row) => {
   // 填充会计实体银行账户信息表单
   bankForm.value = { ...row }; // 将当前行的数据赋值给 bankForm
-  selectedAcct.value = { ID: row.AcctId, AcctName: row.AcctName }; // 填充关联的会计实体信息
+  selectedAcct.value = { ID: row.AcctID, AcctName: row.AcctName }; // 填充关联的会计实体信息
   showBankDialog.value = true; // 打开会计实体银行账户信息对话框
 };
 </script>

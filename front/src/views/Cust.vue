@@ -31,7 +31,7 @@
             <el-table-column prop="Wechat" label="微信" width="220%"></el-table-column>
             <el-table-column label="所属商户" width="320%">
               <template #default="scope">
-                <span v-if="scope.row.Merc">{{ scope.row.Merc }}</span>
+                <span v-if="scope.row.Merchant.Merc">{{ scope.row.Merchant.Merc }}</span>
                 <span v-else>无</span>
               </template>
             </el-table-column>
@@ -44,7 +44,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.CustId)" type="text"
+                  <el-button @click="handleDelete(scope.$index, scope.row.CustID)" type="text"
                     size="small">删除</el-button>
                 </el-row>
               </template>
@@ -117,8 +117,8 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="所属商户" prop="MerchantId">
-              <el-select v-model="custForm.MerchantId" @change="onMercChange" placeholder="请选择商户信息">
+            <el-form-item label="所属商户" prop="MerchantID">
+              <el-select v-model="custForm.MerchantID" @change="onMercChange" placeholder="请选择商户信息">
                 <el-option v-for="merc in merchantData" :key="merc.ID" :label="`${merc.Merc} (${merc.MercCode})`"
                   :value="merc.ID"></el-option>
               </el-select>
@@ -143,12 +143,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!custForm.FileId" ref="custUploadRef" action="" :limit="1"
+              <el-upload v-if="!custForm.FileID" ref="custUploadRef" action="" :limit="1"
                 :on-change="handleCustFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(custForm.FileId, custForm.FileName)">下载文件</el-button>
+                @click="downloadFile(custForm.FileID, custForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="custForm.FileName" :readonly="true"></el-input>
@@ -245,12 +245,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!custForm.FileId" ref="custUploadRef" action="" :limit="1"
+              <el-upload v-if="!custForm.FileID" ref="custUploadRef" action="" :limit="1"
                 :on-change="handleCustFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(custForm.FileId, custForm.FileName)">下载文件</el-button>
+                @click="downloadFile(custForm.FileID, custForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="custForm.FileName" :readonly="true"></el-input>
@@ -288,12 +288,12 @@ const custForm = ref({
   PhoneNum: '',
   QQ: '',
   Wechat: '',
-  MerchantId: '',
+  MerchantID: '',
   Merc: '',
   Post: '',
   Notes: '',
   FileName: '',
-  FileId: ''
+  FileID: ''
 });
 
 const custFormRef = ref(null);
@@ -354,17 +354,17 @@ const handleCustFileChange = (uploadFile) => {
 };
 
 // 下载文件
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
     const response = await axios.post(
       '/file',
-      { FileId: fileId },
+      { FileID: fileID },
       { responseType: 'blob' }
     );
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || `file_${fileId}`);
+    link.setAttribute('download', fileName || `file_${fileID}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -392,12 +392,12 @@ const resetCustForm = () => {
     PhoneNum: '',
     QQ: '',
     Wechat: '',
-    MerchantId: '',
+    MerchantID: '',
     Merc: '',
     Post: '',
     Notes: '',
     FileName: '',
-    FileId: ''
+    FileID: ''
   };
   custFile.value = null;
   if (custUploadRef.value) {
@@ -418,11 +418,16 @@ const submitCustForm = async () => {
 
     const formData = new FormData();
     Object.keys(custForm.value).forEach((key) => {
-      formData.append(key, custForm.value[key]);
+
+      if (key != 'Merchant') {
+        formData.append(key, custForm.value[key]);
+      }
     });
     if (custFile.value) {
       formData.append('file', custFile.value);
     }
+    formData.append("MercCode", "ss")
+    formData.append("ShortMerc", "wss")
     const response = await axios.post('/save/cust', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -441,14 +446,14 @@ const submitCustForm = async () => {
 };
 
 // 删除按钮逻辑
-const handleDelete = (index, CustId) => {
+const handleDelete = (index, CustID) => {
   ElMessageBox.confirm('确定要删除该联系人信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
     axios.post('/delete/cust', {
-      CustId: CustId,
+      CustID: CustID,
       Name: custData.value[index].Name,
       Gender: custData.value[index].Gender,
       Nation: custData.value[index].Nation
@@ -510,7 +515,7 @@ const fetchMerchantData = async () => {
 
 // 监听商户选择事件
 const onMercChange = (value) => {
-  const selectedMerc = merchantData.value.find(merc => merc.MerchantId === value);
+  const selectedMerc = merchantData.value.find(merc => merc.MerchantID === value);
   if (selectedMerc) {
     custForm.value.Merc = selectedMerc.Merc;
   }

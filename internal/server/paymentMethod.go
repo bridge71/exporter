@@ -38,19 +38,19 @@ func (s *Server) DeletePayMentMethodHandler(c *gin.Context) {
 	})
 }
 
-// FindPayMentMethodByIdHandler 根据 PayMentMethodId 查询 PayMentMethod 记录
-func (s *Server) FindPayMentMethodByIdHandler(c *gin.Context) {
-	PayMentMethodIdStr := c.PostForm("PayMentMethodId")
-	PayMentMethodId, err := strconv.Atoi(PayMentMethodIdStr)
+// FindPayMentMethodByIDHandler 根据 PayMentMethodID 查询 PayMentMethod 记录
+func (s *Server) FindPayMentMethodByIDHandler(c *gin.Context) {
+	PayMentMethodIDStr := c.PostForm("PayMentMethodID")
+	PayMentMethodID, err := strconv.Atoi(PayMentMethodIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: "PayMentMethodId 格式错误",
+			RetMessage: "PayMentMethodID 格式错误",
 		})
 		return
 	}
 
 	var PayMentMethod models.PayMentMethod
-	if err := s.db.FindPayMentMethodByID(&PayMentMethod, uint(PayMentMethodId)); err != nil {
+	if err := s.db.FindPayMentMethodByID(&PayMentMethod, uint(PayMentMethodID)); err != nil {
 		c.JSON(http.StatusInternalServerError, models.Message{
 			RetMessage: "查询失败",
 		})

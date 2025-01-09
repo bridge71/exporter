@@ -33,7 +33,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.PackSpecId)" type="text"
+                  <el-button @click="handleDelete(scope.$index, scope.row.PackSpecID)" type="text"
                     size="small">删除</el-button>
                 </el-row>
               </template>
@@ -98,12 +98,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!packSpecForm.FileId" ref="packSpecUploadRef" action="" :limit="1"
+              <el-upload v-if="!packSpecForm.FileID" ref="packSpecUploadRef" action="" :limit="1"
                 :on-change="handlePackSpecFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(packSpecForm.FileId, packSpecForm.FileName)">下载文件</el-button>
+                @click="downloadFile(packSpecForm.FileID, packSpecForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="packSpecForm.FileName" :readonly="true"></el-input>
@@ -174,8 +174,8 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-button v-if="packSpecForm.FileId" type="success"
-                @click="downloadFile(packSpecForm.FileId, packSpecForm.FileName)">下载文件</el-button>
+              <el-button v-if="packSpecForm.FileID" type="success"
+                @click="downloadFile(packSpecForm.FileID, packSpecForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="packSpecForm.FileName" :readonly="true"></el-input>
@@ -214,9 +214,9 @@ const packSpecForm = ref({
   PackType: '',
   NetWt: 0,
   Notes: '',
-  FileId: '',
+  FileID: '',
   FileName: '',
-  PackSpecId: '',
+  PackSpecID: '',
 });
 const packSpecUploadRef = ref(null);
 const packSpecFile = ref(null);
@@ -257,13 +257,13 @@ const handleView = (index, row) => {
   showViewPackSpecDialog.value = true;
 };
 
-const handleDelete = (index, PackSpecId) => {
+const handleDelete = (index, PackSpecID) => {
   ElMessageBox.confirm('确定要删除该包装规格信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/packSpec', { PackSpecId })
+    axios.post('/delete/packSpec', { PackSpecID })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -288,9 +288,9 @@ const resetPackSpecForm = () => {
     PackType: '',
     NetWt: 0,
     Notes: '',
-    FileId: '',
+    FileID: '',
     FileName: '',
-    PackSpecId: '',
+    PackSpecID: '',
   };
   packSpecFile.value = null;
   if (packSpecUploadRef.value) {
@@ -343,13 +343,13 @@ const handlePackSpecFileChange = (uploadFile) => {
   packSpecFile.value = uploadFile.raw;
 };
 
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
-    const response = await axios.post('/file', { FileId: fileId }, { responseType: 'blob' });
+    const response = await axios.post('/file', { FileID: fileID }, { responseType: 'blob' });
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || `file_${fileId}`);
+    link.setAttribute('download', fileName || `file_${fileID}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

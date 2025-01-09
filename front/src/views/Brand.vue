@@ -33,7 +33,7 @@
                 <el-row type="flex" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="handleDelete(scope.$index, scope.row.BrandId)" type="text"
+                  <el-button @click="handleDelete(scope.$index, scope.row.BrandID)" type="text"
                     size="small">删除</el-button>
                 </el-row>
               </template>
@@ -95,12 +95,12 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-upload v-if="!brandForm.FileId" ref="brandUploadRef" action="" :limit="1"
+              <el-upload v-if="!brandForm.FileID" ref="brandUploadRef" action="" :limit="1"
                 :on-change="handleBrandFileChange" :auto-upload="false" :show-file-list="true">
                 <el-button type="primary">选择文件</el-button>
               </el-upload>
               <el-button v-else type="success"
-                @click="downloadFile(brandForm.FileId, brandForm.FileName)">下载文件</el-button>
+                @click="downloadFile(brandForm.FileID, brandForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="brandForm.FileName" :readonly="true"></el-input>
@@ -166,8 +166,8 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="文件">
-              <el-button v-if="brandForm.FileId" type="success"
-                @click="downloadFile(brandForm.FileId, brandForm.FileName)">下载文件</el-button>
+              <el-button v-if="brandForm.FileID" type="success"
+                @click="downloadFile(brandForm.FileID, brandForm.FileName)">下载文件</el-button>
             </el-form-item>
             <el-form-item label="文件名" prop="FileName">
               <el-input v-model="brandForm.FileName" :readonly="true"></el-input>
@@ -205,9 +205,9 @@ const brandForm = ref({
   Nation: '',
   BrandYear: '',
   Notes: '',
-  FileId: '',
+  FileID: '',
   FileName: '',
-  BrandId: '',
+  BrandID: '',
 });
 const brandUploadRef = ref(null);
 const brandFile = ref(null);
@@ -247,13 +247,13 @@ const handleView = (index, row) => {
   showViewBrandDialog.value = true;
 };
 
-const handleDelete = (index, BrandId) => {
+const handleDelete = (index, BrandID) => {
   ElMessageBox.confirm('确定要删除该品牌信息吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/brand', { BrandId })
+    axios.post('/delete/brand', { BrandID })
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -278,9 +278,9 @@ const resetBrandForm = () => {
     Nation: '',
     BrandYear: '',
     Notes: '',
-    FileId: '',
+    FileID: '',
     FileName: '',
-    BrandId: '',
+    BrandID: '',
   };
   brandFile.value = null;
   if (brandUploadRef.value) {
@@ -334,13 +334,13 @@ const handleBrandFileChange = (uploadFile) => {
   brandFile.value = uploadFile.raw;
 };
 
-const downloadFile = async (fileId, fileName) => {
+const downloadFile = async (fileID, fileName) => {
   try {
-    const response = await axios.post('/file', { FileId: fileId }, { responseType: 'blob' });
+    const response = await axios.post('/file', { FileID: fileID }, { responseType: 'blob' });
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName || `file_${fileId}`);
+    link.setAttribute('download', fileName || `file_${fileID}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
