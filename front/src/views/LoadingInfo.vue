@@ -413,6 +413,13 @@ const resetLoadingForm = () => {
 const submitLoadingForm = async () => {
   try {
 
+    const isValid = await loadingFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     loadingForm.value.ItemNum = parseInt(loadingForm.value.ItemNum, 10);
     loadingForm.value.NetWeight = parseInt(loadingForm.value.NetWeight, 10);
     const response = await axios.post('/save/loadingInfo', loadingForm.value);
@@ -479,18 +486,42 @@ onMounted(() => {
 const headerTitle = computed(() => '装货信息');
 const addButtonText = computed(() => '添加装货信息');
 
+// 自定义验证函数：检查非空
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 自定义验证函数：检查大于 0
+const validateGreaterThanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
 const loadingRules = {
   Product: [{ required: true, message: '请选择产品', trigger: 'blur' }],
   Brand: [{ required: true, message: '请选择品牌', trigger: 'blur' }],
   PrdtPlant: [{ required: true, message: '请选择生产工厂', trigger: 'blur' }],
   BatNum: [{ required: true, message: '请输入批次号', trigger: 'blur' }],
-  ItemNum: [{ required: true, message: '请输入件数', trigger: 'blur' }],
+  ItemNum: [
+    { required: true, validator: validateNotEmpty, message: '请输入件数', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '件数必须大于 0', trigger: 'blur' }  // 新增验证：件数大于 0
+  ],
   PackSpec: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
-  NetWeight: [{ required: true, message: '请输入净重量', trigger: 'blur' }],
+  NetWeight: [
+    { required: true, validator: validateNotEmpty, message: '请输入净重量', trigger: 'blur' },
+    { validator: validateGreaterThanZero, message: '净重量必须大于 0', trigger: 'blur' }  // 新增验证：净重量大于 0
+  ],
   Unit: [{ required: true, message: '请选择单位', trigger: 'blur' }],
   CnrNum: [{ required: true, message: '请输入集装箱号', trigger: 'blur' }],
   SealNum: [{ required: true, message: '请输入铅封号', trigger: 'blur' }],
-  VehNum: [{ required: true, message: '请输入车辆号', trigger: 'blur' }],
+  VehNum: [{ required: true, message: '请输入车辆号', trigger: 'blur' }]
 };
 </script>
 

@@ -609,24 +609,20 @@ const validateNotEmpty = (rule, value, callback) => {
 // 会计实体信息表单验证规则
 const acctRules = {
   AcctCode: [
-    { required: true, validator: validateNotEmpty, trigger: 'blur' },
-    { message: '请输入会计实体编码', trigger: 'blur' }
+    { required: true, validator: validateNotEmpty, message: '请输入会计实体编码', trigger: 'blur' },
   ],
   AcctAbbr: [
-    { required: true, validator: validateNotEmpty, trigger: 'blur' },
-    { message: '请输入会计实体缩写', trigger: 'blur' }
+    { required: true, validator: validateNotEmpty, message: '请输入会计实体缩写', trigger: 'blur' },
   ],
   EtyAbbr: [
-    { required: true, validator: validateNotEmpty, trigger: 'blur' },
-    { message: '请输入实体简称', trigger: 'blur' }
+    { required: true, validator: validateNotEmpty, message: '请输入实体简称', trigger: 'blur' },
   ],
   AcctName: [
-    { required: true, validator: validateNotEmpty, trigger: 'blur' },
-    { message: '请输入会计实体名称', trigger: 'blur' }
+    { required: true, validator: validateNotEmpty, message: '请输入会计实体名称', trigger: 'blur' },
   ]
 };
 
-
+ 
 // 表格数据（初始值为空数组）
 const acctData = ref([]); // 会计实体信息
 
