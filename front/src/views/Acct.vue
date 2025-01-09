@@ -9,7 +9,7 @@
       </el-aside>
 
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- <el-header style="display: flex; justify-content: space-between; align-items: center;">
           <h2>{{ headerTitle }}</h2>
           <div>
             搜索：
@@ -17,6 +17,10 @@
             <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
             <el-button @click="navigateToDictionaryManager">数据字典</el-button>
           </div>
+        </el-header> -->
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 会计实体信息表格 -->
@@ -351,12 +355,22 @@
 import { ref, onMounted, computed } from 'vue';
 
 import SideMenu from '@/components/SideMenu.vue'; // 引入 SideMenu 组件
-
+import HeaderComponent from '@/components/HeaderComponent.vue';
 import { ElMessage, ElMessageBox } from 'element-plus'; // 确保 ElMessageBox 被引入
 import axios from 'axios'; // 引入 axios
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
 
 // 方法：导航到 DictionaryManager 页面
 const navigateToDictionaryManager = () => {
@@ -528,7 +542,8 @@ const handlePageChange = (page) => {
 const currentPage = ref(1); // 当前页码
 const pageSize = 8; // 每页显示的行数
 // 计算当前页显示的会计实体信息数据
-
+const isExactMatch = ref(true);
+const onlyID = ref(true);
 const checkLoginStatus = () => {
   const token = sessionStorage.getItem('userToken');
   if (token == null) {
@@ -536,25 +551,86 @@ const checkLoginStatus = () => {
   }
 };
 const paginatedAcctData = computed(() => {
+  // let filteredData = acctData.value;
+  // if (searchQuery.value) {
+  //   filteredData = filteredData.filter(item =>
+  //     item.AcctCode.includes(searchQuery.value) ||
+  //     item.AcctAbbr.includes(searchQuery.value) ||
+  //     item.EtyAbbr.includes(searchQuery.value) ||
+  //     item.AcctName.includes(searchQuery.value) ||
+  //     item.AcctEngName.includes(searchQuery.value) ||
+  //     item.AcctAddr.includes(searchQuery.value) ||
+  //     item.Nation.includes(searchQuery.value) ||
+  //     item.TaxType.includes(searchQuery.value) ||
+  //     item.TaxCode.includes(searchQuery.value) ||
+  //     item.PhoneNum.includes(searchQuery.value) ||
+  //     item.Email.includes(searchQuery.value) ||
+  //     item.Website.includes(searchQuery.value) ||
+  //     item.RegDate.includes(searchQuery.value) ||
+  //     item.Notes.includes(searchQuery.value) ||
+  //     (item.AcctBanks && item.AcctBanks.some(bank => bank.AccNum.includes(searchQuery.value))) // 新增：检查 AcctBanks 中的 AccNum
+  //   );
+  // }
+  // const start = (currentPage.value - 1) * pageSize;
+  // const end = start + pageSize;
+  // return filteredData.slice(start, end);
+
+
   let filteredData = acctData.value;
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.AcctCode.includes(searchQuery.value) ||
-      item.AcctAbbr.includes(searchQuery.value) ||
-      item.EtyAbbr.includes(searchQuery.value) ||
-      item.AcctName.includes(searchQuery.value) ||
-      item.AcctEngName.includes(searchQuery.value) ||
-      item.AcctAddr.includes(searchQuery.value) ||
-      item.Nation.includes(searchQuery.value) ||
-      item.TaxType.includes(searchQuery.value) ||
-      item.TaxCode.includes(searchQuery.value) ||
-      item.PhoneNum.includes(searchQuery.value) ||
-      item.Email.includes(searchQuery.value) ||
-      item.Website.includes(searchQuery.value) ||
-      item.RegDate.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value) ||
-      (item.AcctBanks && item.AcctBanks.some(bank => bank.AccNum.includes(searchQuery.value))) // 新增：检查 AcctBanks 中的 AccNum
-    );
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+    if (isExactMatch.value === false) {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value) ||
+          item.AcctCode.includes(searchQuery.value) ||
+          item.AcctAbbr.includes(searchQuery.value) ||
+          item.EtyAbbr.includes(searchQuery.value) ||
+          item.AcctName.includes(searchQuery.value) ||
+          item.AcctEngName.includes(searchQuery.value) ||
+          item.AcctAddr.includes(searchQuery.value) ||
+          item.Nation.includes(searchQuery.value) ||
+          item.TaxType.includes(searchQuery.value) ||
+          item.TaxCode.includes(searchQuery.value) ||
+          item.PhoneNum.includes(searchQuery.value) ||
+          item.Email.includes(searchQuery.value) ||
+          item.Website.includes(searchQuery.value) ||
+          item.RegDate.includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value) ||
+          (item.AcctBanks && item.AcctBanks.some(bank => bank.AccNum.includes(searchQuery.value)))
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value ||
+          item.AcctCode === searchQuery.value ||
+          item.AcctAbbr === searchQuery.value ||
+          item.EtyAbbr === searchQuery.value ||
+          item.AcctName === searchQuery.value ||
+          item.AcctEngName === searchQuery.value ||
+          item.AcctAddr === searchQuery.value ||
+          item.Nation === searchQuery.value ||
+          item.TaxType === searchQuery.value ||
+          item.TaxCode === searchQuery.value ||
+          item.PhoneNum === searchQuery.value ||
+          item.Email === searchQuery.value ||
+          item.Website === searchQuery.value ||
+          item.RegDate === searchQuery.value ||
+          item.Notes === searchQuery.value ||
+          (item.AcctBanks && item.AcctBanks.some(bank => bank.AccNum === searchQuery.value))
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
