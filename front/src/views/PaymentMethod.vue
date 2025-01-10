@@ -10,17 +10,14 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 支付方式信息表格 -->
           <el-table :data="paginatedPayMentMethodData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="PayMtdName" label="支付方式名称" width="220%"></el-table-column>
             <el-table-column prop="PayRat" label="支付费率" width="220%"></el-table-column>
             <el-table-column prop="PayMth" label="后付款转账方式" width="220%"></el-table-column>
@@ -155,6 +152,7 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -173,7 +171,25 @@ const payMentMethodForm = ref({
   PayMentMethodID: '',
 });
 
+const resetSpotForm = () => {
+  SpotForm.value = {
+    ID: '',
+    InvLocName: '',
+    InvLocAbbr: '',
+    InvAddr: '',
+    Notes: '',
+  };
+};
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
 
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
 const payMentMethodFormRef = ref(null);
 // 自定义验证函数
 const validateNotEmpty = (rule, value, callback) => {
@@ -205,19 +221,49 @@ const handlePageChange = (page) => {
 
 const paginatedPayMentMethodData = computed(() => {
   let filteredData = payMentMethodData.value;
+
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.PayMtdName.includes(searchQuery.value) ||
-      item.PayRat.toString().includes(searchQuery.value) ||
-      item.PayMthName.includes(searchQuery.value) ||
-      item.PayLimitName.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value)
-    );
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+
+    if (isExactMatch.value === false) {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.PayMtdName.includes(searchQuery.value) ||
+          item.PayRat.toString().includes(searchQuery.value) ||
+          item.PayMthName.includes(searchQuery.value) ||
+          item.PayLimitName.includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.PayMtdName === searchQuery.value ||
+          item.PayRat.toString() === searchQuery.value ||
+          item.PayMthName === searchQuery.value ||
+          item.PayLimitName === searchQuery.value ||
+          item.Notes === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
+
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);
 });
+
+const isExactMatch = ref(true);
+const onlyID = ref(true);
 
 const handleAdd = () => {
   showPayMentMethodDialog.value = true;
@@ -267,6 +313,7 @@ const resetPayMentMethodForm = () => {
     PayLimit: '',
     Notes: '',
     PayMentMethodID: '',
+    ID: '',
   };
 };
 

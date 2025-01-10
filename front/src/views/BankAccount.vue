@@ -10,17 +10,14 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" @input="handleSearch" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 银行账户信息表格 -->
           <el-table :data="paginatedBankAccountData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="BankAccName" label="银行账户名称" width="220%"></el-table-column>
             <el-table-column prop="CompName" label="公司名称" width="220%"></el-table-column>
             <el-table-column prop="AcctNum" label="账号" width="220%"></el-table-column>
@@ -273,6 +270,7 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -293,10 +291,22 @@ const bankAccountForm = ref({
   FileName: '',
   FileID: '',
   MerchantID: '',
-  Merc: ''
+  Merc: '',
+  ID: ''
 });
 
 const bankAccountFormRef = ref(null);
+
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
 
 // 自定义验证函数
 const validateNotEmpty = (rule, value, callback) => {
@@ -340,20 +350,53 @@ const filteredBankAccountData = computed(() => {
   if (!searchQuery.value) {
     return bankAccountData.value;
   }
-  return bankAccountData.value.filter(item =>
-    item.BankAccName.includes(searchQuery.value) ||
-    item.CompName.includes(searchQuery.value) ||
-    item.AcctNum.includes(searchQuery.value) ||
-    item.Currency.includes(searchQuery.value) ||
-    item.BankName.includes(searchQuery.value) ||
-    item.BankEng.includes(searchQuery.value) ||
-    item.BankNum.includes(searchQuery.value) ||
-    item.SwiftCode.includes(searchQuery.value) ||
-    item.BankAddr.includes(searchQuery.value) ||
-    item.Notes.includes(searchQuery.value)
-    // item.Merc.includes(searchQuery.value)
-  );
+
+  console.log(isExactMatch.value);
+  console.log(onlyID.value);
+
+  if (isExactMatch.value === false) {
+    if (onlyID.value === false) {
+      return bankAccountData.value.filter(item =>
+        item.BankAccName.includes(searchQuery.value) ||
+        item.CompName.includes(searchQuery.value) ||
+        item.AcctNum.includes(searchQuery.value) ||
+        item.Currency.includes(searchQuery.value) ||
+        item.BankName.includes(searchQuery.value) ||
+        item.BankEng.includes(searchQuery.value) ||
+        item.BankNum.includes(searchQuery.value) ||
+        item.SwiftCode.includes(searchQuery.value) ||
+        item.BankAddr.includes(searchQuery.value) ||
+        item.Notes.includes(searchQuery.value)
+      );
+    } else {
+      return bankAccountData.value.filter(item =>
+        item.ID.toString().includes(searchQuery.value)
+      );
+    }
+  } else {
+    if (onlyID.value === false) {
+      return bankAccountData.value.filter(item =>
+        item.BankAccName === searchQuery.value ||
+        item.CompName === searchQuery.value ||
+        item.AcctNum === searchQuery.value ||
+        item.Currency === searchQuery.value ||
+        item.BankName === searchQuery.value ||
+        item.BankEng === searchQuery.value ||
+        item.BankNum === searchQuery.value ||
+        item.SwiftCode === searchQuery.value ||
+        item.BankAddr === searchQuery.value ||
+        item.Notes === searchQuery.value
+      );
+    } else {
+      return bankAccountData.value.filter(item =>
+        item.ID.toString() === searchQuery.value
+      );
+    }
+  }
 });
+
+const isExactMatch = ref(true);
+const onlyID = ref(true);
 
 // 搜索事件
 const handleSearch = () => {
