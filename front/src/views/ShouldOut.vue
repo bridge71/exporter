@@ -499,7 +499,7 @@ const onlyID = ref(true);
 const toggleMatchMode = () => {
   isExactMatch.value = !isExactMatch.value;
 };
-
+const shouldOutFormRef = ref(null);
 const toggleIDMode = () => {
   onlyID.value = !onlyID.value;
 };
@@ -755,10 +755,45 @@ const shouldOutForm = ref({
   FileName: '', // 文件名
 });
 
-// 表单验证规则
-const shouldOutRules = {
-  BillReceNum: [{ required: true, message: '请输入应付账款单号', trigger: 'blur' }],
-  TotAmt: [{ type: 'number', message: '必须为正数', trigger: 'blur' }],
+// 自定义验证函数：检查非空
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 自定义验证函数：检查大于 0
+const validateGreaterThanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 表单验证规则（修改后的）
+// 采购表单验证规则（添加了 MerchantID、AcctID、BankAccountID、AcctBankID）
+const buyRules = {
+  BillReceNum: [
+    { required: true, validator: validateNotEmpty, message: '请输入应付账款单号', trigger: 'blur' },
+  ],
+  TotAmt: [
+    { required: true, validator: validateGreaterThanZero, message: '必须为正数', trigger: 'blur' },
+  ],
+  MerchantID: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户ID', trigger: 'blur' },
+  ],
+  AcctID: [
+    { required: true, validator: validateNotEmpty, message: '请输入账户ID', trigger: 'blur' },
+  ],
+  BankAccountID: [
+    { required: true, validator: validateNotEmpty, message: '请输入银行账户ID', trigger: 'blur' },
+  ],
+  AcctBankID: [
+    { required: true, validator: validateNotEmpty, message: '请输入开户银行ID', trigger: 'blur' },
+  ],
 };
 // 控制主弹窗显示
 const purRecVisible = ref(false);
@@ -1178,6 +1213,20 @@ const uploadRef = ref(null);
 
 const submitShouldOutForm = async () => {
   try {
+
+    const isValid = await shouldOutFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
 
     // 添加其他字段
