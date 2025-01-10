@@ -5,11 +5,28 @@ import (
 )
 
 func (s *service) FindShouldOuts(ShouldOut *[]models.ShouldOut) {
-	s.gormDB.Order("id desc").Find(ShouldOut)
+	s.gormDB.
+		Preload("Merchant").    // 加载 Merchant
+		Preload("Acct").        // 加载 Acct
+		Preload("BankAccount"). // 加载 BankAccount
+		Preload("AcctBank").    // 加载 AcctBank
+		Preload("Purrecs").     // 加载 Purrecs
+		Preload("Buys").        // 加载 Buys
+		Preload("Outs").        // 加载 Outs
+		Order("id desc").       // 按 ID 降序排序
+		Find(ShouldOut)         // 查询结果存储到 shouldOuts 中
 }
 
 func (s *service) FindShouldOutPurrec(ShouldOut *models.ShouldOut) {
 	s.gormDB.Preload("Purrecs").Find(ShouldOut)
+}
+
+func (s *service) DeleteShouldOutCostInfo(ShouldOut *models.ShouldOut, costInfo *models.CostInfo) error {
+	return s.gormDB.Model(ShouldOut).Association("CostInfos").Delete(costInfo)
+}
+
+func (s *service) FindShouldOutCostInfo(ShouldOut *models.ShouldOut) {
+	s.gormDB.Preload("CostInfos").Find(ShouldOut)
 }
 
 func (s *service) FindShouldOutOut(ShouldOut *models.ShouldOut) {
@@ -21,7 +38,7 @@ func (s *service) FindShouldOutBuy(ShouldOut *models.ShouldOut) {
 }
 
 func (s *service) SaveShouldOut(ShouldOut *models.ShouldOut) error {
-	return s.gormDB.Omit("Purrecs", "Buys", "Outs").Save(ShouldOut).Error
+	return s.gormDB.Save(ShouldOut).Error
 }
 
 func (s *service) DeleteShouldOutPurrec(ShouldOut *models.ShouldOut, purrec *models.Purrec) error {

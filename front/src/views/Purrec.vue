@@ -12,42 +12,51 @@
       <el-container>
 
 
-        <!-- <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery" -->
-        <!--   @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" /> -->
-        <!-- <el-header height="1px"> -->
-        <!-- </el-header> -->
-
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="toggleMatchMode">
-              {{ isExactMatch ? '完全匹配' : '模糊匹配' }}
-            </el-button>
-            <el-button type="primary" @click="toggleIDMode">
-              {{ onlyID ? '只匹配ID' : '全部匹配' }}
-            </el-button>
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
+
         <el-main>
 
           <!-- 销售订单信息表格 -->
           <el-table :data="paginatedPurrecData" style="width: 100%" max-height="450">
             <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="SaleInvNum" label="采购发票号" width="220%"></el-table-column>
-            <el-table-column prop="Merchant1Name" label="客户" width="220%"></el-table-column>
-            <el-table-column prop="Merchant2Name" label="收货人" width="220%"></el-table-column>
-            <el-table-column prop="Merchant3Name" label="通知人" width="220%"></el-table-column>
-            <el-table-column prop="AcctName" label="收货人" width="420%"></el-table-column>
+            <el-table-column prop="Acct1Name" label="客户" width="220%"></el-table-column>
+            <el-table-column prop="Acct2Name" label="收货人" width="220%"></el-table-column>
+            <el-table-column prop="Acct3Name" label="通知人" width="220%"></el-table-column>
+
+            <el-table-column label="发货人" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Merchant.Merc">{{ scope.row.Merchant.Merc }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="付款银行" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.AcctBank.AccName">{{ scope.row.AcctBank.AccName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="付款方式" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PayMentMethod.PayMtdName">{{ scope.row.PayMentMethod.PayMtdName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="包装规格" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PackSpec.SpecName">{{ scope.row.PackSpec.SpecName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="SrcPlace" label="起运地" width="220%"></el-table-column>
             <el-table-column prop="Des" label="目的地" width="220%"></el-table-column>
             <el-table-column prop="SaleInvDate" label="采购发票日期" width="420%"></el-table-column>
             <el-table-column prop="ShipName" label="船名" width="220%"></el-table-column>
             <el-table-column prop="Voyage" label="航次" width="220%"></el-table-column>
             <el-table-column prop="TotNum" label="总件数" width="220%"></el-table-column>
-            <el-table-column prop="SpecName" label="包装规格" width="220%"></el-table-column>
             <el-table-column prop="TotalNetWeight" label="总净重" width="220%"></el-table-column>
             <el-table-column prop="UnitMeas1" label="单位" width="220%"></el-table-column>
             <el-table-column prop="GrossWt" label="总毛重" width="220%"></el-table-column>
@@ -58,8 +67,6 @@
             <el-table-column prop="DateOfShip" label="发货(开船)日期" width="420%"></el-table-column>
             <el-table-column prop="Note1" label="提单货物描述" width="220%"></el-table-column>
             <el-table-column prop="Note2" label="箱单货物描述" width="220%"></el-table-column>
-            <el-table-column prop="PayMtdName" label="付款方式" width="220%"></el-table-column>
-            <el-table-column prop="AccName" label="收款银行" width="220%"></el-table-column>
             <el-table-column label="操作" fixed="right" width="420%">
               <template #default="scope">
                 <el-row type="flex" justify="space-evenly">
@@ -97,10 +104,10 @@
         <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
         <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
         <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
-        <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column>
-        <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column>
-        <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column>
-        <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column>
+        <!-- <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column> -->
+        <!-- <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column> -->
+        <!-- <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column> -->
+        <!-- <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column> -->
         <el-table-column prop="TotAmt" label="收款金额" width="220%"></el-table-column>
         <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
         <el-table-column prop="Notes" label="描述" width="220%"></el-table-column>
@@ -134,10 +141,10 @@
         <el-table-column prop="ExpReceDate" label="预计付款日期" width="220%"></el-table-column>
         <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
         <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
-        <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column>
-        <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column>
-        <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column>
-        <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column>
+        <!-- <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column> -->
+        <!-- <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column> -->
+        <!-- <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column> -->
+        <!-- <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column> -->
         <el-table-column prop="TotAmt" label="总金额" width="220%"></el-table-column>
         <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
         <el-table-column prop="Notes" label="描述" width="220%"></el-table-column>
@@ -153,7 +160,7 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog v-model="BuyVisible" title="采购订单" width="80%">
+    <el-dialog v-model="BuyVisible" title="采购订单" width="55%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
         <el-input v-model="BuyID" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />
@@ -164,9 +171,9 @@
       <el-table :data="BuyData" height="400" style="width: 100%">
         <el-table-column prop="ID" label="ID" width="60%" />
         <el-table-column prop="OrderNum" label="订单编号" width="150%" />
-        <el-table-column prop="Merc" label="购买方" width="150%" />
-        <el-table-column prop="AcctName" label="销售方" width="150%" />
-        <el-table-column prop="SpecName" label="包装规格" width="150%" />
+        <!-- <el-table-column prop="Merc" label="购买方" width="150%" /> -->
+        <!-- <el-table-column prop="AcctName" label="销售方" width="150%" /> -->
+        <!-- <el-table-column prop="SpecName" label="包装规格" width="150%" /> -->
         <el-table-column prop="TotAmt" label="总金额" width="150%" />
         <el-table-column prop="Currency" label="币种" width="150%" />
         <el-table-column label="操作" fixed="right" width="150">
@@ -189,13 +196,13 @@
       <!-- 产品明细表格 -->
       <el-table :data="prdtInfoData" height="400" style="width: 100%">
         <el-table-column prop="ID" label="ID" width="60%" />
-        <el-table-column prop="CatEngName" label="产品" width="150%" />
-        <el-table-column prop="BrandEngName" label="品牌" width="150%" />
-        <el-table-column prop="PackSpec" label="包装规格" width="150%" />
+        <!-- <el-table-column prop="CatEngName" label="产品" width="150%" /> -->
+        <!-- <el-table-column prop="BrandEngName" label="品牌" width="150%" /> -->
+        <!-- <el-table-column prop="PackSpec" label="包装规格" width="150%" /> -->
         <el-table-column prop="Currency" label="币种" width="100%" />
         <el-table-column prop="UnitPrice" label="单价" width="70%" />
         <el-table-column prop="TradeTerm" label="贸易条款" width="100%" />
-        <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" />
+        <!-- <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" /> -->
 
 
         <el-table-column prop="Factory" label="生产工厂" width="150%" />
@@ -217,7 +224,7 @@
     </el-dialog>
     <!-- 添加发货单信息的对话框 -->
 
-    <el-dialog v-model="LoadingInfoVisible" title="装货明细" width="80%">
+    <el-dialog v-model="LoadingInfoVisible" title="装货明细" width="52%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
         <el-input v-model="LoadingInfoID" placeholder="请输入装货明细ID" style="width: 200px; margin-right: 10px;" />
@@ -226,13 +233,13 @@
 
       <el-table :data="LoadingInfoData" height="400" style="width: 100%">
         <el-table-column prop="ID" label="ID" width="60%" />
-        <el-table-column prop="Product" label="产品" width="150%" />
-        <el-table-column prop="Brand" label="品牌" width="150%" />
+        <!-- <el-table-column prop="Product" label="产品" width="150%" /> -->
+        <!-- <el-table-column prop="Brand" label="品牌" width="150%" /> -->
         <el-table-column prop="PrdtPlant" label="生产工厂" width="150%" />
         <el-table-column prop="Currency" label="币种" width="100%" />
         <el-table-column prop="UnitPrice" label="单价" width="70%" />
         <el-table-column prop="TradeTerm" label="贸易条款" width="100%" />
-        <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" />
+        <!-- <el-table-column prop="DeliveryLoc" label="交货地点" width="100%" /> -->
         <el-table-column label="操作" fixed="right" width="150">
           <template #default="scope">
 
@@ -259,43 +266,43 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="客户" prop="Merchants">
-              <el-select v-model="purrecForm.Merchant1ID" @change="onMerchantChange" placeholder="请选择客户">
-                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
-                  :value="merchant.ID"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="收货人" prop="AcctID">
-              <el-select v-model="purrecForm.AcctID" @change="onAcctChange" placeholder="请选择收货人">
+            <el-form-item label="客户" prop="Acct1ID">
+              <el-select v-model="purrecForm.Acct1ID" @change="onAcct1Change" placeholder="请选择客户">
                 <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="发货人" prop="MerchantID">
+              <el-select v-model="purrecForm.MerchantID" @change="onMerchantChange" placeholder="请选择通知人">
+                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
+                  :value="merchant.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
         </el-row>
+
         <el-row :gutter="20">
 
           <el-col :span="12">
-            <el-form-item label="收货人" prop="Merchants">
-              <el-select v-model="purrecForm.Merchant2ID" @change="onMerchantChange" placeholder="请选择收货人">
-                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
-                  :value="merchant.ID"></el-option>
+            <el-form-item label="收货人" prop="Acct2ID">
+              <el-select v-model="purrecForm.Acct2ID" @change="onAcct2Change" placeholder="请选择收货人">
+                <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="通知人" prop="Merchants">
-              <el-select v-model="purrecForm.Merchant3ID" @change="onMerchantChange" placeholder="请选择通知人">
-                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
-                  :value="merchant.ID"></el-option>
+            <el-form-item label="通知人" prop="Acct3ID">
+              <el-select v-model="purrecForm.Acct3ID" @change="onAcct3Change" placeholder="请选择通知人">
+                <el-option v-for="acct in merchantData" :key="acct.ID" :label="acct.AcctName"
+                  :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="起运地" prop="SrcPlace">
@@ -432,10 +439,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="收款银行" prop="AcctBankID">
-              <el-select v-model="purrecForm.AcctBankID" @change="onAcctBankChange" placeholder="请选择收款银行">
-                <el-option v-for="acctBank in acctBankData" :key="acctBank.ID" :label="acctBank.AccName"
-                  :value="acctBank.ID"></el-option>
+            <el-form-item label="付款银行" prop="AcctBankID">
+              <el-select v-model="purrecForm.AcctBankID" placeholder="请选择付款银行">
+                <el-option v-for="bank in acctBankData" :key="bank.ID" :label="bank.AccName"
+                  :value="bank.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -485,15 +492,15 @@
     </el-dialog>
 
     <el-dialog v-model="showshowPurrecDialog" title="采购收货信息" width="80%" @close="resetPurrecForm">
-      <el-form :model="purrecForm" label-width="150px" :rules="purrecRules" ref="purrecFormRef">
+      <el-form :model="purrecForm" label-width="150px" ref="purrecFormRef">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="采购发票号" prop="SaleInvNum">
-              <el-input v-model="purrecForm.SaleInvNum" :disabled="true"></el-input>
+            <el-form-item label="采购发票号">
+              <el-input v-model="purrecForm.SaleInvNum" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="采购发票日期" prop="SaleInvDate">
+            <el-form-item label="采购发票日期">
               <el-date-picker v-model="purrecForm.SaleInvDate" type="date" placeholder="选择日期"
                 :disabled="true"></el-date-picker>
             </el-form-item>
@@ -502,39 +509,16 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="客户" prop="Merchants">
-              <el-select v-model="purrecForm.Merchant1ID" @change="onMerchantChange" placeholder="请选择客户"
-                :disabled="true">
-                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
-                  :value="merchant.ID"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="收货人" prop="AcctID">
-              <el-select v-model="purrecForm.AcctID" @change="onAcctChange" placeholder="请选择收货人" :disabled="true">
+            <el-form-item label="客户">
+              <el-select v-model="purrecForm.Acct1ID" placeholder="请选择客户" :disabled="true">
                 <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="收货人" prop="Merchants">
-              <el-select v-model="purrecForm.Merchant2ID" @change="onMerchantChange" placeholder="请选择收货人"
-                :disabled="true">
-                <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
-                  :value="merchant.ID"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
 
           <el-col :span="12">
-            <el-form-item label="通知人" prop="Merchants">
-              <el-select v-model="purrecForm.Merchant3ID" @change="onMerchantChange" placeholder="请选择通知人"
-                :disabled="true">
+            <el-form-item label="发货人">
+              <el-select v-model="purrecForm.MerchantID" placeholder="请选择通知人" :disabled="true">
                 <el-option v-for="merchant in merchantData" :key="merchant.ID" :label="merchant.Merc"
                   :value="merchant.ID"></el-option>
               </el-select>
@@ -544,7 +528,25 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="起运地" prop="SrcPlace">
+            <el-form-item label="收货人">
+              <el-select v-model="purrecForm.Acct2ID" placeholder="请选择收货人" :disabled="true">
+                <el-option v-for="acct in acctData" :key="acct.ID" :label="acct.AcctName" :value="acct.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="通知人">
+              <el-select v-model="purrecForm.Acct3ID" placeholder="请选择通知人" :disabled="true">
+                <el-option v-for="acct in merchantData" :key="acct.ID" :label="acct.AcctName"
+                  :value="acct.ID"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="起运地">
               <el-select v-model="purrecForm.SrcPlace" placeholder="请选择起运地" :disabled="true">
                 <el-option v-for="srcPlace in srcPlaceData" :key="srcPlace" :label="srcPlace"
                   :value="srcPlace"></el-option>
@@ -552,7 +554,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="目的地" prop="Des">
+            <el-form-item label="目的地">
               <el-select v-model="purrecForm.Des" placeholder="请选择目的地" :disabled="true">
                 <el-option v-for="des in desData" :key="des" :label="des" :value="des"></el-option>
               </el-select>
@@ -562,27 +564,26 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="船名" prop="ShipName">
-              <el-input v-model="purrecForm.ShipName" :disabled="true"></el-input>
+            <el-form-item label="船名">
+              <el-input v-model="purrecForm.ShipName" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="航次" prop="Voyage">
-              <el-input v-model="purrecForm.Voyage" :disabled="true"></el-input>
+            <el-form-item label="航次">
+              <el-input v-model="purrecForm.Voyage" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="总件数" prop="TotNum">
-              <el-input v-model="purrecForm.TotNum" :disabled="true"></el-input>
+            <el-form-item label="总件数">
+              <el-input v-model="purrecForm.TotNum" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="包装规格" prop="PackSpecID">
-              <el-select v-model="purrecForm.PackSpecID" @change="onPackSpecChange" placeholder="请选择包装规格"
-                :disabled="true">
+            <el-form-item label="包装规格">
+              <el-select v-model="purrecForm.PackSpecID" placeholder="请选择包装规格" :disabled="true">
                 <el-option v-for="packSpec in packSpecData" :key="packSpec.ID" :label="packSpec.SpecName"
                   :value="packSpec.ID"></el-option>
               </el-select>
@@ -592,12 +593,12 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="总净重" prop="TotalNetWeight">
-              <el-input v-model="purrecForm.TotalNetWeight" :disabled="true"></el-input>
+            <el-form-item label="总净重">
+              <el-input v-model="purrecForm.TotalNetWeight" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="单位" prop="UnitMeas1">
+            <el-form-item label="单位">
               <el-select v-model="purrecForm.UnitMeas1" placeholder="请选择单位" :disabled="true">
                 <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
@@ -608,13 +609,12 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="总毛重" prop="GrossWt">
-              <el-input v-model="purrecForm.GrossWt" :disabled="true"></el-input>
+            <el-form-item label="总毛重">
+              <el-input v-model="purrecForm.GrossWt" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
-
           <el-col :span="12">
-            <el-form-item label="单位" prop="UnitMeas2">
+            <el-form-item label="单位">
               <el-select v-model="purrecForm.UnitMeas2" placeholder="请选择单位" :disabled="true">
                 <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
@@ -625,13 +625,12 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="总体积" prop="TotVol">
-              <el-input v-model="purrecForm.TotVol" :disabled="true"></el-input>
+            <el-form-item label="总体积">
+              <el-input v-model="purrecForm.TotVol" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
-
           <el-col :span="12">
-            <el-form-item label="单位" prop="UnitMeas3">
+            <el-form-item label="单位">
               <el-select v-model="purrecForm.UnitMeas3" placeholder="请选择单位" :disabled="true">
                 <el-option v-for="unitMeas in unitMeasData" :key="unitMeas.UnitMeasID" :label="unitMeas.UnitMeas"
                   :value="unitMeas.UnitMeas"></el-option>
@@ -642,12 +641,12 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="提单号" prop="BillLadNum">
-              <el-input v-model="purrecForm.BillLadNum" :disabled="true"></el-input>
+            <el-form-item label="提单号">
+              <el-input v-model="purrecForm.BillLadNum" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="发货（开船）日期" prop="DateOfShip">
+            <el-form-item label="发货（开船）日期">
               <el-date-picker v-model="purrecForm.DateOfShip" type="date" placeholder="选择日期"
                 :disabled="true"></el-date-picker>
             </el-form-item>
@@ -656,36 +655,34 @@
 
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="提单货物描述" prop="Note1">
-              <el-input v-model="purrecForm.Note1" type="textarea" :rows="4" :disabled="true"></el-input>
+            <el-form-item label="提单货物描述">
+              <el-input v-model="purrecForm.Note1" type="textarea" :rows="4" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="箱单货物描述" prop="Note2">
-              <el-input v-model="purrecForm.Note2" type="textarea" :rows="4" :disabled="true"></el-input>
+            <el-form-item label="箱单货物描述">
+              <el-input v-model="purrecForm.Note2" type="textarea" :rows="4" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="付款方式" prop="PayMentMethodID">
-              <el-select v-model="purrecForm.PayMentMethodID" @change="onPayMentMethodChange" placeholder="请选择付款方式"
-                :disabled="true">
+            <el-form-item label="付款方式">
+              <el-select v-model="purrecForm.PayMentMethodID" placeholder="请选择付款方式" :disabled="true">
                 <el-option v-for="payMentMethod in payMentMethodData" :key="payMentMethod.ID"
                   :label="payMentMethod.PayMtdName" :value="payMentMethod.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="收款银行" prop="AcctBankID">
-              <el-select v-model="purrecForm.AcctBankID" @change="onAcctBankChange" placeholder="请选择收款银行"
-                :disabled="true">
-                <el-option v-for="acctBank in acctBankData" :key="acctBank.ID" :label="acctBank.AccName"
-                  :value="acctBank.ID"></el-option>
+            <el-form-item label="收款银行">
+              <el-select v-model="purrecForm.BankAccountID" placeholder="请选择收款银行" :disabled="true">
+                <el-option v-for="bank in bankAccountData" :key="bank.ID" :label="bank.BankAccName"
+                  :value="bank.ID"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -698,8 +695,9 @@
                 @click="downloadFile(purrecForm.File1ID, purrecForm.File1Name)">
                 下载文件
               </el-button>
+              <span v-else>无文件</span>
             </el-form-item>
-            <el-form-item label="文件名" prop="File1Name">
+            <el-form-item label="文件名">
               <el-input v-model="purrecForm.File1Name" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
@@ -712,8 +710,9 @@
                 @click="downloadFile(purrecForm.File2ID, purrecForm.File2Name)">
                 下载文件
               </el-button>
+              <span v-else>无文件</span>
             </el-form-item>
-            <el-form-item label="文件名" prop="File2Name">
+            <el-form-item label="文件名">
               <el-input v-model="purrecForm.File2Name" :readonly="true"></el-input>
             </el-form-item>
           </el-col>
@@ -721,7 +720,7 @@
 
         <el-row :gutter="20">
           <el-col :span="24" style="text-align: right;">
-            <el-button @click="showshowPurrecDialog = false">关闭</el-button>
+            <el-button @click="showPurrecDialog = false">关闭</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -1435,8 +1434,12 @@ const purrecForm = ref({
   SaleInvNum: '', // 采购发票号
   SaleInvDate: '', // 采购发票日期
   // Sales: [], // 采购订单，多表关联
-  AcctID: '', // 收货人 ID
-  AcctName: '', // 收货人名称
+  Acct1ID: '',
+  Acct1Name: '',
+  Acct2ID: '',
+  Acct2Name: '',
+  Acct3ID: '',
+  Acct3Name: '',
   SrcPlace: '', // 起运地
   Des: '', // 目的地
   ShipName: '', // 船名
@@ -1464,12 +1467,8 @@ const purrecForm = ref({
   File1ID: '',
   File2Name: '',
   File2ID: '',
-  Merchant1ID: '',
-  Merchant2ID: '',
-  Merchant3ID: '',
-  Merchant1Name: '',
-  Merchant2Name: '',
-  Merchant3Name: '',
+  MerchantID: '',
+  MerchantName: '',
 
   // ShouldIns: [], // 应付账款单
   // Ins: [], // 付款单
@@ -1573,9 +1572,16 @@ const handleDelete = (index, ID) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    axios.post('/delete/purrec', {
-      "ID": ID,
-    })
+
+    const formData = new FormData();
+    formData.append("ID", ID)
+    axios.post('/delete/purrec', formData,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // 设置请求头为表单格式
+        }
+      },
+    )
       .then(response => {
         if (response.status === 200) {
           ElMessage.success('删除成功');
@@ -1664,6 +1670,7 @@ const submitPurrecForm = async () => {
       formData.append('file2', file2.value);
     }
     // 提交表单
+    console.log(formData)
     const response = await axios.post('/save/purrec', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -1740,6 +1747,26 @@ const onMerchantChange = (value) => {
   }
 };
 
+const onAcct1Change = (value) => {
+  const selectedAcct = acctData.value.find(acct => acct.ID === value);
+  if (selectedAcct) {
+    purrecForm.value.Acct1Name = selectedAcct.AcctName;
+  }
+};
+const onAcct2Change = (value) => {
+
+  const selectedAcct = acctData.value.find(acct => acct.ID === value);
+  if (selectedAcct) {
+    purrecForm.value.Acct2Name = selectedAcct.AcctName;
+  }
+};
+const onAcct3Change = (value) => {
+
+  const selectedAcct = acctData.value.find(acct => acct.ID === value);
+  if (selectedAcct) {
+    purrecForm.value.Acct3Name = selectedAcct.AcctName;
+  }
+};
 // 监听 change 事件并更新 PayMtdName
 const onPayMentMethodChange = (value) => {
   const selectedPayMentMethod = payMentMethodData.value.find(payMentMethod => payMentMethod.ID === value);

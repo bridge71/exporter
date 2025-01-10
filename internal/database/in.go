@@ -5,7 +5,7 @@ import (
 )
 
 func (s *service) FindIns(In *[]models.In) {
-	s.gormDB.Order("id desc").Find(In)
+	s.gormDB.Preload("Acct").Preload("AcctBank").Preload("Merchant").Preload("BankAccount").Order("id desc").Find(In)
 }
 
 func (s *service) FindInSend(In *models.In) {

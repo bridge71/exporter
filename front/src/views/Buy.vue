@@ -21,8 +21,44 @@
           <el-table :data="paginatedBuyData" style="width: 100%" max-height="450">
             <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="OrderNum" label="订单编号" width="220%"></el-table-column>
-            <el-table-column prop="AcctName" label="购买方" width="220%"></el-table-column>
-            <el-table-column prop="Merc" label="销售方" width="220%"></el-table-column>
+
+            <el-table-column label="购买方" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Acct.AcctName">{{ scope.row.Acct.AcctName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="销售方" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Merchant.Merc">{{ scope.row.Merchant.Merc }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="对方银行账户" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.AcctBank.AccName">{{ scope.row.AcctBank.AccName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="我方银行账户" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.BankAccount.BankAccName">{{ scope.row.BankAccount.BankAccName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="付款方式" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PayMentMethod.PayMtdName">{{ scope.row.PayMentMethod.PayMtdName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="包装规格" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.PackSpec.SpecName">{{ scope.row.PackSpec.SpecName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="QualStd" label="质量标准" width="220%"></el-table-column>
             <el-table-column prop="OrderDate" label="订单日期" width="420%"></el-table-column>
             <el-table-column prop="BillValidity" label="账单有效期" width="420%"></el-table-column>
@@ -47,8 +83,6 @@
             <el-table-column prop="SpecName" label="包装规格" width="220%"></el-table-column>
             <el-table-column prop="TotalNetWeight" label="总净重" width="220%"></el-table-column>
             <el-table-column prop="UnitMeas" label="单位" width="220%"></el-table-column>
-            <el-table-column prop="AccName" label="对方银行账户" width="220%"></el-table-column>
-            <el-table-column prop="BankAccName" label="我方银行账户" width="220%"></el-table-column>
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
             <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
 
@@ -74,17 +108,17 @@
       </el-container>
     </el-container>
 
-    <el-dialog v-model="OutVisible" title="收款单" width="80%">
+    <el-dialog v-model="OutVisible" title="付款单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
-        <el-input v-model="OutID" placeholder="请输入收款单ID" style="width: 200px; margin-right: 10px;" />
+        <el-input v-model="OutID" placeholder="请输入付款单ID" style="width: 200px; margin-right: 10px;" />
         <el-button type="primary" @click="addOut(nowID)">添加</el-button>
       </div>
       <el-table :data="OutData" style="width: 100%" max-height="450">
         <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
         <el-table-column prop="ReceNum" label="账款单号" width="220%"></el-table-column>
-        <el-table-column prop="RealReceDate" label="实际收款日期" width="220%"></el-table-column>
-        <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
+        <el-table-column prop="RealReceDate" label="实际付款日期" width="220%"></el-table-column>
+        <el-table-column prop="ExpReceDate" label="预计付款日期" width="220%"></el-table-column>
         <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
         <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
         <el-table-column prop="Merc" label="收款方" width="220%"></el-table-column>
@@ -108,7 +142,7 @@
       <!-- 销售发货表格 -->
     </el-dialog>
 
-    <el-dialog v-model="ShouldOutVisible" title="应收账款单" width="80%">
+    <el-dialog v-model="ShouldOutVisible" title="应付账款单" width="80%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
         <el-input v-model="ShouldOutID" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />
@@ -119,9 +153,9 @@
       <el-table :data="ShouldOutData" height="400" style="width: 100%">
 
         <el-table-column prop="ID" label="ID" width="60%" />
-        <el-table-column prop="BillReceNum" label="应收账款单号" width="220%"></el-table-column>
+        <el-table-column prop="BillReceNum" label="应付账款单号" width="220%"></el-table-column>
         <el-table-column prop="DocDate" label="单据日期" width="220%"></el-table-column>
-        <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
+        <el-table-column prop="ExpReceDate" label="预计付款日期" width="220%"></el-table-column>
         <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
         <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
         <el-table-column prop="Merc" label="收款方" width="220%"></el-table-column>

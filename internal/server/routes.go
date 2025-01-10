@@ -73,10 +73,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/find/shouldOut", s.FindShouldOutHandler)
 	r.POST("/find/shouldOut/purrec", s.FindShouldOutPurrecHandler)
+	r.POST("/find/shouldOut/costInfo", s.FindShouldOutCostInfoHandler)
 	r.POST("/find/shouldOut/out", s.FindShouldOutOutHandler)
 	r.POST("/find/shouldOut/buy", s.FindShouldOutBuyHandler)
 	r.POST("/add/shouldOut/out", s.AddShouldOutOuts)
 	r.POST("/add/shouldOut/buy", s.AddShouldOutBuy)
+	r.POST("/add/shouldOut/costInfo", s.AddShouldOutCostInfo)
 	r.POST("/add/shouldOut/purrec", s.AddShouldOutPurrecs)
 	r.POST("/delete/shouldOut/out", s.DeleteShouldOutOut)
 	r.POST("/delete/shouldOut/buy", s.DeleteShouldOutBuy)

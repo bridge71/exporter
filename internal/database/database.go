@@ -30,6 +30,10 @@ type Service interface {
 	FindLoadingInfo(LoadingInfo *[]models.LoadingInfo)
 
 	FindShouldOuts(ShouldOut *[]models.ShouldOut)
+
+	DeleteShouldOutCostInfo(ShouldOut *models.ShouldOut, costInfo *models.CostInfo) error
+	FindShouldOutCostInfo(ShouldOut *models.ShouldOut)
+
 	FindShouldOutPurrec(ShouldOut *models.ShouldOut)
 	FindShouldOutOut(ShouldOut *models.ShouldOut)
 	FindShouldOutBuy(ShouldOut *models.ShouldOut)

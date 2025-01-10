@@ -5,7 +5,16 @@ import (
 )
 
 func (s *service) FindOuts(Out *[]models.Out) {
-	s.gormDB.Order("id desc").Find(Out)
+	s.gormDB.
+		Preload("Merchant").    // 加载 Merchant
+		Preload("Acct").        // 加载 Acct
+		Preload("BankAccount"). // 加载 BankAccount
+		Preload("AcctBank").    // 加载 AcctBank
+		Preload("Purrecs").     // 加载 Purrecs
+		Preload("Buys").        // 加载 Buys
+		Preload("ShouldOuts").  // 加载 ShouldOuts
+		Order("id desc").       // 按 ID 降序排序
+		Find(Out)               // 查询结果存储到 outs 中
 }
 
 func (s *service) FindOutPurrec(Out *models.Out) {

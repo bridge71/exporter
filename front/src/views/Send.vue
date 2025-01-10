@@ -38,6 +38,7 @@
                 <span v-else>无</span>
               </template>
             </el-table-column>
+
             <el-table-column label="付款方式" width="220%">
               <template #default="scope">
                 <span v-if="scope.row.PayMentMethod.PayMtdName">{{ scope.row.PayMentMethod.PayMtdName }}</span>
@@ -67,7 +68,6 @@
             <el-table-column prop="DateOfShip" label="发货(开船)日期" width="420%"></el-table-column>
             <el-table-column prop="Note1" label="提单货物描述" width="220%"></el-table-column>
             <el-table-column prop="Note2" label="箱单货物描述" width="220%"></el-table-column>
-            <el-table-column prop="AccName" label="收款银行" width="220%"></el-table-column>
             <el-table-column label="操作" fixed="right" width="420%">
               <template #default="scope">
                 <el-row type="flex" justify="space-evenly">
@@ -161,7 +161,7 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog v-model="SaleVisible" title="销售订单" width="80%">
+    <el-dialog v-model="SaleVisible" title="销售订单" width="50%">
       <!-- 添加按钮和输入框 -->
       <div style="text-align: right; margin-bottom: 20px;">
         <el-input v-model="SaleID" placeholder="请输入ID" style="width: 200px; margin-right: 10px;" />

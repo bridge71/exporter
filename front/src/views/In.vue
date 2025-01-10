@@ -22,14 +22,36 @@
           <el-table :data="paginatedSaleData" style="width: 100%" max-height="450">
             <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="ReceNum" label="账款单号" width="220%"></el-table-column>
+
+            <el-table-column label="收款方" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Acct.AcctName">{{ scope.row.Acct.AcctName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="付款方" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.Merchant.Merc">{{ scope.row.Merchant.Merc }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="收款银行账户" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.AcctBank.AccName">{{ scope.row.AcctBank.AccName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="付款银行账户" width="220%">
+              <template #default="scope">
+                <span v-if="scope.row.BankAccount.BankAccName">{{ scope.row.BankAccount.BankAccName }}</span>
+                <span v-else>无</span>
+              </template>
+            </el-table-column>
+
             <el-table-column prop="RealReceDate" label="实际收款日期" width="220%"></el-table-column>
             <el-table-column prop="ExpReceDate" label="预计收款日期" width="220%"></el-table-column>
             <el-table-column prop="FinaDocType" label="单据类型" width="220%"></el-table-column>
             <el-table-column prop="FinaDocStatus" label="单据状态" width="220%"></el-table-column>
-            <el-table-column prop="Merc" label="付款方" width="220%"></el-table-column>
-            <el-table-column prop="AcctName" label="收款方" width="220%"></el-table-column>
-            <el-table-column prop="BankAccName" label="付款银行账户" width="220%"></el-table-column>
-            <el-table-column prop="AccName" label="收款银行账户" width="220%"></el-table-column>
             <el-table-column prop="TotAmt" label="收款金额" width="220%"></el-table-column>
             <el-table-column prop="Currency" label="币种" width="220%"></el-table-column>
             <el-table-column prop="Notes" label="描述" width="220%"></el-table-column>

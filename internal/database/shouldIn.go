@@ -5,7 +5,7 @@ import (
 )
 
 func (s *service) FindShouldIns(ShouldIn *[]models.ShouldIn) {
-	s.gormDB.Order("id desc").Find(ShouldIn)
+	s.gormDB.Preload("Acct").Preload("AcctBank").Preload("Merchant").Preload("BankAccount").Order("id desc").Find(ShouldIn)
 }
 
 func (s *service) FindShouldInSend(ShouldIn *models.ShouldIn) {

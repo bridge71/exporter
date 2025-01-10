@@ -110,7 +110,8 @@ func (s *Server) FindOutBuyHandler(c *gin.Context) {
 // DeleteOutHandler 删除 Out 记录
 func (s *Server) DeleteOutHandler(c *gin.Context) {
 	Out := &models.Out{}
-	if err := c.ShouldBind(Out); err != nil {
+	Out.ID = s.Str2Uint(c.PostForm("ID"))
+	if Out.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "绑定数据失败",
 		})
@@ -274,13 +275,44 @@ func (s *Server) AddOutPurrecs(c *gin.Context) {
 
 func (s *Server) SaveOutHandler(c *gin.Context) {
 	Out := &models.Out{}
-	if err := c.ShouldBind(Out); err != nil {
+
+	// 如果 ID 存在，查找已有记录
+	Out.ID = s.Str2Uint(c.PostForm("ID"))
+	if Out.ID != 0 {
+		s.db.FindByID(Out.ID, Out)
+	}
+
+	// 绑定必填字段
+	Out.MerchantID = s.Str2Uint(c.PostForm("MerchantID"))
+	Out.AcctID = s.Str2Uint(c.PostForm("AcctID"))
+	Out.BankAccountID = s.Str2Uint(c.PostForm("BankAccountID"))
+	Out.AcctBankID = s.Str2Uint(c.PostForm("AcctBankID"))
+
+	// 验证必填字段
+	if Out.MerchantID == 0 || Out.AcctID == 0 || Out.BankAccountID == 0 || Out.AcctBankID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+			RetMessage: "绑定数据失败，必填字段缺失",
 		})
 		return
 	}
+
+	// 绑定嵌套结构体
+	Out.Merchant.ID = Out.MerchantID
+	Out.Acct.ID = Out.AcctID
+	Out.BankAccount.ID = Out.BankAccountID
+	Out.AcctBank.ID = Out.AcctBankID
+
+	// 绑定其他字段
+	Out.ReceNum = c.PostForm("ReceNum")
+	Out.RealReceDate = c.PostForm("RealReceDate")
+	Out.ExpReceDate = c.PostForm("ExpReceDate")
+	Out.FinaDocType = c.PostForm("FinaDocType")
+	Out.FinaDocStatus = c.PostForm("FinaDocStatus")
+	Out.TotAmt = s.Str2Uint(c.PostForm("TotAmt"))
+	Out.Currency = c.PostForm("Currency")
+	Out.Notes = c.PostForm("Notes")
+	Out.FileID = s.Str2Uint(c.PostForm("FileID"))
+	Out.FileName = c.PostForm("FileName")
 
 	log.Printf("保存 Out: %+v\n", Out)
 

@@ -42,6 +42,11 @@ func (s *Server) DeletePrdtInfoHandler(c *gin.Context) {
 // SavePrdtInfoHandler 保存或更新 PrdtInfo 记录
 func (s *Server) SavePrdtInfoHandler(c *gin.Context) {
 	PrdtInfo := &models.PrdtInfo{}
+
+	PrdtInfo.ID = s.Str2Uint(c.PostForm("ID"))
+	if PrdtInfo.ID != 0 {
+		s.db.FindByID(PrdtInfo.ID, PrdtInfo)
+	}
 	PrdtInfo.BrandID = s.Str2Uint(c.PostForm("BrandID"))
 	PrdtInfo.CatID = s.Str2Uint(c.PostForm("CatID"))
 	PrdtInfo.PackSpecID = s.Str2Uint(c.PostForm("PackSpecID"))
@@ -51,10 +56,6 @@ func (s *Server) SavePrdtInfoHandler(c *gin.Context) {
 			RetMessage: "绑定数据失败",
 		})
 		return
-	}
-	PrdtInfo.ID = s.Str2Uint(c.PostForm("ID"))
-	if PrdtInfo.ID != 0 {
-		s.db.FindByID(PrdtInfo.ID, PrdtInfo)
 	}
 	PrdtInfo.Brand.ID = PrdtInfo.BrandID
 	PrdtInfo.Cat.ID = PrdtInfo.CatID

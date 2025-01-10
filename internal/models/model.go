@@ -138,14 +138,14 @@ type Purrec struct {
 	SaleInvNum      string `gorm:"column:SaleInvNum" form:"SaleInvNum"`   // 销售发票号
 	SaleInvDate     string `gorm:"column:SaleInvDate" form:"SaleInvDate"` // 销售发票日期
 	Buys            []Buy  `gorm:"many2many:buyPurrec" `                  // 销售订单 多表关联
-	Merchant1ID     uint   `form:"Merchant1ID"`
-	Merchant2ID     uint   `form:"Merchant2ID"`
-	Merchant3ID     uint   `form:"Merchant3ID"`
-	Merchant1Name   string `form:"Merchant1Name"`
-	Merchant2Name   string `form:"Merchant2Name"`
-	Merchant3Name   string `form:"Merchant3Name"`
-	AcctID          uint   `gorm:"column:AcctID" form:"AcctID"` // 发货人  通过id绑定，查找接口 /find/acct
-	Acct            Acct
+	Acct1ID         uint   `form:"Acct1ID"`
+	Acct2ID         uint   `form:"Acct2ID"`
+	Acct3ID         uint   `form:"Acct3ID"`
+	Acct1Name       string `form:"Acct1Name"`
+	Acct2Name       string `form:"Acct2Name"`
+	Acct3Name       string `form:"Acct3Name"`
+	MerchantID      uint   `form:"MerchantID"`
+	Merchant        Merchant
 	SrcPlace        string `gorm:"column:SrcPlace" form:"SrcPlace"`     // 起运地, 从数据字典里选  /find/SrcPlace
 	Des             string `gorm:"column:Des" form:"Des"`               // 目的地, 从数据字典里选  /find/SrcPlace
 	ShipName        string `gorm:"column:ShipName" form:"ShipName"`     // 船名
@@ -283,14 +283,15 @@ type ShouldOut struct {
 	BankAccount   BankAccount
 	AcctBankID    uint `gorm:"column:acctBankID" form:"AcctBankID"` // 收款银行账户 绑定id，查找接口 /find/acctBank
 	AcctBank      AcctBank
-	TotAmt        uint     `form:"TotAmt"`   // 总金额
-	Currency      string   `form:"Currency"` // 币种
-	Notes         string   `form:"Notes"`    // 描述
-	FileID        uint     `form:"FileID"`
-	FileName      string   `form:"FileName"`
-	Purrecs       []Purrec `gorm:"many2many:shouldOutPurrec"`
-	Buys          []Buy    `gorm:"many2many:shouldOutBuy" `
-	Outs          []Out    `gorm:"many2many:shouldOutOut" `
+	TotAmt        uint       `form:"TotAmt"`   // 总金额
+	Currency      string     `form:"Currency"` // 币种
+	Notes         string     `form:"Notes"`    // 描述
+	FileID        uint       `form:"FileID"`
+	FileName      string     `form:"FileName"`
+	Purrecs       []Purrec   `gorm:"many2many:shouldOutPurrec"`
+	Buys          []Buy      `gorm:"many2many:shouldOutBuy" `
+	Outs          []Out      `gorm:"many2many:shouldOutOut" `
+	CostInfos     []CostInfo `gorm:"many2many:shouldOutCostInfo"`
 	gorm.Model
 }
 type In struct {

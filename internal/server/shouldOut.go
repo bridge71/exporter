@@ -107,6 +107,14 @@ func (s *Server) FindShouldOutBuyHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, models.Message{Buy: Buy})
 }
 
+func (s *Server) FindShouldOutCostInfoHandler(c *gin.Context) {
+	ShouldOut := models.ShouldOut{}
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ID"))
+	s.db.FindShouldOutCostInfo(&ShouldOut)
+	CostInfos := ShouldOut.CostInfos
+	c.JSON(http.StatusOK, models.Message{CostInfo: CostInfos})
+}
+
 // DeleteShouldOutHandler 删除 ShouldOut 记录
 func (s *Server) DeleteShouldOutHandler(c *gin.Context) {
 	ShouldOut := &models.ShouldOut{}
@@ -240,7 +248,7 @@ func (s *Server) AddShouldOutPurrecs(c *gin.Context) {
 	ShouldOut := models.ShouldOut{}
 	ShouldOut.ID = s.Str2Uint(c.PostForm("ID"))
 	var Purrec models.Purrec
-	Purrec.ID = s.Str2Uint(c.PostForm("PurrecID"))
+	Purrec.ID = s.Str2Uint(c.PostForm("PurRecID"))
 
 	if ShouldOut.ID == 0 || Purrec.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
@@ -274,15 +282,84 @@ func (s *Server) AddShouldOutPurrecs(c *gin.Context) {
 	})
 }
 
-func (s *Server) SaveShouldOutHandler(c *gin.Context) {
-	ShouldOut := &models.ShouldOut{}
-	if err := c.ShouldBind(ShouldOut); err != nil {
+func (s *Server) AddShouldOutCostInfo(c *gin.Context) {
+	ShouldOut := models.ShouldOut{}
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ID"))
+	var costInfo models.CostInfo
+	costInfo.ID = s.Str2Uint(c.PostForm("CostInfoID"))
+
+	if ShouldOut.ID == 0 || costInfo.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
+			RetMessage: "非数字",
 			// RetMessage: "绑定数据失败",
 		})
 		return
 	}
+	s.db.FindByID(ShouldOut.ID, &ShouldOut)
+	s.db.FindByID(costInfo.ID, &costInfo)
+
+	if costInfo.Amount == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "非法ID",
+			// RetMessage: "绑定数据失败",
+		})
+		return
+	}
+	ShouldOut.CostInfos = append(ShouldOut.CostInfos, costInfo)
+
+	// 保存 ShouldOut 记录
+	if err := s.db.Save(ShouldOut); err != nil {
+		c.JSON(http.StatusInternalServerError, models.Message{
+			RetMessage: "保存失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.Message{
+		RetMessage: "保存成功",
+	})
+}
+
+func (s *Server) SaveShouldOutHandler(c *gin.Context) {
+	ShouldOut := &models.ShouldOut{}
+
+	// 如果 ID 存在，查找已有记录
+	ShouldOut.ID = s.Str2Uint(c.PostForm("ID"))
+	if ShouldOut.ID != 0 {
+		s.db.FindByID(ShouldOut.ID, ShouldOut)
+	}
+
+	// 绑定必填字段
+	ShouldOut.MerchantID = s.Str2Uint(c.PostForm("MerchantID"))
+	ShouldOut.AcctID = s.Str2Uint(c.PostForm("AcctID"))
+	ShouldOut.BankAccountID = s.Str2Uint(c.PostForm("BankAccountID"))
+	ShouldOut.AcctBankID = s.Str2Uint(c.PostForm("AcctBankID"))
+
+	// 验证必填字段
+	if ShouldOut.MerchantID == 0 || ShouldOut.AcctID == 0 || ShouldOut.BankAccountID == 0 || ShouldOut.AcctBankID == 0 {
+		c.JSON(http.StatusBadRequest, models.Message{
+			RetMessage: "绑定数据失败，必填字段缺失",
+		})
+		return
+	}
+
+	// 绑定嵌套结构体
+	ShouldOut.Merchant.ID = ShouldOut.MerchantID
+	ShouldOut.Acct.ID = ShouldOut.AcctID
+	ShouldOut.BankAccount.ID = ShouldOut.BankAccountID
+	ShouldOut.AcctBank.ID = ShouldOut.AcctBankID
+
+	// 绑定其他字段
+	ShouldOut.BillReceNum = c.PostForm("BillReceNum")
+	ShouldOut.DocDate = c.PostForm("DocDate")
+	ShouldOut.ExpReceDate = c.PostForm("ExpReceDate")
+	ShouldOut.FinaDocType = c.PostForm("FinaDocType")
+	ShouldOut.FinaDocStatus = c.PostForm("FinaDocStatus")
+	ShouldOut.TotAmt = s.Str2Uint(c.PostForm("TotAmt"))
+	ShouldOut.Currency = c.PostForm("Currency")
+	ShouldOut.Notes = c.PostForm("Notes")
+	ShouldOut.FileID = s.Str2Uint(c.PostForm("FileID"))
+	ShouldOut.FileName = c.PostForm("FileName")
 
 	log.Printf("保存 ShouldOut: %+v\n", ShouldOut)
 

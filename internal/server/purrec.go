@@ -140,7 +140,8 @@ func (s *Server) FindPurrecBuyHandler(c *gin.Context) {
 // DeletePurrecHandler 删除 Purrec 记录
 func (s *Server) DeletePurrecHandler(c *gin.Context) {
 	Purrec := &models.Purrec{}
-	if err := c.ShouldBind(Purrec); err != nil {
+	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
+	if Purrec.ID == 0 {
 		c.JSON(http.StatusBadRequest, models.Message{
 			RetMessage: "绑定数据失败",
 		})
@@ -408,13 +409,65 @@ func (s *Server) AddPurrecShouldOuts(c *gin.Context) {
 
 func (s *Server) SavePurrecHandler(c *gin.Context) {
 	Purrec := &models.Purrec{}
-	if err := c.ShouldBind(Purrec); err != nil {
+
+	// 如果 ID 存在，查找已有记录
+	Purrec.ID = s.Str2Uint(c.PostForm("ID"))
+	if Purrec.ID != 0 {
+		s.db.FindByID(Purrec.ID, Purrec)
+	}
+
+	// 绑定必填字段
+	Purrec.Acct1ID = s.Str2Uint(c.PostForm("Acct1ID"))
+	Purrec.Acct2ID = s.Str2Uint(c.PostForm("Acct2ID"))
+	Purrec.Acct3ID = s.Str2Uint(c.PostForm("Acct3ID"))
+	Purrec.MerchantID = s.Str2Uint(c.PostForm("MerchantID"))
+	Purrec.PackSpecID = s.Str2Uint(c.PostForm("PackSpecID"))
+	Purrec.PayMentMethodID = s.Str2Uint(c.PostForm("PayMentMethodID"))
+	Purrec.AcctBankID = s.Str2Uint(c.PostForm("AcctBankID"))
+
+	// 验证必填字段
+	if Purrec.Acct1ID == 0 || Purrec.Acct2ID == 0 || Purrec.Acct3ID == 0 || Purrec.MerchantID == 0 || Purrec.PackSpecID == 0 || Purrec.PayMentMethodID == 0 || Purrec.AcctBankID == 0 {
+		log.Printf("%v", Purrec)
 		c.JSON(http.StatusBadRequest, models.Message{
-			RetMessage: err.Error(),
-			// RetMessage: "绑定数据失败",
+			RetMessage: "绑定数据失败，必填字段缺失",
 		})
 		return
 	}
+
+	// 绑定嵌套结构体
+	Purrec.Acct1ID = Purrec.Acct1ID
+	Purrec.Acct2ID = Purrec.Acct2ID
+	Purrec.Acct3ID = Purrec.Acct3ID
+	Purrec.Merchant.ID = Purrec.MerchantID
+	Purrec.PackSpec.ID = Purrec.PackSpecID
+	Purrec.PayMentMethod.ID = Purrec.PayMentMethodID
+	Purrec.AcctBank.ID = Purrec.AcctBankID
+
+	// 绑定其他字段
+	Purrec.SaleInvNum = c.PostForm("SaleInvNum")
+	Purrec.SaleInvDate = c.PostForm("SaleInvDate")
+	Purrec.Acct1Name = c.PostForm("Acct1Name")
+	Purrec.Acct2Name = c.PostForm("Acct2Name")
+	Purrec.Acct3Name = c.PostForm("Acct3Name")
+	Purrec.SrcPlace = c.PostForm("SrcPlace")
+	Purrec.Des = c.PostForm("Des")
+	Purrec.ShipName = c.PostForm("ShipName")
+	Purrec.Voyage = c.PostForm("Voyage")
+	Purrec.TotNum = s.Str2Uint(c.PostForm("TotNum"))
+	Purrec.TotalNetWeight = s.Str2Uint(c.PostForm("TotalNetWeight"))
+	Purrec.UnitMeas1 = c.PostForm("UnitMeas1")
+	Purrec.GrossWt = s.Str2Uint(c.PostForm("GrossWt"))
+	Purrec.UnitMeas2 = c.PostForm("UnitMeas2")
+	Purrec.TotVol = c.PostForm("TotVol")
+	Purrec.UnitMeas3 = c.PostForm("UnitMeas3")
+	Purrec.BillLadNum = c.PostForm("BillLadNum")
+	Purrec.DateOfShip = c.PostForm("DateOfShip")
+	Purrec.Note1 = c.PostForm("Note1")
+	Purrec.Note2 = c.PostForm("Note2")
+	Purrec.File1ID = s.Str2Uint(c.PostForm("File1ID"))
+	Purrec.File2ID = s.Str2Uint(c.PostForm("File2ID"))
+	Purrec.File1Name = c.PostForm("File1Name")
+	Purrec.File2Name = c.PostForm("File2Name")
 
 	log.Printf("保存 Purrec: %+v\n", Purrec)
 	var err error

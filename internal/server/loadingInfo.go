@@ -42,6 +42,11 @@ func (s *Server) DeleteLoadingInfoHandler(c *gin.Context) {
 // SaveLoadingInfoHandler 保存或更新 LoadingInfo 记录
 func (s *Server) SaveLoadingInfoHandler(c *gin.Context) {
 	LoadingInfo := &models.LoadingInfo{}
+
+	LoadingInfo.ID = s.Str2Uint(c.PostForm("ID"))
+	if LoadingInfo.ID != 0 {
+		s.db.FindByID(LoadingInfo.ID, LoadingInfo)
+	}
 	LoadingInfo.BrandID = s.Str2Uint(c.PostForm("BrandID"))
 	LoadingInfo.CatID = s.Str2Uint(c.PostForm("CatID"))
 	LoadingInfo.PackSpecID = s.Str2Uint(c.PostForm("PackSpecID"))
@@ -50,10 +55,6 @@ func (s *Server) SaveLoadingInfoHandler(c *gin.Context) {
 			RetMessage: "绑定数据失败",
 		})
 		return
-	}
-	LoadingInfo.ID = s.Str2Uint(c.PostForm("ID"))
-	if LoadingInfo.ID != 0 {
-		s.db.FindByID(LoadingInfo.ID, LoadingInfo)
 	}
 	LoadingInfo.Brand.ID = LoadingInfo.BrandID
 	LoadingInfo.Cat.ID = LoadingInfo.CatID

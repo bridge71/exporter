@@ -7,7 +7,20 @@ import (
 )
 
 func (s *service) FindBuys(Buy *[]models.Buy) {
-	s.gormDB.Preload("DocReq").Order("id desc").Find(Buy)
+	s.gormDB.
+		Preload("DocReq").        // 加载 DocReq
+		Preload("PrdtInfos").     // 加载 PrdtInfos
+		Preload("Purrecs").       // 加载 Purrecs
+		Preload("ShouldOuts").    // 加载 ShouldOuts
+		Preload("Outs").          // 加载 Outs
+		Preload("Acct").          // 加载 Acct
+		Preload("Merchant").      // 加载 Merchant
+		Preload("PayMentMethod"). // 加载 PayMentMethod
+		Preload("PackSpec").      // 加载 PackSpec
+		Preload("AcctBank").      // 加载 AcctBank
+		Preload("BankAccount").   // 加载 BankAccount
+		Order("id desc").         // 按 ID 降序排序
+		Find(Buy)                 // 查询结果存储到 buys 中
 }
 
 func (s *service) FindBuyPrdtInfo(Buy *models.Buy) {

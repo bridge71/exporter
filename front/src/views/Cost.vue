@@ -10,13 +10,10 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 费用信息表格 -->
@@ -174,10 +171,12 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
-
+import HeaderComponent from '@/components/HeaderComponent.vue';
+const route = useRoute();
 const searchQuery = ref('');
 const currentPage = ref(1);
 const pageSize = 8;
@@ -206,21 +205,62 @@ const handlePageChange = (page) => {
 
 const paginatedCostData = computed(() => {
   let filteredData = costData.value;
+
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.ExpType.includes(searchQuery.value) ||
-      item.Rates.includes(searchQuery.value) ||
-      item.UnitPrice.toString().includes(searchQuery.value) ||
-      item.Number.toString().includes(searchQuery.value) ||
-      item.Amount.toString().includes(searchQuery.value) ||
-      item.Currency.includes(searchQuery.value)
-    );
+    if (isExactMatch.value === false) {
+      if (onlyID.value === false) {
+        console.log("打印了");
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value) ||
+          item.ExpType.includes(searchQuery.value) ||
+          item.Rates.includes(searchQuery.value) ||
+          item.UnitPrice.toString().includes(searchQuery.value) ||
+          item.Number.toString().includes(searchQuery.value) ||
+          item.Amount.toString().includes(searchQuery.value) ||
+          item.Currency.includes(searchQuery.value) ||
+          item.CreatedAt.includes(searchQuery.value) ||
+          item.UpdatedAt.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value ||
+          item.ExpType === searchQuery.value ||
+          item.Rates === searchQuery.value ||
+          item.UnitPrice.toString() === searchQuery.value ||
+          item.Number.toString() === searchQuery.value ||
+          item.Amount.toString() === searchQuery.value ||
+          item.Currency === searchQuery.value ||
+          item.CreatedAt === searchQuery.value ||
+          item.UpdatedAt === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);
 });
 
+const isExactMatch = ref(true);
+const onlyID = ref(true);
+const toggleMatchMode = () => {
+  isExactMatch.value = !isExactMatch.value;
+  console.log("isExactMatch", isExactMatch.value)
+};
+
+const toggleIDMode = () => {
+  onlyID.value = !onlyID.value;
+};
 const handleAdd = () => {
   showCostDialog.value = true;
 };
@@ -336,6 +376,8 @@ const fetchCostData = async () => {
 onMounted(() => {
   fetchCostData();
   fetchDictionaryData();
+
+  searchQuery.value = route.query.searchQuery || '';
 });
 
 const headerTitle = computed(() => '费用信息');

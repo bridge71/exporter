@@ -3,11 +3,22 @@ package database
 import "exporter/internal/models"
 
 func (s *service) SavePurrec(Purrec *models.Purrec) error {
-	return s.gormDB.Omit("Buys", "LoadingInfos", "PrdtInfos").Save(Purrec).Error
+	return s.gormDB.Save(Purrec).Error
 }
 
 func (s *service) FindPurrecs(Purrec *[]models.Purrec) {
-	s.gormDB.Order("id desc").Find(Purrec)
+	s.gormDB.
+		Preload("Buys").          // 加载 Buys
+		Preload("PrdtInfos").     // 加载 PrdtInfos
+		Preload("LoadingInfos").  // 加载 LoadingInfos
+		Preload("ShouldOuts").    // 加载 ShouldOuts
+		Preload("Outs").          // 加载 Outs
+		Preload("Merchant").      // 加载 Merchant
+		Preload("PackSpec").      // 加载 PackSpec
+		Preload("PayMentMethod"). // 加载 PayMentMethod
+		Preload("AcctBank").      // 加载 AcctBank
+		Order("id desc").         // 按 ID 降序排序
+		Find(Purrec)              // 查询结果存储到 purrecs 中
 }
 
 func (s *service) FindPurrecPrdtInfo(Purrec *models.Purrec) {
