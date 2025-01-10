@@ -10,17 +10,14 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 联系人信息表格 -->
           <el-table :data="paginatedCustData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="Name" label="联系人姓名" width="220%"></el-table-column>
             <el-table-column prop="Gender" label="性别" width="220%"></el-table-column>
             <el-table-column prop="Nation" label="国家" width="220%"></el-table-column>
@@ -282,6 +279,7 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -338,24 +336,67 @@ const custFile = ref(null);
 const paginatedCustData = computed(() => {
   let filteredData = custData.value;
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.Name.includes(searchQuery.value) ||
-      item.Gender.includes(searchQuery.value) ||
-      item.Nation.includes(searchQuery.value) ||
-      item.Addr.includes(searchQuery.value) ||
-      item.Email.includes(searchQuery.value) ||
-      item.PhoneNum.includes(searchQuery.value) ||
-      item.QQ.includes(searchQuery.value) ||
-      item.Wechat.includes(searchQuery.value) ||
-      item.Merc.includes(searchQuery.value) ||
-      item.Post.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value)
-    );
+    console.log(custData.value);
+    //console.log(onlyID.value);
+    if (isExactMatch.value === false) {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.Name.includes(searchQuery.value) ||
+          item.Gender.includes(searchQuery.value) ||
+          item.Nation.includes(searchQuery.value) ||
+          item.Addr.includes(searchQuery.value) ||
+          item.Email.includes(searchQuery.value) ||
+          item.PhoneNum.includes(searchQuery.value) ||
+          item.QQ.includes(searchQuery.value) ||
+          item.Wechat.includes(searchQuery.value) ||
+          item.Merc.includes(searchQuery.value) ||
+          item.Post.includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.Name === searchQuery.value ||
+          item.Gender === searchQuery.value ||
+          item.Nation === searchQuery.value ||
+          item.Addr === searchQuery.value ||
+          item.Email === searchQuery.value ||
+          item.PhoneNum === searchQuery.value ||
+          item.QQ === searchQuery.value ||
+          item.Wechat === searchQuery.value ||
+          item.Merc === searchQuery.value ||
+          item.Post === searchQuery.value ||
+          item.Notes === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);
 });
+
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
+
+
 
 // 文件选择事件
 const handleCustFileChange = (uploadFile) => {
@@ -406,13 +447,16 @@ const resetCustForm = () => {
     Post: '',
     Notes: '',
     FileName: '',
-    FileID: ''
+    FileID: '',
+    ID: ''
   };
   custFile.value = null;
   if (custUploadRef.value) {
     custUploadRef.value.clearFiles();
   }
 };
+const isExactMatch = ref(true);
+const onlyID = ref(true);
 
 // 提交表单
 const submitCustForm = async () => {
