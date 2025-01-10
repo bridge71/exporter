@@ -12,6 +12,8 @@
       </el-button>
       <el-button @click="navigateToDictionaryManager">数据字典</el-button>
       <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
+      <!-- 新增的修改密码按钮 -->
+      <el-button type="primary" @click="changePassword">{{changeButton}}</el-button>
     </div>
   </el-header>
 </template>
@@ -33,6 +35,10 @@ const props = defineProps({
   searchQuery: {
     type: String,
     default: '',
+  },
+  changeButton: {
+    type: String,
+    default: '修改密码',
   },
 });
 
@@ -73,6 +79,11 @@ const toggleIdMode = () => {
 // 处理新增按钮点击事件
 const handleAdd = () => {
   emit('add');
+};
+
+// 新增的 change 方法
+const changePassword = () => {
+  emit('change');
 };
 
 // 路由
