@@ -792,6 +792,8 @@ const fetchOutData = async () => {
     ElMessage.error('获取货币数据失败，请稍后重试');
   }
 };
+
+const OutFormRef = ref(null);
 const fetchFinaDocTypeData = async () => {
   try {
     const response = await axios.get('/find/finaDocType'); // 调用货币数据接口
@@ -1062,10 +1064,45 @@ const resetOutForm = () => {
   }
 };
 
+// 自定义验证函数：检查非空
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 采购表单验证规则（添加了 ReceNum、MerchantID、AcctID、BankAccountID、AcctBankID）
+const Rules = {
+  ReceNum: [
+    { required: true, validator: validateNotEmpty, message: '请输入单号', trigger: 'blur' },
+  ],
+  MerchantID: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户ID', trigger: 'blur' },
+  ],
+  AcctID: [
+    { required: true, validator: validateNotEmpty, message: '请输入账户ID', trigger: 'blur' },
+  ],
+  BankAccountID: [
+    { required: true, validator: validateNotEmpty, message: '请输入银行账户ID', trigger: 'blur' },
+  ],
+  AcctBankID: [
+    { required: true, validator: validateNotEmpty, message: '请输入开户银行ID', trigger: 'blur' },
+  ],
+};
+
 const uploadRef = ref(null);
 
 const submitOutForm = async () => {
   try {
+    const isValid = await OutFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
 
     // 添加其他字段

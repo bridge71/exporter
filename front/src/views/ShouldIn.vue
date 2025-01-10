@@ -474,7 +474,7 @@ const onlyID = ref(true);
 const toggleMatchMode = () => {
   isExactMatch.value = !isExactMatch.value;
 };
-
+const shouldInFormRef = ref(null);
 const toggleIDMode = () => {
   onlyID.value = !onlyID.value;
 };
@@ -663,10 +663,47 @@ const shouldInForm = ref({
 });
 
 // 表单验证规则
-const shouldInRules = {
-  BillReceNum: [{ required: true, message: '请输入应收账款单号', trigger: 'blur' }],
-  TotAmt: [{ type: 'number', message: '必须为正数', trigger: 'blur' }],
+
+// 自定义验证函数：检查非空
+const validateNotEmpty = (rule, value, callback) => {
+  if (value === '' || value === null || value === undefined) {
+    callback(new Error(rule.message));  // 使用 rule.message 作为错误消息
+  } else {
+    callback();  // 验证通过
+  }
 };
+
+// 自定义验证函数：检查大于 0
+const validateGreaterThanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
+  } else {
+    callback();  // 验证通过
+  }
+};
+
+// 销售表单验证规则（添加了 Merc、AcctName、BankAccName、AccName）
+const saleRules = {
+  BillReceNum: [
+    { required: true, validator: validateNotEmpty, message: '请输入应收账款单号', trigger: 'blur' },
+  ],
+  TotAmt: [
+    { required: true, validator: validateGreaterThanZero, message: '必须为正数', trigger: 'blur' },
+  ],
+  MerchantID: [
+    { required: true, validator: validateNotEmpty, message: '请输入商户名称', trigger: 'blur' },
+  ],
+  AcctID: [
+    { required: true, validator: validateNotEmpty, message: '请输入账户名称', trigger: 'blur' },
+  ],
+  BankAccountID: [
+    { required: true, validator: validateNotEmpty, message: '请输入银行账户名称', trigger: 'blur' },
+  ],
+  AcctBankID: [
+    { required: true, validator: validateNotEmpty, message: '请输入账户名称', trigger: 'blur' },
+  ],
+};
+
 // 控制主弹窗显示
 const sendVisible = ref(false);
 
@@ -894,6 +931,7 @@ const fetchCurrencyData = async () => {
     ElMessage.error('获取货币数据失败');
   }
 };
+
 // 定义接口请求函数
 const fetchAcctData = async () => {
   try {
@@ -1084,6 +1122,14 @@ const uploadRef = ref(null);
 
 const submitShouldInForm = async () => {
   try {
+
+    const isValid = await shouldInFormRef.value.validate();
+    if (!isValid) {
+      ElMessage.error('请填写所有必填字段');
+      console.log('验证不通过');
+      return; // 如果验证不通过，阻止提交
+    }
+
     const formData = new FormData();
 
     // 添加其他字段
