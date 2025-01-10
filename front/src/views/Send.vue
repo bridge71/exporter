@@ -1212,18 +1212,25 @@ const pageSize = 8; // 每页显示的行数
 
 
 const paginatedSendData = computed(() => {
-  let filteredData = sendData.value;
-  console.log(sendData.value);
+
+  let filteredData = sendData.value; // 假设 sendData 是你的发货数据
+
   if (searchQuery.value) {
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+
     if (isExactMatch.value === false) {
       if (onlyID.value === false) {
-        console.log("打印了");
         filteredData = filteredData.filter(item =>
           item.ID.toString().includes(searchQuery.value) ||
           item.SaleInvNum.includes(searchQuery.value) ||
           item.Merchant1Name.includes(searchQuery.value) ||
           item.Merchant2Name.includes(searchQuery.value) ||
           item.Merchant3Name.includes(searchQuery.value) ||
+          (item.Acct && item.Acct.AcctName && item.Acct.AcctName.includes(searchQuery.value)) ||
+          (item.AcctBank && item.AcctBank.AccName && item.AcctBank.AccName.includes(searchQuery.value)) ||
+          (item.PayMentMethod && item.PayMentMethod.PayMtdName && item.PayMentMethod.PayMtdName.includes(searchQuery.value)) ||
+          (item.PackSpec && item.PackSpec.SpecName && item.PackSpec.SpecName.includes(searchQuery.value)) ||
           item.AcctName.includes(searchQuery.value) ||
           item.SrcPlace.includes(searchQuery.value) ||
           item.Des.includes(searchQuery.value) ||
@@ -1231,19 +1238,16 @@ const paginatedSendData = computed(() => {
           item.ShipName.includes(searchQuery.value) ||
           item.Voyage.includes(searchQuery.value) ||
           item.TotNum.toString().includes(searchQuery.value) ||
-          item.SpecName.includes(searchQuery.value) ||
           item.TotalNetWeight.toString().includes(searchQuery.value) ||
           item.UnitMeas1.includes(searchQuery.value) ||
           item.GrossWt.toString().includes(searchQuery.value) ||
           item.UnitMeas2.includes(searchQuery.value) ||
-          item.TotVol.includes(searchQuery.value) ||
+          item.TotVol.toString().includes(searchQuery.value) ||
           item.UnitMeas3.includes(searchQuery.value) ||
           item.BillLadNum.includes(searchQuery.value) ||
           item.DateOfShip.includes(searchQuery.value) ||
           item.Note1.includes(searchQuery.value) ||
-          item.Note2.includes(searchQuery.value) ||
-          item.PayMtdName.includes(searchQuery.value) ||
-          item.AccName.includes(searchQuery.value)
+          item.Note2.includes(searchQuery.value)
         );
       } else {
         filteredData = filteredData.filter(item =>
@@ -1258,6 +1262,10 @@ const paginatedSendData = computed(() => {
           item.Merchant1Name === searchQuery.value ||
           item.Merchant2Name === searchQuery.value ||
           item.Merchant3Name === searchQuery.value ||
+          (item.Acct && item.Acct.AcctName && item.Acct.AcctName === searchQuery.value) ||
+          (item.AcctBank && item.AcctBank.AccName && item.AcctBank.AccName === searchQuery.value) ||
+          (item.PayMentMethod && item.PayMentMethod.PayMtdName && item.PayMentMethod.PayMtdName === searchQuery.value) ||
+          (item.PackSpec && item.PackSpec.SpecName && item.PackSpec.SpecName === searchQuery.value) ||
           item.AcctName === searchQuery.value ||
           item.SrcPlace === searchQuery.value ||
           item.Des === searchQuery.value ||
@@ -1265,19 +1273,16 @@ const paginatedSendData = computed(() => {
           item.ShipName === searchQuery.value ||
           item.Voyage === searchQuery.value ||
           item.TotNum.toString() === searchQuery.value ||
-          item.SpecName === searchQuery.value ||
-          item.TotalNetWeight === searchQuery.value ||
+          item.TotalNetWeight.toString() === searchQuery.value ||
           item.UnitMeas1 === searchQuery.value ||
-          item.GrossWt === searchQuery.value ||
+          item.GrossWt.toString() === searchQuery.value ||
           item.UnitMeas2 === searchQuery.value ||
-          item.TotVol === searchQuery.value ||
+          item.TotVol.toString() === searchQuery.value ||
           item.UnitMeas3 === searchQuery.value ||
           item.BillLadNum === searchQuery.value ||
           item.DateOfShip === searchQuery.value ||
           item.Note1 === searchQuery.value ||
-          item.Note2 === searchQuery.value ||
-          item.PayMtdName === searchQuery.value ||
-          item.AccName === searchQuery.value
+          item.Note2 === searchQuery.value
         );
       } else {
         filteredData = filteredData.filter(item =>
@@ -1506,7 +1511,7 @@ const validateNotEmpty = (rule, value, callback) => {
 
 // 自定义验证函数：检查大于 0
 const validateGreaterThanZero = (rule, value, callback) => {
-  if (value <= 0) {
+  if (value < 0) {
     callback(new Error(rule.message || '该字段必须大于 0'));  // 提供字段的错误消息
   } else {
     callback();  // 验证通过
@@ -1514,30 +1519,31 @@ const validateGreaterThanZero = (rule, value, callback) => {
 };
 
 const sendRules = {
-  OrderNum: [{ required: true, message: '请输入订单编号', trigger: 'blur' }],
-  OrderDate: [{ required: true, message: '请选择订单日期', trigger: 'blur' }],
+  SaleInvNum: [{ required: true, message: '请输入订单编号', trigger: 'blur' }],
   AcctID: [{ required: true, message: '请选择销售方', trigger: 'blur' }],
-  MerchantID: [{ required: true, message: '请选择购买方', trigger: 'blur' }],
-  QualStd: [{ required: true, message: '请选择质量标准', trigger: 'blur' }],
-  BillValidity: [{ required: true, message: '请选择账单有效期', trigger: 'blur' }],
-  BussOrderSta: [{ required: true, message: '请选择单据状态', trigger: 'blur' }],
-  StartShip: [{ required: true, message: '请选择发货开始日期', trigger: 'blur' }],
-  EndShip: [{ required: true, message: '请选择发货截止日期', trigger: 'blur' }],
-  SrcPlace: [{ required: true, message: '请选择起运地', trigger: 'blur' }],
-  Des: [{ required: true, message: '请选择目的地', trigger: 'blur' }],
+  Merchant1ID: [{ required: true, message: '请选择购买方', trigger: 'blur' }],
+  Merchant2ID: [{ required: true, message: '请选择购买方', trigger: 'blur' }],
+  Merchant3ID: [{ required: true, message: '请选择购买方', trigger: 'blur' }],
+  // QualStd: [{ required: true, message: '请选择质量标准', trigger: 'blur' }],
+  // BillValidity: [{ required: true, message: '请选择账单有效期', trigger: 'blur' }],
+  // BussOrderSta: [{ required: true, message: '请选择单据状态', trigger: 'blur' }],
+  // StartShip: [{ required: true, message: '请选择发货开始日期', trigger: 'blur' }],
+  // EndShip: [{ required: true, message: '请选择发货截止日期', trigger: 'blur' }],
+  // SrcPlace: [{ required: true, message: '请选择起运地', trigger: 'blur' }],
+  // Des: [{ required: true, message: '请选择目的地', trigger: 'blur' }],
   PayMentMethodID: [{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-  TotAmt: [{ required: true, message: '请输入总金额', trigger: 'blur' }],
-  Currency: [{ required: true, message: '请输入币种', trigger: 'blur' }],
+  // TotAmt: [{ required: true, message: '请输入总金额', trigger: 'blur' }],
+  // Currency: [{ required: true, message: '请输入币种', trigger: 'blur' }],
   TotNum: [
-    { required: true, validator: validateNotEmpty, message: '请输入总件数', trigger: 'blur' },
+    // { required: true, validator: validateNotEmpty, message: '请输入总件数', trigger: 'blur' },
     { validator: validateGreaterThanZero, message: '总件数必须大于 0', trigger: 'blur' }  // 新增验证：总件数大于 0
   ],
   PackSpecID: [{ required: true, message: '请选择包装规格', trigger: 'blur' }],
   TotalNetWeight: [
-    { required: true, validator: validateNotEmpty, message: '请输入总净重', trigger: 'blur' },
+    // { required: true, validator: validateNotEmpty, message: '请输入总净重', trigger: 'blur' },
     { validator: validateGreaterThanZero, message: '总净重必须大于 0', trigger: 'blur' }  // 新增验证：总净重大于 0
   ],
-  UnitMeas: [{ required: true, message: '请选择单位', trigger: 'blur' }],
+  // UnitMeas: [{ required: true, message: '请选择单位', trigger: 'blur' }],
   AcctBankID: [{ required: true, message: '请选择我方银行账户', trigger: 'blur' }],
   BankAccountID: [{ required: true, message: '请选择对方银行账户', trigger: 'blur' }]
 };

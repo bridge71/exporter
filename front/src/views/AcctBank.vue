@@ -373,8 +373,8 @@ const toggleMatchMode = () => {
 
 const toggleIDMode = () => {
 
-console.log("check match", onlyID.value)
-onlyID.value = !onlyID.value;
+  console.log("check match", onlyID.value)
+  onlyID.value = !onlyID.value;
 };
 
 // 会计实体银行账户信息表单提交逻辑
@@ -559,7 +559,7 @@ const bankForm = ref({
   AcctID: '',
   FileID: '', // 添加 FileName 字段
   FileName: '', // 添加 FileName 字段
-  ID:'',
+  ID: '',
 });
 
 
@@ -588,11 +588,11 @@ const acctData = ref([]); // 会计实体信息
 const bankData = ref([]); // 会计实体银行账户信息
 // 根据当前选中的菜单项动态更改标题和按钮文本
 const headerTitle = computed(() => {
-  return '会计实体银行账户信息';
+  return '会计实体银行账户';
 });
 
 const addButtonText = computed(() => {
-  return '添加会计实体银行账户信息';
+  return '添加会计实体银行账户';
 });
 
 

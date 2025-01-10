@@ -811,55 +811,53 @@ const fetchFinaDocStatusData = async () => {
 const paginatedSaleData = computed(() => {
   let filteredData = shouldInData.value;
 
-  // 如果有搜索查询
+
   if (searchQuery.value) {
-    console.log("s2s")
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+
     if (isExactMatch.value === false) {
       if (onlyID.value === false) {
-        // 模糊匹配多个字段
         filteredData = filteredData.filter(item =>
           item.ID.toString().includes(searchQuery.value) ||
           item.BillReceNum.includes(searchQuery.value) ||
+          (item.Acct && item.Acct.AcctName && item.Acct.AcctName.includes(searchQuery.value)) ||
+          (item.Merchant && item.Merchant.Merc && item.Merchant.Merc.includes(searchQuery.value)) ||
+          (item.AcctBank && item.AcctBank.AccName && item.AcctBank.AccName.includes(searchQuery.value)) ||
+          (item.BankAccount && item.BankAccount.BankAccName && item.BankAccount.BankAccName.includes(searchQuery.value)) ||
           item.DocDate.includes(searchQuery.value) ||
           item.ExpReceDate.includes(searchQuery.value) ||
           item.FinaDocType.includes(searchQuery.value) ||
           item.FinaDocStatus.includes(searchQuery.value) ||
-          item.Merc.includes(searchQuery.value) ||
-          item.AcctName.includes(searchQuery.value) ||
-          item.BankAccName.includes(searchQuery.value) ||
-          item.AccName.includes(searchQuery.value) ||
           item.TotAmt.toString().includes(searchQuery.value) ||
           item.Currency.includes(searchQuery.value) ||
           item.Notes.includes(searchQuery.value) ||
           item.FileName.includes(searchQuery.value)
         );
       } else {
-        // 仅匹配 ID
         filteredData = filteredData.filter(item =>
           item.ID.toString().includes(searchQuery.value)
         );
       }
     } else {
       if (onlyID.value === false) {
-        // 精确匹配多个字段
         filteredData = filteredData.filter(item =>
           item.ID.toString() === searchQuery.value ||
           item.BillReceNum === searchQuery.value ||
+          (item.Acct && item.Acct.AcctName && item.Acct.AcctName === searchQuery.value) ||
+          (item.Merchant && item.Merchant.Merc && item.Merchant.Merc === searchQuery.value) ||
+          (item.AcctBank && item.AcctBank.AccName && item.AcctBank.AccName === searchQuery.value) ||
+          (item.BankAccount && item.BankAccount.BankAccName && item.BankAccount.BankAccName === searchQuery.value) ||
           item.DocDate === searchQuery.value ||
           item.ExpReceDate === searchQuery.value ||
           item.FinaDocType === searchQuery.value ||
           item.FinaDocStatus === searchQuery.value ||
-          item.Merc === searchQuery.value ||
-          item.AcctName === searchQuery.value ||
-          item.BankAccName === searchQuery.value ||
-          item.AccName === searchQuery.value ||
           item.TotAmt.toString() === searchQuery.value ||
           item.Currency === searchQuery.value ||
           item.Notes === searchQuery.value ||
           item.FileName === searchQuery.value
         );
       } else {
-        // 仅精确匹配 ID
         filteredData = filteredData.filter(item =>
           item.ID.toString() === searchQuery.value
         );

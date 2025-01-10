@@ -323,53 +323,62 @@ const handlePageChange = (page) => {
 };
 
 const paginatedLoadingData = computed(() => {
-  let filteredData = loadingData.value;
+
+  let filteredData = loadingData.value; // 假设 loadingData 是你的装货数据
 
   if (searchQuery.value) {
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+
     if (isExactMatch.value === false) {
       if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
-          (item.Cat?.CatEngName || '').includes(searchQuery.value) ||
-          (item.Brand?.BrandEngName || '').includes(searchQuery.value) ||
-          (item.PrdtPlant || '').includes(searchQuery.value) ||
-          (item.BatNum || '').includes(searchQuery.value) ||
-          (item.ItemNum?.toString() || '').includes(searchQuery.value) ||
-          (item.PackSpec?.SpecName || '').includes(searchQuery.value) ||
-          (item.NetWeight?.toString() || '').includes(searchQuery.value) ||
-          (item.Unit || '').includes(searchQuery.value) ||
-          (item.CnrNum || '').includes(searchQuery.value) ||
-          (item.SealNum || '').includes(searchQuery.value) ||
-          (item.VehNum || '').includes(searchQuery.value) ||
-          (item.ID?.toString() || '').includes(searchQuery.value)
+          item.ID.toString().includes(searchQuery.value) ||
+          (item.Cat && item.Cat.CatEngName && item.Cat.CatEngName.includes(searchQuery.value)) ||
+          (item.Brand && item.Brand.BrandEngName && item.Brand.BrandEngName.includes(searchQuery.value)) ||
+          item.PrdtPlant.includes(searchQuery.value) ||
+          item.BatNum.includes(searchQuery.value) ||
+          item.ItemNum.toString().includes(searchQuery.value) ||
+          (item.PackSpec && item.PackSpec.SpecName && item.PackSpec.SpecName.includes(searchQuery.value)) ||
+          item.NetWeight.toString().includes(searchQuery.value) ||
+          item.Unit.includes(searchQuery.value) ||
+          item.CnrNum.includes(searchQuery.value) ||
+          item.SealNum.includes(searchQuery.value) ||
+          item.VehNum.includes(searchQuery.value) ||
+          item.CreatedAt.includes(searchQuery.value) ||
+          item.UpdatedAt.includes(searchQuery.value)
         );
       } else {
         filteredData = filteredData.filter(item =>
-          (item.ID?.toString() || '').includes(searchQuery.value)
+          item.ID.toString().includes(searchQuery.value)
         );
       }
     } else {
       if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
-          (item.Cat?.CatEngName || '') === searchQuery.value ||
-          (item.Brand?.BrandEngName || '') === searchQuery.value ||
-          (item.PrdtPlant || '') === searchQuery.value ||
-          (item.BatNum || '') === searchQuery.value ||
-          (item.ItemNum?.toString() || '') === searchQuery.value ||
-          (item.PackSpec?.SpecName || '') === searchQuery.value ||
-          (item.NetWeight?.toString() || '') === searchQuery.value ||
-          (item.Unit || '') === searchQuery.value ||
-          (item.CnrNum || '') === searchQuery.value ||
-          (item.SealNum || '') === searchQuery.value ||
-          (item.VehNum || '') === searchQuery.value ||
-          (item.ID?.toString() || '') === searchQuery.value
+          item.ID.toString() === searchQuery.value ||
+          (item.Cat && item.Cat.CatEngName && item.Cat.CatEngName === searchQuery.value) ||
+          (item.Brand && item.Brand.BrandEngName && item.Brand.BrandEngName === searchQuery.value) ||
+          item.PrdtPlant === searchQuery.value ||
+          item.BatNum === searchQuery.value ||
+          item.ItemNum.toString() === searchQuery.value ||
+          (item.PackSpec && item.PackSpec.SpecName && item.PackSpec.SpecName === searchQuery.value) ||
+          item.NetWeight.toString() === searchQuery.value ||
+          item.Unit === searchQuery.value ||
+          item.CnrNum === searchQuery.value ||
+          item.SealNum === searchQuery.value ||
+          item.VehNum === searchQuery.value ||
+          item.CreatedAt === searchQuery.value ||
+          item.UpdatedAt === searchQuery.value
         );
       } else {
         filteredData = filteredData.filter(item =>
-          (item.ID?.toString() || '') === searchQuery.value
+          item.ID.toString() === searchQuery.value
         );
       }
     }
   }
+
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);

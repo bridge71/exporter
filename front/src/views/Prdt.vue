@@ -384,53 +384,61 @@ const handlePageChange = (page) => {
 };
 
 const paginatedPrdtData = computed(() => {
-  let filteredData = prdtData.value;
+
+  let filteredData = prdtData.value; // 假设 prdtData 是你的产品数据
 
   if (searchQuery.value) {
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+
     if (isExactMatch.value === false) {
       if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
-          (item.Cat?.CatEngName || '').includes(searchQuery.value) ||
-          (item.Brand?.BrandEngName || '').includes(searchQuery.value) ||
-          (item.Factory || '').includes(searchQuery.value) ||
-          (item.Currency || '').includes(searchQuery.value) ||
-          (item.UnitPrice?.toString() || '').includes(searchQuery.value) ||
-          (item.Unit || '').includes(searchQuery.value) ||
-          (item.Amount?.toString() || '').includes(searchQuery.value) ||
-          (item.ItemNum?.toString() || '').includes(searchQuery.value) ||
-          (item.PackSpec?.SpecName || '').includes(searchQuery.value) ||
-          (item.ID?.toString() || '').includes(searchQuery.value) ||
-          (item.Weight?.toString() || '').includes(searchQuery.value) ||
-          (item.WeightUnit || '').includes(searchQuery.value) ||
-          (item.TradeTerm || '').includes(searchQuery.value) ||
-          (item.Spot?.InvLocName || '').includes(searchQuery.value)
+          item.ID.toString().includes(searchQuery.value) ||
+          (item.Cat && item.Cat.CatEngName && item.Cat.CatEngName.includes(searchQuery.value)) ||
+          (item.Brand && item.Brand.BrandEngName && item.Brand.BrandEngName.includes(searchQuery.value)) ||
+          item.Factory.includes(searchQuery.value) ||
+          item.Currency.includes(searchQuery.value) ||
+          item.UnitPrice.toString().includes(searchQuery.value) ||
+          item.Unit.includes(searchQuery.value) ||
+          item.Amount.toString().includes(searchQuery.value) ||
+          item.ItemNum.toString().includes(searchQuery.value) ||
+          (item.PackSpec && item.PackSpec.SpecName && item.PackSpec.SpecName.includes(searchQuery.value)) ||
+          item.Weight.toString().includes(searchQuery.value) ||
+          item.WeightUnit.includes(searchQuery.value) ||
+          item.TradeTerm.includes(searchQuery.value) ||
+          (item.Spot && item.Spot.InvLocName && item.Spot.InvLocName.includes(searchQuery.value)) ||
+          item.CreatedAt.includes(searchQuery.value) ||
+          item.UpdatedAt.includes(searchQuery.value)
         );
       } else {
         filteredData = filteredData.filter(item =>
-          (item.ID?.toString() || '').includes(searchQuery.value)
+          item.ID.toString().includes(searchQuery.value)
         );
       }
     } else {
       if (onlyID.value === false) {
         filteredData = filteredData.filter(item =>
-          (item.Cat?.CatEngName || '') === searchQuery.value ||
-          (item.Brand?.BrandEngName || '') === searchQuery.value ||
-          (item.Factory || '') === searchQuery.value ||
-          (item.Currency || '') === searchQuery.value ||
-          (item.UnitPrice?.toString() || '') === searchQuery.value ||
-          (item.Unit || '') === searchQuery.value ||
-          (item.Amount?.toString() || '') === searchQuery.value ||
-          (item.ItemNum?.toString() || '') === searchQuery.value ||
-          (item.PackSpec?.SpecName || '') === searchQuery.value ||
-          (item.ID?.toString() || '') === searchQuery.value ||
-          (item.Weight?.toString() || '') === searchQuery.value ||
-          (item.WeightUnit || '') === searchQuery.value ||
-          (item.TradeTerm || '') === searchQuery.value ||
-          (item.Spot?.InvLocName || '') === searchQuery.value
+          item.ID.toString() === searchQuery.value ||
+          (item.Cat && item.Cat.CatEngName && item.Cat.CatEngName === searchQuery.value) ||
+          (item.Brand && item.Brand.BrandEngName && item.Brand.BrandEngName === searchQuery.value) ||
+          item.Factory === searchQuery.value ||
+          item.Currency === searchQuery.value ||
+          item.UnitPrice.toString() === searchQuery.value ||
+          item.Unit === searchQuery.value ||
+          item.Amount.toString() === searchQuery.value ||
+          item.ItemNum.toString() === searchQuery.value ||
+          (item.PackSpec && item.PackSpec.SpecName && item.PackSpec.SpecName === searchQuery.value) ||
+          item.Weight.toString() === searchQuery.value ||
+          item.WeightUnit === searchQuery.value ||
+          item.TradeTerm === searchQuery.value ||
+          (item.Spot && item.Spot.InvLocName && item.Spot.InvLocName === searchQuery.value) ||
+          item.CreatedAt === searchQuery.value ||
+          item.UpdatedAt === searchQuery.value
         );
       } else {
         filteredData = filteredData.filter(item =>
-          (item.ID?.toString() || '') === searchQuery.value
+          item.ID.toString() === searchQuery.value
         );
       }
     }

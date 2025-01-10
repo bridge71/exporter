@@ -9,17 +9,9 @@
       </el-aside>
 
       <el-container>
-        <!-- <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-            <el-button @click="navigateToDictionaryManager">数据字典</el-button>
-          </div>
-        </el-header> -->
         <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
-          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd"  @change="changePassword"/>
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd"
+          @change="changePassword" />
         <el-header height="1px">
         </el-header>
         <el-main>
@@ -32,14 +24,6 @@
             <el-table-column prop="EtyAbbr" label="实体简称" width="160%"></el-table-column>
             <el-table-column prop="AcctName" label="会计实体名称" width="220%"></el-table-column>
 
-            <el-table-column label="绑定的银行账户信息" width="220%">
-              <template #default="scope">
-                <span v-if="scope.row.AcctBanks && scope.row.AcctBanks.length > 0">
-                  {{ scope.row.AcctBanks.map(bank => bank.AccNum).join(', ') }}
-                </span>
-                <span v-else>无</span>
-              </template>
-            </el-table-column>
 
             <el-table-column prop="AcctEngName" label="会计实体英文名称" width="220%"></el-table-column>
             <el-table-column prop="AcctAddr" label="会计实体地址" width="220%"></el-table-column>
@@ -53,9 +37,9 @@
             <el-table-column prop="Notes" label="备注" width="220%"></el-table-column>
 
             <el-table-column prop="FileName" label="文件名" width="220%"></el-table-column>
-            <el-table-column label="操作" fixed="right" width="200">
+            <el-table-column label="操作" fixed="right" width="370">
               <template #default="scope">
-                <el-row type="flex" justify="space-between">
+                <el-row type="fixed" justify="space-between">
                   <el-button @click="handleView(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                   <el-button @click="handleEdit(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="handleDelete(scope.$index, scope.row.ID)" type="text" size="small">删除</el-button>
@@ -343,20 +327,20 @@
 
 
     <!-- 修改密码的对话框 -->
-  <el-dialog v-model="changePasswordDialog" title="修改密码" width="30%" @close="resetPasswordForm">
-    <el-form :model="passwordForm" ref="passwordFormRef">
-      <el-form-item label="新密码" prop="newPassword" :rules="[{ required: true, message: '请输入新密码', trigger: 'blur' }]">
-        <el-input v-model="passwordForm.newPassword" type="password" autocomplete="new-password"></el-input>
-      </el-form-item>
+    <el-dialog v-model="changePasswordDialog" title="修改密码" width="30%" @close="resetPasswordForm">
+      <el-form :model="passwordForm" ref="passwordFormRef">
+        <el-form-item label="新密码" prop="newPassword" :rules="[{ required: true, message: '请输入新密码', trigger: 'blur' }]">
+          <el-input v-model="passwordForm.newPassword" type="password" autocomplete="new-password"></el-input>
+        </el-form-item>
 
-      <el-row :gutter="20">
-        <el-col :span="24" style="text-align: right;">
-          <el-button type="primary" @click="submitPasswordForm">保存</el-button>
-          <el-button @click="changePasswordDialog = false">关闭</el-button>
-        </el-col>
-      </el-row>
-    </el-form>
-  </el-dialog>
+        <el-row :gutter="20">
+          <el-col :span="24" style="text-align: right;">
+            <el-button type="primary" @click="submitPasswordForm">保存</el-button>
+            <el-button @click="changePasswordDialog = false">关闭</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
 
 
     <!-- <header class="top-bar">
@@ -385,8 +369,8 @@ const toggleMatchMode = () => {
 
 const toggleIDMode = () => {
 
-console.log("check match", onlyID.value)
-onlyID.value = !onlyID.value;
+  console.log("check match", onlyID.value)
+  onlyID.value = !onlyID.value;
 };
 
 // 方法：导航到 DictionaryManager 页面
