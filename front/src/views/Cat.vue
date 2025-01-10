@@ -10,17 +10,15 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 品类信息表格 -->
           <el-table :data="paginatedCatData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="CatAbbr" label="品类缩写" width="160"></el-table-column>
             <el-table-column prop="CatName" label="品类名称" width="160"></el-table-column>
             <el-table-column prop="CatEngName" label="品类英文名称" width="220"></el-table-column>
@@ -258,6 +256,22 @@ import { ref, onMounted, computed, readonly } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
+
+const isExactMatch = ref(true);
+const onlyID = ref(true);
+
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
+
 
 // 搜索查询字段
 const searchQuery = ref('');
@@ -289,6 +303,7 @@ const catForm = ref({
   FileID: '',
   FileName: '',
   CatID: '',
+  ID: ''
 });
 
 // 自定义验证函数
@@ -318,19 +333,50 @@ const catRules = {
 // 分页数据
 const paginatedCatData = computed(() => {
   let filteredData = catData.value || [];
+
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.CatAbbr?.includes(searchQuery.value) ||
-      item.CatName?.includes(searchQuery.value) ||
-      item.CatEngName?.includes(searchQuery.value) ||
-      item.DeclHS?.includes(searchQuery.value) ||
-      item.DocHS?.includes(searchQuery.value) ||
-      item.CAS?.includes(searchQuery.value) ||
-      item.GB?.includes(searchQuery.value) ||
-      item.StdDoc?.includes(searchQuery.value) ||
-      item.Notes?.includes(searchQuery.value)
-    );
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+
+    if (isExactMatch.value === false) {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.CatAbbr?.includes(searchQuery.value) ||
+          item.CatName?.includes(searchQuery.value) ||
+          item.CatEngName?.includes(searchQuery.value) ||
+          item.DeclHS?.includes(searchQuery.value) ||
+          item.DocHS?.includes(searchQuery.value) ||
+          item.CAS?.includes(searchQuery.value) ||
+          item.GB?.includes(searchQuery.value) ||
+          item.StdDoc?.includes(searchQuery.value) ||
+          item.Notes?.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.CatAbbr === searchQuery.value ||
+          item.CatName === searchQuery.value ||
+          item.CatEngName === searchQuery.value ||
+          item.DeclHS === searchQuery.value ||
+          item.DocHS === searchQuery.value ||
+          item.CAS === searchQuery.value ||
+          item.GB === searchQuery.value ||
+          item.StdDoc === searchQuery.value ||
+          item.Notes === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
+
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);

@@ -10,17 +10,14 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 支付方式信息表格 -->
           <el-table :data="paginatedSpotData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="InvLocName" label="库存地点名称" width="220%"></el-table-column>
             <el-table-column prop="InvLocAbbr" label="库存地点简称" width="220%"></el-table-column>
             <el-table-column prop="InvAddr" label="库存地址" width="320%"></el-table-column>
@@ -128,7 +125,7 @@ import { ref, onMounted, computed, customRef } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
-
+import HeaderComponent from '@/components/HeaderComponent.vue';
 const searchQuery = ref('');
 const currentPage = ref(1);
 const pageSize = 8;
@@ -141,6 +138,7 @@ const SpotForm = ref({
   InvLocAbbr: '',
   InvAddr: '',
   Notes: '',
+  ID: ''
 });
 
 
@@ -174,13 +172,38 @@ const handlePageChange = (page) => {
 const paginatedSpotData = computed(() => {
   let filteredData = SpotData.value;
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.InvLocName.includes(searchQuery.value) ||
-      item.InvLocAbbr.includes(searchQuery.value) ||
-      item.InvAddr.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value)
-    );
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+
+    if (isExactMatch.value === false) {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.InvLocName.includes(searchQuery.value) ||
+          item.InvLocAbbr.includes(searchQuery.value) ||
+          item.InvAddr.includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.InvLocName === searchQuery.value ||
+          item.InvLocAbbr === searchQuery.value ||
+          item.InvAddr === searchQuery.value ||
+          item.Notes === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
+
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);
@@ -236,6 +259,19 @@ const resetSpotForm = () => {
   };
 };
 
+const isExactMatch = ref(true);
+const onlyID = ref(true);
+
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
 const submitSpotForm = async () => {
   try {
     const isValid = await SpotFormRef.value.validate();

@@ -10,17 +10,14 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 包装规格信息表格 -->
           <el-table :data="paginatedPackSpecData" style="width: 100%" max-height="450">
+            <el-table-column prop="ID" label="ID" width="100%"></el-table-column>
             <el-table-column prop="SpecName" label="规格名称" width="220%"></el-table-column>
             <el-table-column prop="SpecEngName" label="规格英文名称" width="220%"></el-table-column>
             <el-table-column prop="UnitMeas" label="单位" width="220%"></el-table-column>
@@ -197,6 +194,8 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
+
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -216,9 +215,13 @@ const packSpecForm = ref({
   FileID: '',
   FileName: '',
   PackSpecID: '',
+  ID: '',
 });
 const packSpecUploadRef = ref(null);
 const packSpecFile = ref(null);
+const isExactMatch = ref(true);
+const onlyID = ref(true);
+
 
 const handlePageChange = (page) => {
   currentPage.value = page;
@@ -226,17 +229,46 @@ const handlePageChange = (page) => {
 
 const paginatedPackSpecData = computed(() => {
   let filteredData = packSpecData.value;
+
   if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.SpecName.includes(searchQuery.value) ||
-      item.SpecEngName.includes(searchQuery.value) ||
-      item.UnitMeas.includes(searchQuery.value) ||
-      item.PackType.includes(searchQuery.value) ||
-      item.NetWt.toString().includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value) ||
-      item.FileName.includes(searchQuery.value)
-    );
+    console.log(isExactMatch.value);
+    console.log(onlyID.value);
+
+    if (isExactMatch.value === false) {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.SpecName.includes(searchQuery.value) ||
+          item.SpecEngName.includes(searchQuery.value) ||
+          item.UnitMeas.includes(searchQuery.value) ||
+          item.PackType.includes(searchQuery.value) ||
+          item.NetWt.toString().includes(searchQuery.value) ||
+          item.Notes.includes(searchQuery.value) ||
+          item.FileName.includes(searchQuery.value)
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString().includes(searchQuery.value)
+        );
+      }
+    } else {
+      if (onlyID.value === false) {
+        filteredData = filteredData.filter(item =>
+          item.SpecName === searchQuery.value ||
+          item.SpecEngName === searchQuery.value ||
+          item.UnitMeas === searchQuery.value ||
+          item.PackType === searchQuery.value ||
+          item.NetWt.toString() === searchQuery.value ||
+          item.Notes === searchQuery.value ||
+          item.FileName === searchQuery.value
+        );
+      } else {
+        filteredData = filteredData.filter(item =>
+          item.ID.toString() === searchQuery.value
+        );
+      }
+    }
   }
+
   const start = (currentPage.value - 1) * pageSize;
   const end = start + pageSize;
   return filteredData.slice(start, end);
@@ -281,6 +313,17 @@ const handleDelete = (index, PackSpecID) => {
     ElMessage.info('已取消删除');
   });
 };
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
+};
+
 
 const resetPackSpecForm = () => {
   packSpecForm.value = {

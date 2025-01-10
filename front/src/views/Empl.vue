@@ -10,13 +10,9 @@
 
       <!-- 主体内容 -->
       <el-container>
-        <el-header style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>{{ headerTitle }}</h2>
-          <div>
-            搜索：
-            <el-input v-model="searchQuery" placeholder="输入要搜索的关键字" style="width: 200px;" />
-            <el-button type="primary" @click="handleAdd">{{ addButtonText }}</el-button>
-          </div>
+        <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+        <el-header height="1px">
         </el-header>
         <el-main>
           <!-- 员工信息表格 -->
@@ -377,6 +373,7 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import axios from 'axios';
 import SideMenu from '@/components/SideMenu.vue';
 import { message } from 'ant-design-vue';
+import HeaderComponent from '@/components/HeaderComponent.vue';
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -445,23 +442,55 @@ const handlePageChange = (page) => {
 
 const paginatedEmplData = computed(() => {
   let filteredData = emplData.value;
-  if (searchQuery.value) {
-    filteredData = filteredData.filter(item =>
-      item.EmpName.includes(searchQuery.value) ||
-      item.EmpEngName.includes(searchQuery.value) ||
-      item.Dept.includes(searchQuery.value) ||
-      item.Position.includes(searchQuery.value) ||
-      item.JoinDate.includes(searchQuery.value) ||
-      item.Gender.includes(searchQuery.value) ||
-      item.Age.toString().includes(searchQuery.value) ||
-      item.EduLevel.includes(searchQuery.value) ||
-      item.Notes.includes(searchQuery.value) ||
-      item.FileName.includes(searchQuery.value)
-    );
+
+if (searchQuery.value) {
+  console.log(isExactMatch.value);
+  console.log(onlyID.value);
+
+  if (isExactMatch.value === false) {
+    if (onlyID.value === false) {
+      filteredData = filteredData.filter(item =>
+        item.EmpName.includes(searchQuery.value) ||
+        item.EmpEngName.includes(searchQuery.value) ||
+        item.Dept.includes(searchQuery.value) ||
+        item.Position.includes(searchQuery.value) ||
+        item.JoinDate.includes(searchQuery.value) ||
+        item.Gender.includes(searchQuery.value) ||
+        item.Age.toString().includes(searchQuery.value) ||
+        item.EduLevel.includes(searchQuery.value) ||
+        item.Notes.includes(searchQuery.value) ||
+        item.FileName.includes(searchQuery.value)
+      );
+    } else {
+      filteredData = filteredData.filter(item =>
+        item.ID.toString().includes(searchQuery.value)
+      );
+    }
+  } else {
+    if (onlyID.value === false) {
+      filteredData = filteredData.filter(item =>
+        item.EmpName === searchQuery.value ||
+        item.EmpEngName === searchQuery.value ||
+        item.Dept === searchQuery.value ||
+        item.Position === searchQuery.value ||
+        item.JoinDate === searchQuery.value ||
+        item.Gender === searchQuery.value ||
+        item.Age.toString() === searchQuery.value ||
+        item.EduLevel === searchQuery.value ||
+        item.Notes === searchQuery.value ||
+        item.FileName === searchQuery.value
+      );
+    } else {
+      filteredData = filteredData.filter(item =>
+        item.ID.toString() === searchQuery.value
+      );
+    }
   }
-  const start = (currentPage.value - 1) * pageSize;
-  const end = start + pageSize;
-  return filteredData.slice(start, end);
+}
+
+const start = (currentPage.value - 1) * pageSize;
+const end = start + pageSize;
+return filteredData.slice(start, end);
 });
 
 const handleAdd = () => {
@@ -506,6 +535,19 @@ const handleDelete = (index, EmplID) => {
   }).catch(() => {
     ElMessage.info('已取消删除');
   });
+};
+
+const isExactMatch = ref(true);
+const onlyID = ref(true);
+const toggleMatchMode = () => {
+  console.log("check onlyID", isExactMatch.value)
+  isExactMatch.value = !isExactMatch.value;
+};
+
+const toggleIDMode = () => {
+
+console.log("check match", onlyID.value)
+onlyID.value = !onlyID.value;
 };
 
 const resetEmplForm = () => {

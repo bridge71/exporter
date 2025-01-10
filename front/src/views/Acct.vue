@@ -19,7 +19,7 @@
           </div>
         </el-header> -->
         <HeaderComponent :header-title="headerTitle" :add-button-text="addButtonText" v-model:search-query="searchQuery"
-          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd" />
+          @toggle-match-mode="toggleMatchMode" @toggle-id-mode="toggleIDMode" @add="handleAdd"  @change="changePassword"/>
         <el-header height="1px">
         </el-header>
         <el-main>
@@ -340,6 +340,23 @@
         </el-row>
       </el-form>
     </el-dialog>
+
+
+    <!-- 修改密码的对话框 -->
+  <el-dialog v-model="changePasswordDialog" title="修改密码" width="30%" @close="resetPasswordForm">
+    <el-form :model="passwordForm" ref="passwordFormRef">
+      <el-form-item label="新密码" prop="newPassword" :rules="[{ required: true, message: '请输入新密码', trigger: 'blur' }]">
+        <el-input v-model="passwordForm.newPassword" type="password" autocomplete="new-password"></el-input>
+      </el-form-item>
+
+      <el-row :gutter="20">
+        <el-col :span="24" style="text-align: right;">
+          <el-button type="primary" @click="submitPasswordForm">保存</el-button>
+          <el-button @click="changePasswordDialog = false">关闭</el-button>
+        </el-col>
+      </el-row>
+    </el-form>
+  </el-dialog>
 
 
     <!-- <header class="top-bar">
@@ -677,6 +694,7 @@ const fetchAcctData = async () => {
 
 // 会计实体信息对话框显示状态
 const showAcctDialog = ref(false);
+const changePasswordDialog = ref(false);
 
 // 会计实体信息对话框显示状态
 const showshowAcctDialog = ref(false);
@@ -728,6 +746,41 @@ const acctRules = {
   ]
 };
 
+// 密码表单数据
+const passwordForm = ref({
+  newPassword: ''
+});
+
+// 密码表单引用
+const passwordFormRef = ref(null);
+
+// 重置密码表单
+const resetPasswordForm = () => {
+  passwordForm.value.newPassword = '';  // 清空密码输入框
+};
+
+// 提交密码表单
+const submitPasswordForm = async () => {
+  const isValid = await passwordFormRef.value.validate();
+  if (isValid) {
+    // 假设发送到服务器的修改密码接口
+    axios.post('/change-password', {
+      newPassword: passwordForm.value.newPassword
+    }).then(response => {
+      if (response.data.success) {
+        ElMessage.success('密码修改成功');
+        changePasswordDialog.value = false;  // 关闭对话框
+      } else {
+        ElMessage.error('密码修改失败');
+      }
+    }).catch(error => {
+      ElMessage.error('密码修改失败');
+    });
+  } else {
+    ElMessage.error('请正确填写表单');
+  }
+};
+
 
 // 表格数据（初始值为空数组）
 const acctData = ref([]); // 会计实体信息
@@ -743,6 +796,9 @@ const addButtonText = computed(() => {
 // 添加按钮点击事件
 const handleAdd = () => {
   showAcctDialog.value = true;
+};
+const changePassword = () => {
+  changePasswordDialog.value = true;
 };
 
 // 编辑按钮逻辑
